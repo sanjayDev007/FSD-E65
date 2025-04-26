@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Document</h1>
+        <p>This is a simple HTML document.</p>
+        <p>Here is a list of items:</p>
+        <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </ul>
+        <p class="message">Thank you for visiting!</p>
+        <img class="sample-image" src="https://picsum.photos/200/300" alt="Sample Image">
+        <div class="child-container">
+            <div class="childrens">1</div>
+            <div class="childrens">2</div>
+            <div class="childrens">3</div>
+            <div class="childrens">4</div>
+        </div>
+        <button id="click-me">Click Me</button>
+    </div>
+    <script>
+        let button = document.getElementById('click-me');
+        let message = document.getElementsByClassName('message')[0];
+        let items = document.getElementsByTagName('li');
+        let sampleImage = document.querySelector('.sample-image');
+        let children = document.querySelectorAll('.childrens');
+        button.addEventListener('click', function(e) {
+            message.innerHTML = "Button clicked!";
+            for (let i = 0; i < items.length; i++) {
+                items[i].style.color = 'blue';
+            }
+            sampleImage.style.border = '2px solid red';
+            let lastChildNum = parseInt(children[children.length - 1].textContent);
+            for (let i = 0; i < children.length; i++) {
+                if (lastChildNum == 100) {
+                    break;
+                }
+                children[i].textContent = parseInt(lastChildNum + i) + 1;
+            }
+            message.style.color = randomColor();
+        });
+
+        const randomColor = () => {
+            return '#' + Math.floor(Math.random()*16777215).toString(16);
+        };
+    </script>
+</body>
+</html>

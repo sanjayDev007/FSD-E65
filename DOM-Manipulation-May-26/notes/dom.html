@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML DOM Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .dom-container {
+            margin: 30px auto;
+            max-width: 900px;
+        }
+        .tree {
+            margin: 0 auto;
+        }
+        .node {
+            position: relative;
+            padding: 10px 15px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 10px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .node:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+        }
+        .node.document {
+            background-color: #3498db;
+            color: white;
+        }
+        .node.html {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .node.head, .node.body {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .node.element {
+            background-color: #f39c12;
+            color: white;
+        }
+        .node.text {
+            background-color: #9b59b6;
+            color: white;
+        }
+        .node.attribute {
+            background-color: #1abc9c;
+            color: white;
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+        .connector {
+            position: relative;
+            height: 20px;
+            background-color: #3498db;
+            width: 2px;
+            margin: 0 auto;
+        }
+        .children {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            position: relative;
+            margin-top: 5px;
+        }
+        .level {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .explanation {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 10px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>HTML DOM Tree Visualization</h1>
+    
+    <div class="explanation">
+        <h2>What is the DOM?</h2>
+        <p>The Document Object Model (DOM) is a programming interface for HTML documents. It represents the page so that programs can change the document structure, style, and content. The DOM represents the document as a tree of nodes where each node represents a part of the document.</p>
+    </div>
+
+    <div class="dom-container">
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #3498db;"></div>
+                <span>Document</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2ecc71;"></div>
+                <span>HTML Element</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e74c3c;"></div>
+                <span>Head/Body</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #f39c12;"></div>
+                <span>Element</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #9b59b6;"></div>
+                <span>Text Node</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #1abc9c;"></div>
+                <span>Attribute</span>
+            </div>
+        </div>
+
+        <div class="tree">
+            <!-- Document node -->
+            <div class="level">
+                <div class="node document">Document</div>
+            </div>
+            
+            <div class="connector"></div>
+            
+            <!-- HTML node -->
+            <div class="level">
+                <div class="node html">HTML Element</div>
+            </div>
+            
+            <div class="connector"></div>
+            
+            <!-- Head and Body nodes -->
+            <div class="level">
+                <div class="node head">HEAD Element</div>
+                <div class="node body">BODY Element</div>
+            </div>
+            
+            <!-- Head children -->
+            <div class="children">
+                <div style="display: flex; flex-direction: column; align-items: center; margin: 0 20px;">
+                    <div class="connector"></div>
+                    <div class="level">
+                        <div class="node element">TITLE Element</div>
+                        <div class="node element">META Element</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="level">
+                        <div class="node text">Page Title</div>
+                        <div class="node attribute">charset="UTF-8"</div>
+                    </div>
+                </div>
+                
+                <!-- Body children -->
+                <div style="display: flex; flex-direction: column; align-items: center; margin: 0 20px;">
+                    <div class="connector"></div>
+                    <div class="level">
+                        <div class="node element">H1 Element</div>
+                        <div class="node element">DIV Element</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="level">
+                        <div class="node text">Heading Text</div>
+                        <div class="node attribute">class="container"</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="level">
+                        <div class="node element">P Element</div>
+                    </div>
+                    <div class="connector"></div>
+                    <div class="level">
+                        <div class="node text">Paragraph Text</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="explanation">
+        <h2>How the DOM Works</h2>
+        <p>When a web page is loaded, the browser creates a Document Object Model of the page. The DOM is constructed as a tree of objects:</p>
+        <ul>
+            <li><strong>Document Node</strong>: The top-level node representing the entire document.</li>
+            <li><strong>Element Nodes</strong>: Represent HTML elements (like HTML, HEAD, BODY, DIV, P, etc.).</li>
+            <li><strong>Attribute Nodes</strong>: Represent attributes of elements (like class, id, style, etc.).</li>
+            <li><strong>Text Nodes</strong>: Contain the text inside elements.</li>
+            <li><strong>Comment Nodes</strong>: Represent HTML comments (not shown in visualization).</li>
+        </ul>
+        <p>The DOM provides a way for JavaScript to access and manipulate the content, structure, and style of a document. When JavaScript makes changes to the DOM, the browser updates the rendered page accordingly.</p>
+        
+        <h3>JavaScript Interaction with DOM</h3>
+        <p>JavaScript can:</p>
+        <ul>
+            <li>Add, change, and remove HTML elements and attributes</li>
+            <li>Change CSS styles</li>
+            <li>React to existing events and create new ones</li>
+            <li>Create and manipulate event handlers</li>
+        </ul>
+        
+        <h3>DOM Tree Traversal</h3>
+        <p>JavaScript can navigate the DOM tree using properties like:</p>
+        <ul>
+            <li><code>parentNode</code>: Access the parent of a node</li>
+            <li><code>childNodes</code>: Access all children of a node</li>
+            <li><code>firstChild</code>, <code>lastChild</code>: Access first or last child</li>
+            <li><code>nextSibling</code>, <code>previousSibling</code>: Access adjacent nodes</li>
+        </ul>
+    </div>
+</body>
+</html>

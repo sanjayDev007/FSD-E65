@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Engine Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .js-container {
+            margin: 30px auto;
+            max-width: 900px;
+        }
+        .diagram {
+            margin: 20px auto;
+            position: relative;
+        }
+        .box {
+            padding: 15px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            margin: 10px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .box:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+        }
+        .engine {
+            border: 3px solid #e74c3c;
+            background-color: #fadbd8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        .engine-components {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .component {
+            flex: 0 0 45%;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .parser {
+            background-color: #3498db;
+            color: white;
+        }
+        .compiler {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .interpreter {
+            background-color: #f39c12;
+            color: white;
+        }
+        .optimizer {
+            background-color: #9b59b6;
+            color: white;
+        }
+        .memory {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        .memory-section {
+            flex: 1;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .heap {
+            background-color: #1abc9c;
+            color: white;
+        }
+        .stack {
+            background-color: #f1c40f;
+            color: white;
+        }
+        .call-stack {
+            background-color: #e67e22;
+            color: white;
+        }
+        .arrow {
+            position: relative;
+            width: 100%;
+            height: 30px;
+            margin: 5px 0;
+            text-align: center;
+        }
+        .arrow::after {
+            content: "↓";
+            font-size: 24px;
+            color: #e74c3c;
+        }
+        .execution-context {
+            border: 2px dashed #e74c3c;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 600px;
+            background-color: #fff;
+        }
+        .code-sample {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .explanation {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 10px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Engine Under the Hood</h1>
+    
+    <div class="explanation">
+        <h2>What is JavaScript?</h2>
+        <p>JavaScript is a high-level, interpreted programming language that enables interactive web pages. It follows the ECMAScript specification and is multi-paradigm, supporting event-driven, functional, and imperative programming styles.</p>
+    </div>
+
+    <div class="js-container">
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #3498db;"></div>
+                <span>Parser</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2ecc71;"></div>
+                <span>Compiler</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #f39c12;"></div>
+                <span>Interpreter</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #9b59b6;"></div>
+                <span>Optimizer</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #1abc9c;"></div>
+                <span>Heap Memory</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #f1c40f;"></div>
+                <span>Stack Memory</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e67e22;"></div>
+                <span>Call Stack</span>
+            </div>
+        </div>
+
+        <div class="diagram">
+            <div class="box">
+                <h2>JavaScript Code</h2>
+                <div class="code-sample">
+                    function greeting(name) {<br>
+                    &nbsp;&nbsp;return `Hello, ${name}!`;<br>
+                    }<br>
+                    <br>
+                    const message = greeting('World');<br>
+                    console.log(message);
+                </div>
+            </div>
+            
+            <div class="arrow"></div>
+            
+            <div class="engine">
+                <h2>JavaScript Engine (V8, SpiderMonkey, JavaScriptCore)</h2>
+                
+                <div class="engine-components">
+                    <div class="component parser">
+                        <h3>Parser</h3>
+                        <p>Parses code into Abstract Syntax Tree (AST)</p>
+                        <ul>
+                            <li>Lexical Analysis (Tokenizing)</li>
+                            <li>Syntax Analysis (Parsing)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="component compiler">
+                        <h3>Compiler</h3>
+                        <p>Converts AST to bytecode or machine code</p>
+                        <ul>
+                            <li>Just-In-Time (JIT) Compilation</li>
+                            <li>Ahead-of-Time (AOT) Compilation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="component interpreter">
+                        <h3>Interpreter</h3>
+                        <p>Executes bytecode line by line</p>
+                        <ul>
+                            <li>Fast start-up</li>
+                            <li>Slower execution than compiled code</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="component optimizer">
+                        <h3>Optimizer</h3>
+                        <p>Improves code performance at runtime</p>
+                        <ul>
+                            <li>Type specialization</li>
+                            <li>Inlining functions</li>
+                            <li>Dead code elimination</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arrow"></div>
+            
+            <div class="memory">
+                <div class="memory-section heap">
+                    <h3>Heap Memory</h3>
+                    <p>Dynamically allocated memory</p>
+                    <ul>
+                        <li>Objects</li>
+                        <li>Functions</li>
+                        <li>Arrays</li>
+                        <li>Strings</li>
+                    </ul>
+                </div>
+                
+                <div class="memory-section stack">
+                    <h3>Stack Memory</h3>
+                    <p>Static memory allocation</p>
+                    <ul>
+                        <li>Primitive values</li>
+                        <li>Function calls</li>
+                        <li>Object references</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="arrow"></div>
+            
+            <div class="execution-context">
+                <h3>Execution Context</h3>
+                <div class="memory-section call-stack">
+                    <h3>Call Stack</h3>
+                    <div style="border: 1px solid white; padding: 5px; margin: 5px;">console.log(message)</div>
+                    <div style="border: 1px solid white; padding: 5px; margin: 5px;">greeting('World')</div>
+                    <div style="border: 1px solid white; padding: 5px; margin: 5px;">Global Execution Context</div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                    <div class="box" style="flex: 1;">
+                        <h4>Variable Environment</h4>
+                        <p>message: "Hello, World!"</p>
+                    </div>
+                    
+                    <div class="box" style="flex: 1;">
+                        <h4>Scope Chain</h4>
+                        <p>Local → Outer → Global</p>
+                    </div>
+                    
+                    <div class="box" style="flex: 1;">
+                        <h4>This Binding</h4>
+                        <p>window/global/undefined</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="explanation">
+        <h2>How JavaScript Works</h2>
+        <p>JavaScript execution follows these key steps:</p>
+        
+        <h3>1. Parse and Compile</h3>
+        <p>When JavaScript code is loaded, the engine first parses it into an Abstract Syntax Tree (AST). This breaks down the code into a structured representation that the engine can work with.</p>
+        
+        <h3>2. Compilation & Execution</h3>
+        <p>Modern JavaScript engines use a combination of interpretation and Just-In-Time (JIT) compilation:</p>
+        <ul>
+            <li><strong>Interpreter:</strong> Executes the code line by line for quick startup.</li>
+            <li><strong>Compiler:</strong> Identifies frequently run code (hot code) and compiles it to optimized machine code.</li>
+            <li><strong>Optimizer:</strong> Continuously improves the compiled code based on runtime information.</li>
+        </ul>
+        
+        <h3>3. Memory Management</h3>
+        <p>JavaScript manages memory through:</p>
+        <ul>
+            <li><strong>Heap:</strong> Where objects, functions, and complex data are stored.</li>
+            <li><strong>Stack:</strong> Keeps track of function calls and stores primitive values.</li>
+            <li><strong>Garbage Collection:</strong> Automatically frees memory that's no longer referenced.</li>
+        </ul>
+        
+        <h3>4. Event Loop & Concurrency</h3>
+        <p>JavaScript is single-threaded but handles asynchronous operations through:</p>
+        <ul>
+            <li><strong>Call Stack:</strong> Tracks currently executing functions.</li>
+            <li><strong>Callback Queue:</strong> Holds functions waiting to be executed.</li>
+            <li><strong>Event Loop:</strong> Moves callbacks from the queue to the stack when it's empty.</li>
+            <li><strong>Web APIs:</strong> Handle operations like AJAX, setTimeout, DOM events outside the main thread.</li>
+        </ul>
+        
+        <h3>5. Execution Context</h3>
+        <p>Each time JavaScript executes a function or script, it creates an execution context with:</p>
+        <ul>
+            <li><strong>Variable Environment:</strong> Contains local variables and function declarations.</li>
+            <li><strong>Scope Chain:</strong> References to outer (parent) scopes.</li>
+            <li><strong>This Binding:</strong> Value of the <code>this</code> keyword.</li>
+        </ul>
+    </div>
+    
+    <div class="explanation">
+        <h2>JavaScript's Key Mechanisms</h2>
+        
+        <h3>Hoisting</h3>
+        <p>Before execution, variable and function declarations are "hoisted" to the top of their scope, but only declarations are hoisted, not initializations.</p>
+        
+        <h3>Closures</h3>
+        <p>Functions retain access to variables from their parent scope even after the parent function has finished executing.</p>
+        
+        <h3>Prototypal Inheritance</h3>
+        <p>Objects can inherit properties and methods from other objects through their prototype chain.</p>
+        
+        <h3>Event-Driven Architecture</h3>
+        <p>JavaScript uses events and callbacks to handle asynchronous operations without blocking the main thread.</p>
+    </div>
+</body>
+</html>

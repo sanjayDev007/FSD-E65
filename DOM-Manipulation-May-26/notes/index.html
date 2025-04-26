@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Manipulation Tutorial</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3 {
+            margin-top: 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Tutorial sections */
+        .tutorial-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            border-radius: 3px;
+        }
+
+        /* Example area */
+        .example-area {
+            border: 1px dashed #ccc;
+            padding: 15px;
+            margin: 15px 0;
+            background-color: #fff;
+            min-height: 100px;
+        }
+
+        /* Code display */
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Buttons */
+        button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Form controls */
+        input, select, textarea {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* Todo app styles */
+        .todo-container {
+            max-width: 500px;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .todo-form {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .todo-form input {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .todo-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: white;
+            margin-bottom: 5px;
+            border-radius: 3px;
+            border-left: 3px solid #3498db;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            line-height: 20px;
+            text-align: center;
+            padding: 0;
+            font-size: 18px;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: #2c3e50;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            color: white;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Demo elements */
+        .item {
+            padding: 10px;
+            margin: 5px;
+            background-color: #eee;
+            display: inline-block;
+        }
+
+        #main {
+            border: 2px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>DOM Manipulation Tutorial</h1>
+        <nav>
+            <a href="#introduction">Introduction</a>
+            <a href="#selection">Element Selection</a>
+            <a href="#creation">Element Creation</a>
+            <a href="#events">Event Handling</a>
+            <a href="#styling">Styling</a>
+            <a href="#app">Todo App</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="introduction" class="tutorial-section">
+            <h2>Introduction to the DOM</h2>
+            <p>The Document Object Model (DOM) is a programming interface for HTML and XML documents. It represents the page so that programs can change the document structure, style, and content. The DOM represents the document as nodes and objects.</p>
+            <p>This tutorial demonstrates practical DOM manipulation techniques using JavaScript.</p>
+        </section>
+
+        <section id="selection" class="tutorial-section">
+            <h2>Element Selection</h2>
+            <p>JavaScript provides several methods to select elements from the DOM:</p>
+            <ul>
+                <li><code>getElementById()</code> - Selects an element by its ID</li>
+                <li><code>querySelector()</code> - Uses CSS selectors to find the first matching element</li>
+                <li><code>querySelectorAll()</code> - Returns all matching elements</li>
+                <li><code>getElementsByClassName()</code> - Returns elements with the specified class</li>
+                <li><code>getElementsByTagName()</code> - Returns elements with the specified tag name</li>
+            </ul>
+
+            <div class="example-area">
+                <h3>Example Elements:</h3>
+                <div id="main">This is the main element (id="main")</div>
+                <div class="container">
+                    This is a container element (class="container")
+                    <div class="item">Item 1</div>
+                    <div class="item">Item 2</div>
+                    <div class="item">Item 3</div>
+                </div>
+                <ul>
+                    <li>List item 1</li>
+                    <li>List item 2</li>
+                    <li>List item 3</li>
+                </ul>
+            </div>
+            <button onclick="showSelectionResults()">Run Selection Example</button>
+            <div id="selection-results"></div>
+        </section>
+
+        <section id="creation" class="tutorial-section">
+            <h2>Element Creation and Insertion</h2>
+            <p>You can create new DOM elements and insert them into the document:</p>
+            <ul>
+                <li><code>createElement()</code> - Creates a new element</li>
+                <li><code>appendChild()</code> - Adds a node as the last child of a parent element</li>
+                <li><code>insertBefore()</code> - Inserts a node before a reference node</li>
+                <li><code>append()</code>, <code>prepend()</code> - Modern methods to insert content</li>
+            </ul>
+            
+            <div class="example-area" id="creation-area">
+                <h3>Element Creation Area:</h3>
+                <!-- Elements will be created here -->
+            </div>
+            <button onclick="runElementCreationExample()">Create Elements</button>
+        </section>
+
+        <section id="events" class="tutorial-section">
+            <h2>Event Handling</h2>
+            <p>JavaScript can respond to user interactions through event handlers:</p>
+            <ul>
+                <li><code>addEventListener()</code> - Attaches an event handler to an element</li>
+                <li><code>removeEventListener()</code> - Removes an event handler</li>
+                <li>Common events: click, submit, keydown, mouseover, etc.</li>
+            </ul>
+            
+            <div class="example-area" id="event-area">
+                <h3>Event Examples:</h3>
+                <button id="event-button">Test Button (Click me!)</button>
+                <div id="event-output" style="margin-top: 10px; font-style: italic;"></div>
+                
+                <h4 style="margin-top: 20px;">Form Event Example:</h4>
+                <form id="event-form">
+                    <div>
+                        <label for="event-name">Name:</label>
+                        <input type="text" id="event-name" name="name">
+                    </div>
+                    <button type="submit">Submit Form</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="styling" class="tutorial-section">
+            <h2>Styling and Class Manipulation</h2>
+            <p>JavaScript can manipulate CSS styles and classes:</p>
+            <ul>
+                <li><code>element.style</code> - Direct style manipulation</li>
+                <li><code>element.className</code> - Get/set the class attribute</li>
+                <li><code>element.classList</code> - Modern API for class manipulation</li>
+            </ul>
+            
+            <div class="example-area" id="style-area">
+                <h3>Style Example:</h3>
+                <div id="style-demo">This element can be styled with JavaScript</div>
+                <div style="margin-top: 10px;">
+                    <button id="toggle-style">Toggle Styles</button>
+                    <button id="change-color">Change Color</button>
+                    <button id="add-class">Toggle Class</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="app" class="tutorial-section">
+            <h2>Building a Todo Application</h2>
+            <p>This example demonstrates combining DOM techniques to build a functional component:</p>
+            
+            <div id="todo-app-container">
+                <!-- Todo app will be created here by the JavaScript code -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>DOM Manipulation Tutorial - JavaScript Examples</p>
+    </footer>
+
+    <!-- Load our script as a module to use the exported functions -->
+    <script type="module">
+        // Import functions from our code.js file
+        import { 
+            basicSelectionExamples, 
+            elementCreationExample, 
+            eventHandlingExample,
+            stylingExample,
+            buildTodoApp
+        } from './main.js';
+
+        // Make functions available to the global window object for the onclick handlers
+        window.showSelectionResults = function() {
+            // Call the example function and capture the output
+            console.log('Running selection example...');
+            basicSelectionExamples();
+            
+            // Display a simplified version of the results in the page
+            const results = document.getElementById('selection-results');
+            results.innerHTML = `
+                <pre><code>
+// Selection Results:
+getElementById('main') → ${document.getElementById('main') ? 'Found element' : 'Not found'}
+querySelector('.container') → ${document.querySelector('.container') ? 'Found element' : 'Not found'}
+querySelectorAll('ul li') → Found ${document.querySelectorAll('ul li').length} elements
+getElementsByClassName('item') → Found ${document.getElementsByClassName('item').length} elements
+                </code></pre>
+            `;
+        };
+
+        window.runElementCreationExample = function() {
+            console.log('Running element creation example...');
+            // Target our specific container instead of the document.body
+            const creationArea = document.getElementById('creation-area');
+            creationArea.innerHTML = '<h3>Element Creation Area:</h3>'; // Reset the area
+            
+            // Temporarily override document.body for the example to target our container
+            const originalBody = document.body;
+            document.body = creationArea;
+            
+            // Run the example
+            elementCreationExample();
+            
+            // Restore document.body
+            document.body = originalBody;
+        };
+
+        // Initialize interactive examples
+        document.addEventListener('DOMContentLoaded', () => {
+            // Setup the event handling section
+            const eventButton = document.getElementById('event-button');
+            const eventOutput = document.getElementById('event-output');
+            
+            eventButton.addEventListener('click', (event) => {
+                eventOutput.textContent = `Button clicked at position X: ${event.clientX}, Y: ${event.clientY}`;
+                setTimeout(() => { eventOutput.style.color = 'green'; }, 500);
+            });
+            
+            const eventForm = document.getElementById('event-form');
+            eventForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const name = document.getElementById('event-name').value || 'Anonymous';
+                eventOutput.textContent = `Form submitted with name: ${name}`;
+                eventOutput.style.color = 'blue';
+            });
+            
+            // Setup the styling section
+            const styleDemo = document.getElementById('style-demo');
+            document.getElementById('toggle-style').addEventListener('click', () => {
+                if (styleDemo.style.padding) {
+                    styleDemo.style.padding = '';
+                    styleDemo.style.borderRadius = '';
+                    styleDemo.style.boxShadow = '';
+                } else {
+                    styleDemo.style.padding = '15px';
+                    styleDemo.style.borderRadius = '8px';
+                    styleDemo.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                }
+            });
+            
+            document.getElementById('change-color').addEventListener('click', () => {
+                const colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                styleDemo.style.backgroundColor = randomColor;
+                styleDemo.style.color = 'white';
+            });
+            
+            document.getElementById('add-class').addEventListener('click', () => {
+                styleDemo.classList.toggle('highlighted');
+            });
+            
+            // Initialize todo app in its container
+            const todoAppContainer = document.getElementById('todo-app-container');
+            document.body = todoAppContainer; // Temporarily override body
+            buildTodoApp();
+            document.body = originalBody; // Restore body
+        });
+    </script>
+</body>
+</html>
