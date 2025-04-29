@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript DOM Events Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>JavaScript DOM Events</h1>
+            <p>A comprehensive guide to event handling in the browser</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#event-types">Event Types</a></li>
+                <li><a href="#event-handlers">Event Handlers</a></li>
+                <li><a href="#event-propagation">Event Propagation</a></li>
+                <li><a href="#event-object">Event Object</a></li>
+                <li><a href="#practical-examples">Practical Examples</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section id="introduction">
+            <h2>Introduction to DOM Events</h2>
+            <p>DOM (Document Object Model) events are actions or occurrences that happen in the browser that can be detected and responded to with JavaScript. Events can be triggered by user actions (like clicking a button) or by the browser itself (like completing page load).</p>
+            
+            <div class="info-box">
+                <h3>Key Concepts</h3>
+                <ul>
+                    <li><strong>Event:</strong> An action detected by the browser</li>
+                    <li><strong>Event Handler:</strong> JavaScript function that executes when an event occurs</li>
+                    <li><strong>Event Listener:</strong> A method that attaches an event handler to an element</li>
+                    <li><strong>Event Propagation:</strong> The order in which events are processed (bubbling/capturing)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="event-types">
+            <h2>Common Event Types</h2>
+            
+            <div class="event-category">
+                <h3>Mouse Events</h3>
+                <div class="event-grid">
+                    <div class="event-card" id="click-example">
+                        <h4>click</h4>
+                        <p>Fired when an element is clicked</p>
+                        <div class="interactive-demo">Click me!</div>
+                        <div class="event-output"></div>
+                    </div>
+                    <div class="event-card" id="dblclick-example">
+                        <h4>dblclick</h4>
+                        <p>Fired when an element is double-clicked</p>
+                        <div class="interactive-demo">Double-click me!</div>
+                        <div class="event-output"></div>
+                    </div>
+                    <div class="event-card" id="mouseenter-example">
+                        <h4>mouseenter</h4>
+                        <p>Fired when cursor enters an element</p>
+                        <div class="interactive-demo">Hover over me!</div>
+                        <div class="event-output"></div>
+                    </div>
+                    <div class="event-card" id="mouseleave-example">
+                        <h4>mouseleave</h4>
+                        <p>Fired when cursor leaves an element</p>
+                        <div class="interactive-demo">Hover and leave!</div>
+                        <div class="event-output"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-category">
+                <h3>Keyboard Events</h3>
+                <div class="event-grid">
+                    <div class="event-card" id="keydown-example">
+                        <h4>keydown</h4>
+                        <p>Fired when a key is pressed down</p>
+                        <input type="text" class="interactive-demo" placeholder="Type here...">
+                        <div class="event-output"></div>
+                    </div>
+                    <div class="event-card" id="keyup-example">
+                        <h4>keyup</h4>
+                        <p>Fired when a key is released</p>
+                        <input type="text" class="interactive-demo" placeholder="Type here...">
+                        <div class="event-output"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-category">
+                <h3>Form Events</h3>
+                <div class="event-grid">
+                    <div class="event-card" id="submit-example">
+                        <h4>submit</h4>
+                        <p>Fired when a form is submitted</p>
+                        <form class="interactive-demo">
+                            <input type="text" placeholder="Enter something...">
+                            <button type="submit">Submit</button>
+                        </form>
+                        <div class="event-output"></div>
+                    </div>
+                    <div class="event-card" id="change-example">
+                        <h4>change</h4>
+                        <p>Fired when input value changes (after blur)</p>
+                        <select class="interactive-demo">
+                            <option value="">Select an option</option>
+                            <option value="1">Option 1</option>
+                            <option value="2">Option 2</option>
+                            <option value="3">Option 3</option>
+                        </select>
+                        <div class="event-output"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="event-category">
+                <h3>Document/Window Events</h3>
+                <div class="event-grid">
+                    <div class="event-card">
+                        <h4>DOMContentLoaded</h4>
+                        <p>Fired when the HTML document has been loaded and parsed</p>
+                        <div class="code-snippet">
+                            <pre><code>document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded');
+});</code></pre>
+                        </div>
+                    </div>
+                    <div class="event-card">
+                        <h4>load</h4>
+                        <p>Fired when the whole page has loaded, including styles and images</p>
+                        <div class="code-snippet">
+                            <pre><code>window.addEventListener('load', function() {
+    console.log('Page fully loaded');
+});</code></pre>
+                        </div>
+                    </div>
+                    <div class="event-card" id="resize-example">
+                        <h4>resize</h4>
+                        <p>Fired when the browser window is resized</p>
+                        <div class="interactive-demo">Resize the window!</div>
+                        <div class="event-output"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="event-handlers">
+            <h2>Event Handling Methods</h2>
+            
+            <div class="method-comparison">
+                <div class="method">
+                    <h3>Event Handler Properties</h3>
+                    <div class="code-snippet">
+                        <pre><code>// Using event handler property
+element.onclick = function(event) {
+    console.log('Clicked!');
+};
+
+// Can be overwritten
+element.onclick = function(event) {
+    console.log('New handler!');
+};</code></pre>
+                    </div>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>Pros</h4>
+                            <ul>
+                                <li>Simple syntax</li>
+                                <li>Widely supported</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>Cons</h4>
+                            <ul>
+                                <li>Can only assign one handler per event</li>
+                                <li>No control over event phase</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="method">
+                    <h3>addEventListener() Method</h3>
+                    <div class="code-snippet">
+                        <pre><code>// Using addEventListener
+element.addEventListener('click', function(event) {
+    console.log('Clicked!');
+});
+
+// Can add multiple handlers
+element.addEventListener('click', function(event) {
+    console.log('Another handler!');
+});
+
+// With capture phase (third parameter)
+element.addEventListener('click', handler, true);</code></pre>
+                    </div>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>Pros</h4>
+                            <ul>
+                                <li>Can add multiple handlers</li>
+                                <li>Control over event phase</li>
+                                <li>More options (once, passive)</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>Cons</h4>
+                            <ul>
+                                <li>More verbose syntax</li>
+                                <li>Needs reference to function for removal</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="method">
+                    <h3>Removing Event Listeners</h3>
+                    <div class="code-snippet">
+                        <pre><code>// Declare handler as a named function
+function clickHandler(event) {
+    console.log('Clicked!');
+    // Remove itself after first click
+    this.removeEventListener('click', clickHandler);
+}
+
+// Add the listener
+element.addEventListener('click', clickHandler);
+
+// Remove the listener elsewhere
+element.removeEventListener('click', clickHandler);</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="event-propagation">
+            <h2>Event Propagation</h2>
+            
+            <div class="event-flow">
+                <h3>Event Flow Phases</h3>
+                <div class="diagram">
+                    <div class="event-phase">
+                        <h4>1. Capture Phase</h4>
+                        <p>Event travels from the Window down to the target element</p>
+                    </div>
+                    <div class="event-phase">
+                        <h4>2. Target Phase</h4>
+                        <p>Event reaches the target element</p>
+                    </div>
+                    <div class="event-phase">
+                        <h4>3. Bubble Phase</h4>
+                        <p>Event bubbles up from the target to the Window</p>
+                    </div>
+                </div>
+                
+                <div class="propagation-demo">
+                    <h3>Event Bubbling vs. Capturing Demo</h3>
+                    <div class="demo-wrapper">
+                        <div class="event-container" id="outer">
+                            <div class="event-log">OUTER</div>
+                            <div class="event-container" id="middle">
+                                <div class="event-log">MIDDLE</div>
+                                <div class="event-container" id="inner">
+                                    <div class="event-log">INNER</div>
+                                    <button id="event-button">Click Me</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-controls">
+                        <label>
+                            <input type="checkbox" id="use-capture"> 
+                            Use Capture Phase
+                        </label>
+                        <button id="reset-demo">Reset Demo</button>
+                    </div>
+                    
+                    <div id="propagation-log"></div>
+                </div>
+                
+                <div class="info-box">
+                    <h3>Stopping Propagation</h3>
+                    <div class="code-snippet">
+                        <pre><code>// Stop further propagation of the event
+element.addEventListener('click', function(event) {
+    event.stopPropagation();
+    console.log('This event will not bubble up');
+});
+
+// Stop immediate propagation
+element.addEventListener('click', function(event) {
+    event.stopImmediatePropagation();
+    console.log('No other handlers on this element will run');
+});</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="event-object">
+            <h2>The Event Object</h2>
+            
+            <p>When an event occurs, the browser creates an event object that contains details about the event. This object is automatically passed to event handlers.</p>
+            
+            <div class="event-explorer">
+                <h3>Explore Event Object Properties</h3>
+                <div class="interactive-area" id="event-explorer-area">
+                    <div>Click, type, or interact with this area</div>
+                </div>
+                <div class="event-properties">
+                    <h4>Common Properties</h4>
+                    <ul>
+                        <li><code>event.type</code> - The type of event (e.g., "click")</li>
+                        <li><code>event.target</code> - The element that triggered the event</li>
+                        <li><code>event.currentTarget</code> - The element that the handler is attached to</li>
+                        <li><code>event.timeStamp</code> - The time the event was created</li>
+                    </ul>
+                    
+                    <h4>Mouse Event Properties</h4>
+                    <ul>
+                        <li><code>event.clientX/Y</code> - Mouse position in viewport coordinates</li>
+                        <li><code>event.pageX/Y</code> - Mouse position relative to the document</li>
+                        <li><code>event.button</code> - Which mouse button was pressed</li>
+                    </ul>
+                    
+                    <h4>Keyboard Event Properties</h4>
+                    <ul>
+                        <li><code>event.key</code> - The key value (e.g., "a", "Enter")</li>
+                        <li><code>event.code</code> - The physical key (e.g., "KeyA")</li>
+                        <li><code>event.shiftKey</code>, <code>event.ctrlKey</code>, etc. - Modifier key states</li>
+                    </ul>
+                </div>
+                <div class="event-output" id="event-explorer-output"></div>
+            </div>
+            
+            <div class="info-box">
+                <h3>Preventing Default Actions</h3>
+                <div class="code-snippet">
+                    <pre><code>// Prevent form submission
+form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    console.log('Form submission prevented');
+});
+
+// Prevent a link from navigating
+link.addEventListener('click', function(event) {
+    event.preventDefault();
+    console.log('Link click prevented');
+});</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="practical-examples">
+            <h2>Practical Examples</h2>
+            
+            <div class="example-container">
+                <h3>Image Gallery with Event Delegation</h3>
+                <div class="gallery-demo">
+                    <div class="gallery" id="image-gallery">
+                        <div class="gallery-item"><img src="https://picsum.photos/id/10/200/200" alt="Gallery Image"></div>
+                        <div class="gallery-item"><img src="https://picsum.photos/id/20/200/200" alt="Gallery Image"></div>
+                        <div class="gallery-item"><img src="https://picsum.photos/id/30/200/200" alt="Gallery Image"></div>
+                        <div class="gallery-item"><img src="https://picsum.photos/id/40/200/200" alt="Gallery Image"></div>
+                    </div>
+                    <div class="gallery-viewer">
+                        <div class="gallery-preview" id="gallery-preview"></div>
+                    </div>
+                </div>
+                <div class="code-snippet">
+                    <pre><code>// Event delegation example
+document.getElementById('image-gallery').addEventListener('click', function(event) {
+    // Check if clicked element is an image
+    if (event.target.tagName === 'IMG') {
+        const preview = document.getElementById('gallery-preview');
+        preview.innerHTML = '';
+        // Create a larger preview
+        const largeImage = document.createElement('img');
+        largeImage.src = event.target.src.replace('200/200', '400/400');
+        preview.appendChild(largeImage);
+    }
+});</code></pre>
+                </div>
+            </div>
+            
+            <div class="example-container">
+                <h3>Drag and Drop Example</h3>
+                <div class="drag-drop-demo">
+                    <div class="draggable" draggable="true" id="draggable-1">Drag me</div>
+                    <div class="drop-zone" id="drop-zone-1">Drop here</div>
+                </div>
+                <div class="code-snippet">
+                    <pre><code>// Drag and drop events
+const draggable = document.getElementById('draggable-1');
+const dropZone = document.getElementById('drop-zone-1');
+
+draggable.addEventListener('dragstart', function(event) {
+    event.dataTransfer.setData('text/plain', event.target.id);
+    event.target.classList.add('dragging');
+});
+
+draggable.addEventListener('dragend', function(event) {
+    event.target.classList.remove('dragging');
+});
+
+dropZone.addEventListener('dragover', function(event) {
+    event.preventDefault(); // Allow drop
+    event.target.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', function(event) {
+    event.target.classList.remove('dragover');
+});
+
+dropZone.addEventListener('drop', function(event) {
+    event.preventDefault();
+    event.target.classList.remove('dragover');
+    const id = event.dataTransfer.getData('text/plain');
+    const draggable = document.getElementById(id);
+    event.target.appendChild(draggable);
+});</code></pre>
+                </div>
+            </div>
+            
+            <div class="example-container">
+                <h3>Debouncing and Throttling Events</h3>
+                <div class="performance-demo">
+                    <div class="input-wrapper">
+                        <input type="text" id="normal-input" placeholder="Type here (normal)">
+                        <div class="event-count">Events: <span id="normal-count">0</span></div>
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="text" id="debounced-input" placeholder="Type here (debounced)">
+                        <div class="event-count">Events: <span id="debounced-count">0</span></div>
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="text" id="throttled-input" placeholder="Type here (throttled)">
+                        <div class="event-count">Events: <span id="throttled-count">0</span></div>
+                    </div>
+                </div>
+                <div class="code-snippet">
+                    <pre><code>// Debounce function
+function debounce(func, delay) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
+// Throttle function
+function throttle(func, limit) {
+    let inThrottle;
+    return function() {
+        const context = this;
+        const args = arguments;
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+}
+
+// Usage
+const normalHandler = () => { /* handle event */ };
+const debouncedHandler = debounce(normalHandler, 300);
+const throttledHandler = throttle(normalHandler, 300);
+
+input1.addEventListener('input', normalHandler);
+input2.addEventListener('input', debouncedHandler);
+input3.addEventListener('input', throttledHandler);</code></pre>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>JavaScript DOM Events Tutorial</p>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
