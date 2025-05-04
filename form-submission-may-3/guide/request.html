@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission Example</title>
+</head>
+<body>
+    <h2>GET Form Example</h2>
+    <form action="http://localhost:3000" method="get">
+        <div>
+            <label for="username-get">Username:</label>
+            <input type="text" id="username-get" name="username" required>
+        </div>
+        <div>
+            <label for="password-get">Password:</label>
+            <input type="password" id="password-get" name="password" required>
+        </div>
+        <div>
+            <button type="submit">Submit with GET</button>
+        </div>
+    </form>
+
+    <h2>POST Form Example</h2>
+    <form action="http://localhost:3000" method="post">
+        <div>
+            <label for="username-post">Username:</label>
+            <input type="text" id="username-post" name="username" required>
+        </div>
+        <div>
+            <label for="password-post">Password:</label>
+            <input type="password" id="password-post" name="password" required>
+        </div>
+        <div>
+            <button type="submit">Submit with POST</button>
+        </div>
+    </form>
+</body>
+</html>
