@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome Landing Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; background: #f4f4f4; }
+        header { background: #333; color: #fff; padding: 1.5em 0; text-align: center; }
+        nav { background: #444; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 10; }
+        nav a { color: #fff; margin: 0 1.5em; text-decoration: none; font-weight: bold; padding: 1em 0; display: inline-block; }
+        nav a:hover, nav a.active { text-decoration: underline; color: #ffd700; }
+        .menu-toggle { display: none; font-size: 2em; color: #fff; cursor: pointer; margin-left: auto; margin-right: 1em; }
+        main { max-width: 900px; margin: 2em auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .hero { padding: 3em 2em; text-align: center; background: linear-gradient(90deg, #333 60%, #ffd700 100%); color: #fff; border-radius: 8px 8px 0 0; }
+        .hero h1 { font-size: 2.5em; margin-bottom: 0.5em; }
+        .hero p { font-size: 1.2em; margin-bottom: 1.5em; }
+        .hero button { background: #ffd700; color: #333; border: none; padding: 1em 2em; border-radius: 4px; font-size: 1em; cursor: pointer; font-weight: bold; }
+        .hero button:hover { background: #fff; color: #333; }
+        .features { display: flex; flex-wrap: wrap; justify-content: space-around; padding: 2em 1em; }
+        .feature-card { background: #fafafa; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin: 1em; flex: 1 1 250px; max-width: 270px; padding: 2em 1em; text-align: center; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+        .feature-card:hover { transform: translateY(-8px) scale(1.04); box-shadow: 0 4px 16px rgba(0,0,0,0.13); background: #ffe066; }
+        .feature-card.selected { border: 2px solid #ffd700; background: #fffbe6; }
+        .feature-card h3 { margin-top: 0; }
+        .cta { text-align: center; padding: 2em 1em; }
+        .cta button { background: #333; color: #ffd700; border: none; padding: 1em 2em; border-radius: 4px; font-size: 1.1em; cursor: pointer; font-weight: bold; }
+        .cta button:hover { background: #ffd700; color: #333; }
+        @media (max-width: 700px) {
+            .features { flex-direction: column; align-items: center; }
+            nav { flex-direction: column; }
+            .menu-toggle { display: block; }
+            nav .nav-links { display: none; flex-direction: column; width: 100%; }
+            nav .nav-links.open { display: flex; }
+            nav a { margin: 0.5em 0; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Our Awesome Landing Page</h1>
+    </header>
+    <nav>
+        <span class="menu-toggle" id="menuToggle">&#9776;</span>
+        <div class="nav-links" id="navLinks">
+            <a href="#hero" class="active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#cta">Get Started</a>
+        </div>
+    </nav>
+    <main>
+        <section class="hero" id="hero">
+            <h1>Experience the Power of JavaScript</h1>
+            <p>Build interactive, dynamic, and modern web experiences with ease. Explore our features below!</p>
+            <button id="heroBtn">Learn More</button>
+        </section>
+        <section class="features" id="features">
+            <div class="feature-card" tabindex="0">
+                <h3>Fast & Responsive</h3>
+                <p>Lightning-fast load times and seamless interactions for all devices.</p>
+            </div>
+            <div class="feature-card" tabindex="0">
+                <h3>Easy Integration</h3>
+                <p>Plug and play with your favorite frameworks and tools.</p>
+            </div>
+            <div class="feature-card" tabindex="0">
+                <h3>Modern Design</h3>
+                <p>Beautiful, clean, and modern UI components out of the box.</p>
+            </div>
+        </section>
+        <section class="cta" id="cta">
+            <h2>Ready to get started?</h2>
+            <button id="ctaBtn">Sign Up Now</button>
+        </section>
+    </main>
+    <script>
+
+        // Responsive menu toggle
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        // Hero button scrolls to features
+        document.getElementById('heroBtn').addEventListener('click', function() {
+            document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // CTA button scrolls to form or alert
+        document.getElementById('ctaBtn').addEventListener('click', function() {
+            alert('Thank you for your interest! Sign up functionality coming soon.');
+        });
+
+        // Feature card interactivity
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.feature-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+            card.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+
+        // Close nav menu when clicking outside (mobile)
+        document.addEventListener('click', function(e) {
+            const nav = document.getElementById('navLinks');
+            const toggle = document.getElementById('menuToggle');
+            if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+                nav.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>

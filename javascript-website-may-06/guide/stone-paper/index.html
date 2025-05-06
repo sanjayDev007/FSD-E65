@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone Paper Pencil Scissors Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .screen {
+            display: none;
+        }
+        .active-screen {
+            display: block;
+        }
+        #player-entry {
+            padding: 20px;
+        }
+        .custom-input {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            width: 100%;
+        }
+        .start-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        .start-btn:hover {
+            background-color: #0b7dda;
+        }
+        .score-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .score-box {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px 20px;
+        }
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .option {
+            font-size: 2.2rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .option:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        .selections {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .selection-box {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            width: 40%;
+        }
+        .selection-emoji {
+            font-size: 3rem;
+            margin: 10px 0;
+        }
+        #result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            height: 40px;
+            margin: 20px 0;
+        }
+        #restart-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        #restart-btn:hover {
+            background-color: #45a049;
+        }
+        .win {
+            color: #4CAF50;
+        }
+        .lose {
+            color: #f44336;
+        }
+        .draw {
+            color: #FFC107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Stone Paper Pencil Scissors 🎮</h1>
+        <!-- Player Entry Screen -->
+        <div id="player-entry" class="screen active-screen">
+            <h2>Enter Your Name to Play</h2>
+            <div>
+                <input type="text" id="player-name-input" class="custom-input" placeholder="Enter your name">
+                <button class="start-btn" id="start-btn">Start Game</button>
+            </div>
+        </div>
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="score-container">
+                <div class="score-box">
+                    <h3 id="player-name">Player</h3>
+                    <p>Score: <span id="user-score">0</span></p>
+                </div>
+                <div class="score-box">
+                    <h3>Bot</h3>
+                    <p>Score: <span id="bot-score">0</span></p>
+                </div>
+            </div>
+            <p>Make your choice:</p>
+            <div class="options">
+                <div class="option" data-option="stone">🪨</div>
+                <div class="option" data-option="paper">📄</div>
+                <div class="option" data-option="scissors">✂️</div>
+                <div class="option" data-option="pencil">✏️</div>
+            </div>
+            <div class="selections">
+                <div class="selection-box">
+                    <h3>Your Choice</h3>
+                    <div class="selection-emoji" id="user-selection-display">❓</div>
+                </div>
+                <div class="selection-box">
+                    <h3>Bot's Choice</h3>
+                    <div class="selection-emoji" id="bot-selection-display">❓</div>
+                </div>
+            </div>
+            <div id="result"></div>
+            <button id="restart-btn">New Game</button>
+        </div>
+    </div>
+    <script>
+        const gameState = {
+            playerName: "Player",
+            userScore: 0,
+            botScore: 0
+        };
+        const emojiMap = {
+            "stone": "🪨",
+            "paper": "📄",
+            "scissors": "✂️",
+            "pencil": "✏️"
+        };
+        const winsAgainst = {
+            stone: ["scissors", "pencil"],
+            paper: ["stone"],
+            scissors: ["paper", "pencil"],
+            pencil: ["paper"]
+        };
+        const playerEntryScreen = document.getElementById('player-entry');
+        const gameScreen = document.getElementById('game-screen');
+        const playerNameInput = document.getElementById('player-name-input');
+        const startBtn = document.getElementById('start-btn');
+        const playerNameElement = document.getElementById('player-name');
+        const userScoreElement = document.getElementById('user-score');
+        const botScoreElement = document.getElementById('bot-score');
+        const options = document.querySelectorAll('.option');
+        const userSelectionDisplay = document.getElementById('user-selection-display');
+        const botSelectionDisplay = document.getElementById('bot-selection-display');
+        const resultElement = document.getElementById('result');
+        const restartBtn = document.getElementById('restart-btn');
+        function setupEventListeners() {
+            startBtn.addEventListener('click', startGame);
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    playGame(option.dataset.option);
+                });
+            });
+            restartBtn.addEventListener('click', restartGame);
+        }
+        function startGame() {
+            const playerName = playerNameInput.value.trim() || "Player";
+            gameState.playerName = playerName;
+            gameState.userScore = 0;
+            gameState.botScore = 0;
+            playerNameElement.textContent = playerName;
+            userScoreElement.textContent = "0";
+            botScoreElement.textContent = "0";
+            userSelectionDisplay.textContent = "❓";
+            botSelectionDisplay.textContent = "❓";
+            resultElement.textContent = "";
+            playerEntryScreen.classList.remove('active-screen');
+            gameScreen.classList.add('active-screen');
+        }
+        function playGame(userChoice) {
+            const choices = ["stone", "paper", "scissors", "pencil"];
+            const botChoice = choices[Math.floor(Math.random() * choices.length)];
+            userSelectionDisplay.textContent = emojiMap[userChoice];
+            botSelectionDisplay.textContent = "🤔";
+            setTimeout(() => {
+                botSelectionDisplay.textContent = emojiMap[botChoice];
+                if (userChoice === botChoice) {
+                    resultElement.textContent = "It's a tie! 😐";
+                    resultElement.className = "draw";
+                } else if (winsAgainst[userChoice].includes(botChoice)) {
+                    resultElement.textContent = "You win! 🎉";
+                    resultElement.className = "win";
+                    gameState.userScore++;
+                    userScoreElement.textContent = gameState.userScore;
+                } else {
+                    resultElement.textContent = "You lose! 😢";
+                    resultElement.className = "lose";
+                    gameState.botScore++;
+                    botScoreElement.textContent = gameState.botScore;
+                }
+            }, 500);
+        }
+        function restartGame() {
+            gameScreen.classList.remove('active-screen');
+            playerEntryScreen.classList.add('active-screen');
+            playerNameInput.value = "";
+        }
+        document.addEventListener('DOMContentLoaded', setupEventListeners);
+    </script>
+</body>
+</html>

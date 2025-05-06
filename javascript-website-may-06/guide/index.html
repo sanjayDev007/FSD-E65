@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome JavaScript Webpage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f4f4; }
+        header { background: #333; color: #fff; padding: 1em 0; text-align: center; }
+        nav { background: #444; padding: 0.5em 0; }
+        nav a { color: #fff; margin: 0 1em; text-decoration: none; }
+        nav a:hover { text-decoration: underline; }
+        main { max-width: 700px; margin: 2em auto; background: #fff; padding: 2em; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
+        .form-group { margin-bottom: 1em; }
+        label { display: block; margin-bottom: 0.5em; }
+        input, textarea { width: 100%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 0.5em 1.5em; border: none; border-radius: 4px; background: #333; color: #fff; cursor: pointer; }
+        button:hover { background: #555; }
+        .message { margin-top: 1em; padding: 1em; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .counter { font-size: 1.2em; margin: 1em 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Awesome JavaScript Webpage</h1>
+    </header>
+    <nav>
+        <a href="#form-section">Form</a>
+        <a href="#events-section">Events</a>
+        <a href="#dynamic-section">Dynamic</a>
+    </nav>
+    <main>
+        <section id="form-section">
+            <h2>Contact Form</h2>
+            <form id="contactForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required />
+                </div>
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                </div>
+                <button type="submit">Send</button>
+            </form>
+            <div id="formMessage" class="message" style="display:none;"></div>
+        </section>
+
+        <section id="events-section">
+            <h2>Event Handling Demo</h2>
+            <button id="clickBtn">Click Me!</button>
+            <button id="dblClickBtn">Double Click Me!</button>
+            <input type="text" id="inputField" placeholder="Type something..." />
+            <div id="eventOutput" class="counter"></div>
+        </section>
+
+        <section id="dynamic-section">
+            <h2>Dynamic Content</h2>
+            <button id="addItemBtn">Add List Item</button>
+            <ul id="dynamicList">
+                <li>Sample Item 1</li>
+                <li>Sample Item 2</li>
+            </ul>
+        </section>
+    </main>
+    <script>
+        // Form event handling and validation
+        const contactForm = document.getElementById('contactForm');
+        const formMessage = document.getElementById('formMessage');
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Simple validation
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            if (!name || !email || !message) {
+                formMessage.textContent = 'Please fill in all fields.';
+                formMessage.className = 'message error';
+                formMessage.style.display = 'block';
+                return;
+            }
+            // Email format validation
+            if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+                formMessage.textContent = 'Please enter a valid email address.';
+                formMessage.className = 'message error';
+                formMessage.style.display = 'block';
+                return;
+            }
+            formMessage.textContent = 'Thank you for contacting us, ' + name + '!';
+            formMessage.className = 'message success';
+            formMessage.style.display = 'block';
+            contactForm.reset();
+        });
+
+        // Event handling demo
+        const clickBtn = document.getElementById('clickBtn');
+        const dblClickBtn = document.getElementById('dblClickBtn');
+        const inputField = document.getElementById('inputField');
+        const eventOutput = document.getElementById('eventOutput');
+        let clickCount = 0;
+        let dblClickCount = 0;
+
+        clickBtn.addEventListener('click', function() {
+            clickCount++;
+            eventOutput.textContent = `Button clicked ${clickCount} times.`;
+        });
+
+        dblClickBtn.addEventListener('dblclick', function() {
+            dblClickCount++;
+            eventOutput.textContent = `Button double-clicked ${dblClickCount} times.`;
+        });
+
+        inputField.addEventListener('input', function() {
+            eventOutput.textContent = `You typed: ${inputField.value}`;
+        });
+
+        inputField.addEventListener('focus', function() {
+            eventOutput.textContent = 'Input field focused!';
+        });
+
+        inputField.addEventListener('blur', function() {
+            eventOutput.textContent = 'Input field blurred!';
+        });
+
+        // Dynamic content
+        const addItemBtn = document.getElementById('addItemBtn');
+        const dynamicList = document.getElementById('dynamicList');
+        let itemCount = 3;
+        addItemBtn.addEventListener('click', function() {
+            const li = document.createElement('li');
+            li.textContent = `Sample Item ${itemCount++}`;
+            li.addEventListener('mouseenter', function() {
+                li.style.background = '#e0e0e0';
+            });
+            li.addEventListener('mouseleave', function() {
+                li.style.background = '';
+            });
+            li.addEventListener('click', function() {
+                li.remove();
+            });
+            dynamicList.appendChild(li);
+        });
+    </script>
+</body>
+</html>
