@@ -262,7 +262,7 @@
             options.forEach((item) => {
                 item.addEventListener('click', (e) => {
                     const userSelection = item.getAttribute('data-option');
-                    const choice = getRandomChoice();// 0-3
+                    const choice = getRandomChoice();
                     const botSelection = choices[choice];
                     userSelectionDisplay.textContent = choiceIcons[choices.indexOf(userSelection)];
                     botSelectionDisplay.textContent = choiceIcons[choice];
