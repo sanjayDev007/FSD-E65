@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Backend Tester</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
+            background: #f0f8ff;
+            color: #222;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #1976d2;
+        }
+        .api-section {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            margin: 24px 0;
+            padding: 24px;
+        }
+        .api-method {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .api-method.GET { color: #388e3c; }
+        .api-method.POST { color: #1976d2; }
+        .api-method.PUT { color: #fbc02d; }
+        .api-method.PATCH { color: #8e24aa; }
+        .api-method.DELETE { color: #d32f2f; }
+        .api-method.ERROR { color: #d32f2f; }
+        .api-controls {
+            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        .api-controls input, .api-controls textarea {
+            padding: 6px;
+            border-radius: 5px;
+            border: 1px solid #bdbdbd;
+            font-size: 15px;
+            margin: 0;
+        }
+        .api-controls textarea {
+            vertical-align: middle;
+            width: 180px;
+            height: 40px;
+            resize: vertical;
+        }
+        .api-controls input[type="number"] {
+            width: 70px;
+        }
+        button {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-size: 15px;
+            cursor: pointer;
+            margin: 0;
+            transition: background 0.2s;
+            min-width: 110px;
+        }
+        button:hover {
+            background: #388e3c;
+        }
+        .result-box {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 10px;
+            font-family: 'Fira Mono', 'Consolas', monospace;
+            font-size: 15px;
+            white-space: pre-wrap;
+            min-height: 30px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .icon {
+            font-size: 22px;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        .flex-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: stretch;
+        }
+        .api-card {
+            flex: 1 1 340px;
+            min-width: 340px;
+            max-width: 420px;
+            background: #f9fbe7;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 18px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+        }
+        .api-card .api-method {
+            margin-bottom: 0;
+        }
+        .api-card .result-box {
+            background: #f0f4c3;
+        }
+        .api-card.DELETE .result-box {
+            background: #ffcdd2;
+        }
+        .api-card.ERROR .result-box {
+            background: #ffe0b2;
+        }
+        @media (max-width: 900px) {
+            .flex-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .api-card {
+                min-width: 0;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🛠️ API Backend Tester</h1>
+    <div class="api-section">
+        <div class="flex-row">
+            <!-- GET ALL -->
+            <div class="api-card">
+                <div class="api-method GET"><span class="icon">🔍</span>GET /api/posts</div>
+                <div class="api-controls">
+                    <button onclick="getAllPosts()">Fetch All Posts</button>
+                </div>
+                <div class="result-box" id="result-getall"></div>
+            </div>
+            <!-- GET ONE -->
+            <div class="api-card">
+                <div class="api-method GET"><span class="icon">🔎</span>GET /api/posts/:id</div>
+                <div class="api-controls">
+                    <input type="number" id="get-id" placeholder="Post ID" min="1">
+                    <button onclick="getPostById()">Fetch Post</button>
+                </div>
+                <div class="result-box" id="result-getone"></div>
+            </div>
+        </div>
+        <div class="flex-row">
+            <!-- POST -->
+            <div class="api-card">
+                <div class="api-method POST"><span class="icon">➕</span>POST /api/posts</div>
+                <div class="api-controls">
+                    <input type="text" id="post-title" placeholder="Title">
+                    <textarea id="post-content" placeholder="Content"></textarea>
+                    <button onclick="createPost()">Create Post</button>
+                </div>
+                <div class="result-box" id="result-post"></div>
+            </div>
+            <!-- PUT -->
+            <div class="api-card">
+                <div class="api-method PUT"><span class="icon">📝</span>PUT /api/posts/:id</div>
+                <div class="api-controls">
+                    <input type="number" id="put-id" placeholder="Post ID" min="1">
+                    <input type="text" id="put-title" placeholder="New Title">
+                    <textarea id="put-content" placeholder="New Content"></textarea>
+                    <button onclick="replacePost()">Replace Post</button>
+                </div>
+                <div class="result-box" id="result-put"></div>
+            </div>
+        </div>
+        <div class="flex-row">
+            <!-- PATCH -->
+            <div class="api-card">
+                <div class="api-method PATCH"><span class="icon">🩹</span>PATCH /api/posts/:id</div>
+                <div class="api-controls">
+                    <input type="number" id="patch-id" placeholder="Post ID" min="1">
+                    <input type="text" id="patch-title" placeholder="Title (optional)">
+                    <textarea id="patch-content" placeholder="Content (optional)"></textarea>
+                    <button onclick="patchPost()">Update Post</button>
+                </div>
+                <div class="result-box" id="result-patch"></div>
+            </div>
+            <!-- DELETE -->
+            <div class="api-card DELETE">
+                <div class="api-method DELETE"><span class="icon">🗑️</span>DELETE /api/posts/:id</div>
+                <div class="api-controls">
+                    <input type="number" id="delete-id" placeholder="Post ID" min="1">
+                    <button onclick="deletePost()">Delete Post</button>
+                </div>
+                <div class="result-box" id="result-delete"></div>
+            </div>
+        </div>
+        <div class="flex-row">
+            <!-- ERROR SIMULATION -->
+            <div class="api-card ERROR">
+                <div class="api-method ERROR"><span class="icon">💥</span>GET /api/error</div>
+                <div class="api-controls">
+                    <button onclick="simulateError()">Simulate Server Error</button>
+                </div>
+                <div class="result-box" id="result-error"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const API = "http://localhost:3001/api/posts";
+        // GET ALL
+        function getAllPosts() {
+            fetch(API)
+                .then(r => r.json())
+                .then(data => showResult('result-getall', data))
+                .catch(e => showResult('result-getall', e, true));
+        }
+        // GET ONE
+        function getPostById() {
+            const id = document.getElementById('get-id').value;
+            if (!id) return showResult('result-getone', "Please enter a Post ID.", true);
+            fetch(`${API}/${id}`)
+                .then(r => r.json().then(data => ({ok: r.ok, data})))
+                .then(({ok, data}) => showResult('result-getone', data, !ok))
+                .catch(e => showResult('result-getone', e, true));
+        }
+        // POST
+        function createPost() {
+            const title = document.getElementById('post-title').value;
+            const content = document.getElementById('post-content').value;
+            if (!title || !content) return showResult('result-post', "Title and content required.", true);
+            fetch(API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, content })
+            })
+                .then(r => r.json().then(data => ({ok: r.ok, data})))
+                .then(({ok, data}) => showResult('result-post', data, !ok))
+                .catch(e => showResult('result-post', e, true));
+        }
+        // PUT
+        function replacePost() {
+            const id = document.getElementById('put-id').value;
+            const title = document.getElementById('put-title').value;
+            const content = document.getElementById('put-content').value;
+            if (!id || !title || !content) return showResult('result-put', "All fields required.", true);
+            fetch(`${API}/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, content })
+            })
+                .then(r => r.json().then(data => ({ok: r.ok, data})))
+                .then(({ok, data}) => showResult('result-put', data, !ok))
+                .catch(e => showResult('result-put', e, true));
+        }
+        // PATCH
+        function patchPost() {
+            const id = document.getElementById('patch-id').value;
+            const title = document.getElementById('patch-title').value;
+            const content = document.getElementById('patch-content').value;
+            if (!id) return showResult('result-patch', "Post ID required.", true);
+            const body = {};
+            if (title) body.title = title;
+            if (content) body.content = content;
+            if (Object.keys(body).length === 0) return showResult('result-patch', "Enter at least one field.", true);
+            fetch(`${API}/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            })
+                .then(r => r.json().then(data => ({ok: r.ok, data})))
+                .then(({ok, data}) => showResult('result-patch', data, !ok))
+                .catch(e => showResult('result-patch', e, true));
+        }
+        // DELETE
+        function deletePost() {
+            const id = document.getElementById('delete-id').value;
+            if (!id) return showResult('result-delete', "Post ID required.", true);
+            fetch(`${API}/${id}`, { method: "DELETE" })
+                .then(r => r.json().then(data => ({ok: r.ok, data})))
+                .then(({ok, data}) => showResult('result-delete', data, !ok))
+                .catch(e => showResult('result-delete', e, true));
+        }
+        // ERROR SIM
+        function simulateError() {
+            fetch("http://localhost:3001/api/error")
+                .then(r => r.json().then(data => ({ok: r.ok, data})))
+                .then(({ok, data}) => showResult('result-error', data, !ok))
+                .catch(e => showResult('result-error', e, true));
+        }
+        // Show result
+        function showResult(id, data, isError) {
+            const box = document.getElementById(id);
+            box.style.color = isError ? "#d32f2f" : "#222";
+            if (typeof data === "object") {
+                box.textContent = JSON.stringify(data, null, 2);
+            } else {
+                box.textContent = data;
+            }
+        }
+    </script>
+</body>
+</html>

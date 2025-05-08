@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch API Tutorial</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .example {
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #results {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Understanding the Fetch API</h1>
+    
+    <section>
+        <h2>What is the Fetch API?</h2>
+        <p>The Fetch API provides a modern interface for making HTTP requests. It's a more powerful and flexible replacement for XMLHttpRequest (XHR) and is built into modern browsers.</p>
+    </section>
+
+    <section>
+        <h2>Basic Fetch Syntax</h2>
+        <pre><code>fetch(url)
+    .then(response => /* handle the response */)
+    .catch(error => /* handle any errors */);</code></pre>
+        <p>The Fetch API returns a Promise that resolves to the Response object representing the response to the request.</p>
+    </section>
+
+    <section>
+        <h2>Simple Fetch Example</h2>
+        <div class="example">
+            <p>This example fetches data from JSONPlaceholder API and displays it:</p>
+            <pre><code>fetch('https://jsonplaceholder.typicode.com/posts/1')
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Error:', error));</code></pre>
+            <button onclick="fetchSimpleExample()">Run Example</button>
+            <div id="simple-example-result"></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Understanding Promises: then() and catch()</h2>
+        <p>The Fetch API returns a Promise, which allows us to use <code>then()</code> and <code>catch()</code> methods:</p>
+        <ul>
+            <li><code>then()</code>: Called when the Promise is fulfilled successfully</li>
+            <li><code>catch()</code>: Called when there's an error in the Promise chain</li>
+        </ul>
+        <div class="example">
+            <p>Promise chain example:</p>
+            <pre><code>fetch('https://jsonplaceholder.typicode.com/users')
+    .then(response => {
+        // First then: Check if the request was successful
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parse JSON and return a new promise
+    })
+    .then(users => {
+        // Second then: Work with the parsed data
+        console.log('Users data:', users);
+        return users; // You can continue the promise chain
+    })
+    .then(users => {
+        // Third then: Do something else with the data
+        const userNames = users.map(user => user.name);
+        console.log('User names:', userNames);
+    })
+    .catch(error => {
+        // Handle any errors from any point in the chain
+        console.error('Error in fetch operation:', error);
+    });</code></pre>
+            <button onclick="fetchPromiseChainExample()">Run Promise Chain Example</button>
+            <div id="promise-chain-result"></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Working with JSON</h2>
+        <p>JSON (JavaScript Object Notation) is a common data format used with APIs.</p>
+        <div class="example">
+            <p>Converting JSON response to JavaScript objects:</p>
+            <pre><code>fetch('https://jsonplaceholder.typicode.com/todos/1')
+    .then(response => response.json()) // Convert JSON to JavaScript object
+    .then(data => {
+        console.log('Todo item:', data);
+        console.log('Title:', data.title);
+        console.log('Completed:', data.completed);
+    })
+    .catch(error => console.error('Error:', error));</code></pre>
+            <button onclick="fetchJsonExample()">Run JSON Example</button>
+            <div id="json-example-result"></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Working with Objects from API Responses</h2>
+        <div class="example">
+            <p>Manipulating and extracting data from API responses:</p>
+            <pre><code>fetch('https://jsonplaceholder.typicode.com/users')
+    .then(response => response.json())
+    .then(users => {
+        // Create a new array with just names and emails
+        const simplifiedUsers = users.map(user => {
+            return {
+                name: user.name,
+                email: user.email,
+                company: user.company.name
+            };
+        });
+        
+        // Filter only users with gmail accounts
+        const gmailUsers = simplifiedUsers.filter(user => 
+            user.email.endsWith('gmail.com'));
+            
+        return { all: simplifiedUsers, gmail: gmailUsers };
+    })
+    .then(result => {
+        console.log('Simplified users:', result.all);
+        console.log('Gmail users:', result.gmail);
+    })
+    .catch(error => console.error('Error:', error));</code></pre>
+            <button onclick="fetchObjectExample()">Run Object Manipulation Example</button>
+            <div id="object-example-result"></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Error Handling</h2>
+        <div class="example">
+            <p>Proper error handling with Fetch:</p>
+            <pre><code>fetch('https://jsonplaceholder.typicode.com/nonexistent-endpoint')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('This will not run if there was an error');
+        console.log(data);
+    })
+    .catch(error => {
+        console.error('Error in fetch operation:', error);
+    });</code></pre>
+            <button onclick="fetchErrorExample()">Run Error Handling Example</button>
+            <div id="error-example-result"></div>
+        </div>
+    </section>
+
+    <section>
+        <h2>POST Request Example</h2>
+        <div class="example">
+            <p>Sending data with a POST request:</p>
+            <pre><code>const newPost = {
+    title: 'Fetch API Example',
+    body: 'This is an example of using fetch for POST requests',
+    userId: 1
+};
+
+fetch('https://jsonplaceholder.typicode.com/posts', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(newPost)
+})
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });</code></pre>
+            <button onclick="fetchPostExample()">Run POST Example</button>
+            <div id="post-example-result"></div>
+        </div>
+    </section>
+
+    <div id="results">
+        <h3>Results will appear here</h3>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        // Helper function to display results
+        function displayResult(data, elementId = null) {
+            const output = document.getElementById('output');
+            output.textContent = JSON.stringify(data, null, 2);
+            
+            if (elementId) {
+                const specificElement = document.getElementById(elementId);
+                if (specificElement) {
+                    specificElement.textContent = JSON.stringify(data, null, 2);
+                }
+            }
+        }
+
+        // Simple fetch example
+        function fetchSimpleExample() {
+            fetch('https://jsonplaceholder.typicode.com/posts/1')
+                .then(response => response.json())
+                .then(data => {
+                    displayResult(data, 'simple-example-result');
+                })
+                .catch(error => {
+                    displayResult({error: error.message}, 'simple-example-result');
+                });
+        }
+
+        // Promise chain example
+        function fetchPromiseChainExample() {
+            fetch('https://jsonplaceholder.typicode.com/users')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    const userNames = users.map(user => user.name);
+                    displayResult({users: users.slice(0, 2), userNames}, 'promise-chain-result');
+                    return userNames;
+                })
+                .catch(error => {
+                    displayResult({error: error.message}, 'promise-chain-result');
+                });
+        }
+
+        // JSON example
+        function fetchJsonExample() {
+            fetch('https://jsonplaceholder.typicode.com/todos/1')
+                .then(response => response.json())
+                .then(data => {
+                    const extractedInfo = {
+                        title: data.title,
+                        completed: data.completed,
+                        original: data
+                    };
+                    displayResult(extractedInfo, 'json-example-result');
+                })
+                .catch(error => {
+                    displayResult({error: error.message}, 'json-example-result');
+                });
+        }
+
+        // Object manipulation example
+        function fetchObjectExample() {
+            fetch('https://jsonplaceholder.typicode.com/users')
+                .then(response => response.json())
+                .then(users => {
+                    const simplifiedUsers = users.map(user => {
+                        return {
+                            name: user.name,
+                            email: user.email,
+                            company: user.company.name
+                        };
+                    });
+                    
+                    // Sample filtering (just for demonstration)
+                    const filteredUsers = simplifiedUsers.filter(user => 
+                        user.email.includes('.org'));
+                        
+                    displayResult({
+                        all: simplifiedUsers.slice(0, 2),
+                        filtered: filteredUsers
+                    }, 'object-example-result');
+                })
+                .catch(error => {
+                    displayResult({error: error.message}, 'object-example-result');
+                });
+        }
+
+        // Error handling example
+        function fetchErrorExample() {
+            fetch('https://jsonplaceholder.typicode.com/nonexistent-endpoint')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayResult(data, 'error-example-result');
+                })
+                .catch(error => {
+                    displayResult({
+                        error: error.message,
+                        explanation: "This error is expected! The endpoint doesn't exist."
+                    }, 'error-example-result');
+                });
+        }
+
+        // POST example
+        function fetchPostExample() {
+            const newPost = {
+                title: 'Fetch API Example',
+                body: 'This is an example of using fetch for POST requests',
+                userId: 1
+            };
+
+            fetch('https://jsonplaceholder.typicode.com/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newPost)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    displayResult({
+                        sentData: newPost,
+                        receivedResponse: data
+                    }, 'post-example-result');
+                })
+                .catch(error => {
+                    displayResult({error: error.message}, 'post-example-result');
+                });
+        }
+    </script>
+</body>
+</html>
