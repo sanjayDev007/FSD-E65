@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Listener Visualization</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #f39c12;
+            --error-color: #e74c3c;
+            --dark-color: #34495e;
+            --light-color: #ecf0f1;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            color: var(--dark-color);
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 8px;
+        }
+        
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .flow-arrow {
+            flex: 0 0 50px;
+            text-align: center;
+            font-size: 24px;
+            color: var(--dark-color);
+            position: relative;
+        }
+        
+        .flow-item {
+            flex: 1;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .dom-element {
+            background-color: rgba(52, 152, 219, 0.2);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            cursor: default;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .event-registry {
+            background-color: rgba(46, 204, 113, 0.2);
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .callback-function {
+            background-color: rgba(243, 156, 18, 0.2);
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            text-align: left;
+        }
+        
+        .event-dispatch {
+            background-color: rgba(231, 76, 60, 0.2);
+            border: 2px solid var(--error-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 10px 0;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        #logArea {
+            background-color: #2d3436;
+            color: #dfe6e9;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            line-height: 1.5;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            border-left: 3px solid transparent;
+            padding-left: 10px;
+        }
+        
+        .log-system {
+            border-left-color: var(--primary-color);
+        }
+        
+        .log-event {
+            border-left-color: var(--error-color);
+        }
+        
+        .log-callback {
+            border-left-color: var(--accent-color);
+        }
+        
+        .log-user {
+            border-left-color: var(--secondary-color);
+        }
+        
+        .highlight {
+            animation: pulse 1s;
+        }
+        
+        .line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 1s linear forwards;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+        
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Understanding Event Listeners & Callbacks</h1>
+            <p>This interactive demonstration shows how event listeners work in browsers by simulating the internal mechanics in a simplified way.</p>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--primary-color);"></div>
+                    <span>DOM Element</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--secondary-color);"></div>
+                    <span>Event Registry</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--accent-color);"></div>
+                    <span>Callback Function</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: var(--error-color);"></div>
+                    <span>Event Dispatch</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Step 1: DOM Element & Event Registration</div>
+            <p>When you call <code>element.addEventListener('click', callback)</code>, the browser stores your callback function in an internal registry for that element and event type.</p>
+            
+            <div class="flow-container">
+                <div class="flow-item">
+                    <div id="dummyElement" class="dom-element">
+                        <div>I am a DOM Element</div>
+                        <small>(Element with ID "dummyElement")</small>
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">
+                    <div class="event-registry" id="eventRegistry">
+                        <h3>Event Registry for "dummyElement"</h3>
+                        <div id="registeredCallbacks">
+                            <div class="callback-function">
+                                <strong>Event: "userAction"</strong><br>
+                                <code>function(event) { ... }</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Step 2: User Interaction & Event Dispatch</div>
+            <p>When a user interacts with an element (e.g., clicks a button), the browser creates an event object and dispatches it to the element, which then runs any matching callbacks.</p>
+            
+            <button id="triggerEventButton">Simulate User Interaction</button>
+            
+            <div class="flow-container">
+                <div class="flow-item">
+                    <div class="event-dispatch" id="eventDispatch">
+                        <h3>Event Dispatch System</h3>
+                        <div>
+                            <p>1. User interacts with element</p>
+                            <p>2. Browser creates event object</p>
+                            <p>3. Browser looks up registered callbacks</p>
+                            <p>4. Browser executes each callback</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-item">
+                    <div class="callback-function" id="callbackExecution">
+                        <strong>Callback Execution</strong><br>
+                        <code>function(event) {<br>
+                          &nbsp;&nbsp;// Your code runs here<br>
+                          &nbsp;&nbsp;// with the event object<br>
+                          &nbsp;&nbsp;console.log(event.detail);<br>
+                          &nbsp;&nbsp;// Update UI, etc.<br>
+                        }</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Live Log</div>
+            <div id="logArea"></div>
+        </div>
+    </div>
+
+    <script>
+        const logArea = document.getElementById('logArea');
+        const dummyElementVisual = document.getElementById('dummyElement');
+        const eventRegistry = document.getElementById('eventRegistry');
+        const eventDispatch = document.getElementById('eventDispatch');
+        const callbackExecution = document.getElementById('callbackExecution');
+
+        function log(message, type = 'system') {
+            console.log(message);
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            entry.textContent = message;
+            logArea.appendChild(entry);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        function highlightElement(element) {
+            element.classList.add('highlight');
+            setTimeout(() => {
+                element.classList.remove('highlight');
+            }, 1000);
+        }
+
+        // Our simulated browser's DOM object implementation
+        class DummyDOMObject {
+            constructor(id) {
+                this.id = id;
+                this._eventListeners = {}; // Internal storage: eventName: [callback1, callback2, ...]
+                log(`DummyDOMObject "${this.id}" created.`, 'system');
+            }
+
+            // Simulating browser's addEventListener API
+            addEventListener(eventName, callback) {
+                highlightElement(eventRegistry);
+                log(`Adding event listener for "${eventName}" on element "${this.id}"`, 'system');
+                
+                if (!this._eventListeners[eventName]) {
+                    this._eventListeners[eventName] = [];
+                }
+                this._eventListeners[eventName].push(callback);
+                
+                log(`Callback function registered for "${eventName}"`, 'system');
+                
+                // Update the visual registry
+                const callbacksEl = document.getElementById('registeredCallbacks');
+                const callbackEl = document.createElement('div');
+                callbackEl.className = 'callback-function';
+                callbackEl.innerHTML = `<strong>Event: "${eventName}"</strong><br><code>function(event) { ... }</code>`;
+                callbacksEl.appendChild(callbackEl);
+            }
+
+            // Internal method simulating the browser's event dispatch mechanism
+            _dispatchCustomEvent(eventName, eventData) {
+                highlightElement(eventDispatch);
+                log(`Event "${eventName}" occurred on "${this.id}"`, 'event');
+                
+                if (this._eventListeners[eventName] && this._eventListeners[eventName].length > 0) {
+                    log(`Found ${this._eventListeners[eventName].length} listener(s) for "${eventName}"`, 'event');
+                    
+                    // Create an event object similar to what browsers do
+                    const eventObject = {
+                        type: eventName,
+                        target: this,
+                        timestamp: Date.now(),
+                        detail: eventData
+                    };
+                    
+                    // Execute each callback
+                    this._eventListeners[eventName].forEach((callback, index) => {
+                        log(`Executing callback #${index + 1} for "${eventName}"`, 'event');
+                        highlightElement(callbackExecution);
+                        
+                        try {
+                            callback(eventObject);
+                        } catch (e) {
+                            log(`Error in callback: ${e.message}`, 'event');
+                        }
+                    });
+                } else {
+                    log(`No listeners found for "${eventName}" on "${this.id}"`, 'event');
+                }
+            }
+        }
+
+        // Create our dummy DOM element
+        const myDummyObject = new DummyDOMObject('dummyElement');
+
+        // Register callbacks for our custom event
+        myDummyObject.addEventListener('userAction', function(event) {
+            log(`Callback executed with data: ${JSON.stringify(event.detail)}`, 'callback');
+            
+            // Visual effect to show the callback is working
+            dummyElementVisual.innerHTML = `<div>Event Received!</div><small>${event.detail.message}</small>`;
+            dummyElementVisual.style.backgroundColor = 'rgba(46, 204, 113, 0.2)';
+            dummyElementVisual.style.borderColor = 'var(--secondary-color)';
+            
+            // Reset after a delay
+            setTimeout(() => {
+                dummyElementVisual.innerHTML = `<div>I am a DOM Element</div><small>(Element with ID "dummyElement")</small>`;
+                dummyElementVisual.style.backgroundColor = 'rgba(52, 152, 219, 0.2)';
+                dummyElementVisual.style.borderColor = 'var(--primary-color)';
+            }, 2000);
+        });
+
+        // Add a second callback to show multiple callbacks can be registered
+        myDummyObject.addEventListener('userAction', function(event) {
+            log(`Second callback executed at ${new Date(event.timestamp).toLocaleTimeString()}`, 'callback');
+        });
+
+        // Setup the trigger button
+        const triggerButton = document.getElementById('triggerEventButton');
+        triggerButton.addEventListener('click', function() {
+            log('User clicked the "Simulate User Interaction" button', 'user');
+            
+            // Visual transition
+            dummyElementVisual.style.backgroundColor = 'rgba(243, 156, 18, 0.2)';
+            dummyElementVisual.style.borderColor = 'var(--accent-color)';
+            
+            // Simulate event after a slight delay to show the flow
+            setTimeout(() => {
+                // This is like a user clicking on the element in a real scenario
+                const eventDetails = { 
+                    message: "User interacted with element!", 
+                    time: new Date().toLocaleTimeString() 
+                };
+                myDummyObject._dispatchCustomEvent('userAction', eventDetails);
+            }, 500);
+        });
+
+        log('Page loaded. Click the "Simulate User Interaction" button to see the event flow.', 'system');
+    </script>
+</body>
+</html>
