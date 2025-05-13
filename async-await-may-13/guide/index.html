@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Time Magic: How to Make Your Code Wait</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        .slide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .slide {
+            display: none;
+            padding: 30px;
+            height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        .nav-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        button {
+            padding: 12px 30px;
+            background-color: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 3px 10px rgba(67, 97, 238, 0.3);
+        }
+        
+        button:hover {
+            background-color: #3a56d4;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4361ee;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        h1 {
+            color: #4361ee;
+            padding-bottom: 10px;
+            font-size: 2.5rem;
+            margin-top: 10px;
+            font-weight: 700;
+        }
+        
+        h2 {
+            color: #3a0ca3;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        h3 {
+            color: #4361ee;
+            font-size: 1.4rem;
+        }
+        
+        .output {
+            background-color: #edf7ed;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .exercise {
+            background-color: #fff0e5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px dashed #ff9a3c;
+        }
+        
+        .key-point {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #ffb300;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e0e0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4361ee, #3a0ca3);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .slide-number {
+            position: fixed;
+            bottom: 10px;
+            right: 20px;
+            font-size: 16px;
+            color: #666;
+            background-color: rgba(255,255,255,0.7);
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #4361ee;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .diagram {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .diagram img {
+            border-radius: 8px;
+            max-width: 100%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        ul, ol {
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        code {
+            background-color: #f1f1f1;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        
+        .slide-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .timer-demo {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .timer-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4361ee;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="slide-container">
+        <!-- Slide 1: Introduction -->
+        <div class="slide active" id="slide1">
+            <div class="slide-title">
+                <h1>JavaScript Time Magic ✨</h1>
+            </div>
+            <h2>Making Your Code Wait & Do Cool Stuff</h2>
+            
+            <p>Hey there! In this fun guide, we'll learn how to make JavaScript do things at different times - just like magic! ✨</p>
+            
+            <p>We'll cover:</p>
+            <ul>
+                <li>Why some code runs right away and some waits (synchronous vs. asynchronous) 🕐</li>
+                <li>How to make code wait using <code>setTimeout</code> ⏲️</li>
+                <li>How to repeat code over and over with <code>setInterval</code> 🔄</li>
+                <li>The super cool <code>async/await</code> way of writing waiting code 🧙‍♂️</li>
+                <li>Real examples you can use in your own apps and games! 🎮</li>
+            </ul>
+            
+            <div class="diagram">
+                <img src="https://i.imgur.com/Uv5GZUx.png" alt="Code running at different times" style="max-width: 100%; max-height: 300px;">
+            </div>
+            
+            <p>Let's dive in and learn how to make our code play with time! 🚀</p>
+        </div>
+
+        <!-- Slide 2: Synchronous vs Asynchronous -->
+        <div class="slide" id="slide2">
+            <div class="slide-title">
+                <h1>Code That Waits vs. Code That Doesn't 🕐</h1>
+            </div>
+            
+            <div class="key-point">
+                <strong>Normal Code (Synchronous):</strong> Like standing in line at the school cafeteria - one step at a time, in order.
+            </div>
+            
+            <div class="code-block">
+                console.log("First in line");
+                console.log("Second in line");
+                console.log("Third in line");
+                
+                // Output (in order):
+                // First in line
+                // Second in line
+                // Third in line
+            </div>
+            
+            <div class="key-point">
+                <strong>Waiting Code (Asynchronous):</strong> Like ordering pizza, then playing a game while you wait for delivery.
+            </div>
+            
+            <div class="code-block">
+                console.log("Order pizza");
+                setTimeout(() => {
+                    console.log("Pizza delivered!");
+                }, 2000);  // waits 2 seconds (2000 milliseconds)
+                console.log("Play games while waiting");
+                
+                // Output:
+                // Order pizza
+                // Play games while waiting
+                // (after 2 seconds) Pizza delivered!
+            </div>
+            
+            <h3>Real-life Example</h3>
+            <p>Think of synchronous code like texting a friend and waiting for each reply before sending your next message.</p>
+            <p>Asynchronous code is like sending a text, then watching TikTok while waiting for the reply!</p>
+        </div>
+
+        <!-- Slide 3: setTimeout Basics -->
+        <div class="slide" id="slide3">
+            <div class="slide-title">
+                <h1>Making Code Wait with setTimeout ⏲️</h1>
+            </div>
+            
+            <p><code>setTimeout</code> is like telling JavaScript "Do this, but wait a bit first!"</p>
+            
+            <div class="code-block">
+                setTimeout(whatToRun, howLongToWaitInMilliseconds);
+                
+                // 1000 milliseconds = 1 second
+            </div>
+            
+            <h3>Basic Example</h3>
+            <div class="code-block">
+                console.log("Starting game...");
+                
+                setTimeout(() => {
+                    console.log("Game loaded! Let's play!");
+                }, 2000);  // wait 2 seconds
+                
+                console.log("Loading assets...");
+            </div>
+            
+            <div class="output">
+                What you'll see:<br>
+                Starting game...<br>
+                Loading assets...<br>
+                (2 seconds later)<br>
+                Game loaded! Let's play!
+            </div>
+            
+            <div class="timer-demo">
+                <div class="timer-circle" id="timerCircle">2</div>
+            </div>
+            
+            <h3>Adding Extra Information</h3>
+            <div class="code-block">
+                function showMessage(name, message) {
+                    console.log(`${name} says: ${message}`);
+                }
+                
+                // Show message after 1 second
+                setTimeout(showMessage, 1000, "Alex", "Hey, want to play Minecraft?");
+            </div>
+            
+            <div class="key-point">
+                <strong>Remember:</strong> setTimeout doesn't pause your code! Everything after it keeps running while it waits.
+            </div>
+        </div>
+
+        <!-- Slide 4: setTimeout Advanced -->
+        <div class="slide" id="slide4">
+            <div class="slide-title">
+                <h1>Cool setTimeout Tricks 🎯</h1>
+            </div>
+            
+            <h3>Stopping a Timeout</h3>
+            <p>Changed your mind? You can cancel a timeout before it happens:</p>
+            
+            <div class="code-block">
+                // Set a delayed alert
+                const timeoutId = setTimeout(() => {
+                    alert("Game Over!");
+                }, 5000);
+                
+                // Player scores a point, so we cancel the Game Over
+                button.onclick = function() {
+                    clearTimeout(timeoutId);  // Cancels the timeout
+                    alert("You scored! Game continues!");
+                };
+            </div>
+            
+            <h3>Zero Delay?</h3>
+            <p>Using setTimeout with 0 seconds doesn't run immediately - it runs after current code:</p>
+            
+            <div class="code-block">
+                console.log("First");
+                
+                setTimeout(() => {
+                    console.log("Third - even with zero delay!");
+                }, 0);
+                
+                console.log("Second");
+                
+                // Output:
+                // First
+                // Second
+                // Third - even with zero delay!
+            </div>
+            
+            <div class="key-point">
+                <strong>Fun fact:</strong> setTimeout times are not exact! They're more like "at least this long" rather than "exactly this long."
+            </div>
+            
+            <div class="exercise">
+                <strong>Try it yourself! 🎮</strong><br>
+                Write code for a countdown timer from 5 to 1, with each number showing after 1 second.
+            </div>
+        </div>
+
+        <!-- Slide 5: setInterval Basics -->
+        <div class="slide" id="slide5">
+            <div class="slide-title">
+                <h1>Repeating Code with setInterval 🔄</h1>
+            </div>
+            
+            <p><code>setInterval</code> is like saying "Do this over and over again, every X seconds."</p>
+            
+            <div class="code-block">
+                setInterval(whatToRepeat, howOftenInMilliseconds);
+            </div>
+            
+            <h3>Game Example</h3>
+            <div class="code-block">
+                let score = 0;
+                
+                // Increase score every second
+                const gameInterval = setInterval(() => {
+                    score += 10;
+                    console.log(`Score: ${score}`);
+                    
+                    if (score >= 50) {
+                        clearInterval(gameInterval); // Stop when score hits 50
+                        console.log("Level complete! 🎉");
+                    }
+                }, 1000);  // every 1 second
+            </div>
+            
+            <div class="output">
+                What you'll see:<br>
+                Score: 10<br>
+                Score: 20<br>
+                Score: 30<br>
+                Score: 40<br>
+                Score: 50<br>
+                Level complete! 🎉
+            </div>
+            
+            <div class="key-point">
+                <strong>Important:</strong> Unlike <code>setTimeout</code> which runs once, <code>setInterval</code> keeps running until you stop it with <code>clearInterval()</code>!
+            </div>
+            
+            <p>This is perfect for:</p>
+            <ul>
+                <li>Game loops that update characters</li>
+                <li>Countdown timers</li>
+                <li>Animations</li>
+                <li>Updating scores</li>
+            </ul>
+        </div>
+
+        <!-- Slide 6: setInterval Advanced -->
+        <div class="slide" id="slide6">
+            <div class="slide-title">
+                <h1>Making Cool Stuff with setInterval 🎮</h1>
+            </div>
+            
+            <h3>Making a Simple Game Timer</h3>
+            <div class="code-block">
+                let timeLeft = 30;
+                const timerDisplay = document.getElementById('timer');
+                
+                const gameTimer = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(gameTimer);
+                        alert("Time's up! Game over!");
+                    }
+                }, 1000);
+            </div>
+            
+            <h3>Moving a Character</h3>
+            <div class="code-block">
+                let position = 0;
+                const character = document.getElementById('player');
+                
+                // Move the character right every 50ms
+                const movementInterval = setInterval(() => {
+                    position += 5;
+                    character.style.left = position + 'px';
+                    
+                    if (position > 300) {
+                        clearInterval(movementInterval);
+                        alert("You reached the finish line!");
+                    }
+                }, 50);
+            </div>
+            
+            <div class="diagram">
+                <img src="https://i.imgur.com/b3kIUXz.gif" alt="Character moving animation" style="max-width: 100%; max-height: 200px;">
+            </div>
+            
+            <div class="key-point">
+                <strong>Pro Tip:</strong> For smooth animations, use small intervals (like 16ms for ~60 frames per second).
+            </div>
+            
+            <div class="exercise">
+                <strong>Try it yourself! 🕰️</strong><br>
+                Create a digital clock that shows the current time and updates every second.
+            </div>
+        </div>
+
+        <!-- Slide 7: Callbacks -->
+        <div class="slide" id="slide7">
+            <div class="slide-title">
+                <h1>Callback Functions - Code That Runs Later 📞</h1>
+            </div>
+            
+            <p>A callback is a function you pass to another function, which will run it later.</p>
+            
+            <h3>Simple Example</h3>
+            <div class="code-block">
+                function downloadGame(onComplete) {
+                    console.log("Downloading game...");
+                    
+                    // Simulate download time
+                    setTimeout(() => {
+                        console.log("Download complete!");
+                        onComplete(); // Run the callback function
+                    }, 3000);
+                }
+                
+                downloadGame(function() {
+                    console.log("Let's play!");
+                });
+                
+                // Output:
+                // Downloading game...
+                // (after 3 seconds)
+                // Download complete!
+                // Let's play!
+            </div>
+            
+            <h3>Callback Problems</h3>
+            <p>When you need many callbacks in a row, it gets messy:</p>
+            
+            <div class="code-block">
+                // This is called "callback hell" - it's hard to read!
+                downloadGame(function() {
+                    installGame(function() {
+                        loadLevel(function() {
+                            startGame(function() {
+                                console.log("Finally playing!");
+                            });
+                        });
+                    });
+                });
+            </div>
+            
+            <div class="key-point">
+                <strong>Problem:</strong> This nested structure is like opening a bunch of boxes inside boxes - it gets confusing!
+            </div>
+        </div>
+
+        <!-- Slide 8: Promises Introduction -->
+        <div class="slide" id="slide8">
+            <div class="slide-title">
+                <h1>Promises - A Better Way to Wait 🤝</h1>
+            </div>
+            
+            <p>A Promise is like a receipt for something that will happen in the future - like a pre-order for a video game.</p>
+            
+            <div class="diagram">
+                <img src="https://i.imgur.com/sGBQXqI.png" alt="Promise states diagram" style="max-width: 100%; max-height: 250px;">
+            </div>
+            
+            <div class="key-point">
+                Promises have three states:<br>
+                1. <strong>Pending:</strong> Waiting for something to happen<br>
+                2. <strong>Fulfilled:</strong> It worked! 😄<br>
+                3. <strong>Rejected:</strong> Oops, something went wrong 😞
+            </div>
+            
+            <h3>Making a Promise</h3>
+            <div class="code-block">
+                const gamePromise = new Promise((resolve, reject) => {
+                    // Simulate loading a game
+                    setTimeout(() => {
+                        const gameLoaded = true;
+                        
+                        if (gameLoaded) {
+                            resolve("Game loaded successfully!"); // Success!
+                        } else {
+                            reject("Game failed to load!"); // Failure!
+                        }
+                    }, 2000);
+                });
+            </div>
+            
+            <h3>Using a Promise</h3>
+            <div class="code-block">
+                gamePromise
+                    .then((message) => {
+                        console.log("Success:", message);
+                        return "Level 1 starting";
+                    })
+                    .then((levelMessage) => {
+                        console.log(levelMessage);
+                    })
+                    .catch((error) => {
+                        console.log("Error:", error);
+                    });
+            </div>
+        </div>
+
+        <!-- Slide 9: Promise Chaining -->
+        <div class="slide" id="slide9">
+            <div class="slide-title">
+                <h1>Promise Chains - One After Another ⛓️</h1>
+            </div>
+            
+            <p>Promises can be linked together, so one happens after another - like steps in a video game level.</p>
+            
+            <div class="code-block">
+                downloadGame()
+                    .then(result => {
+                        console.log("Game downloaded:", result);
+                        return installGame();
+                    })
+                    .then(result => {
+                        console.log("Game installed:", result);
+                        return loadLevel("Level 1");
+                    })
+                    .then(result => {
+                        console.log("Level loaded:", result);
+                        startGame();
+                    })
+                    .catch(error => {
+                        console.error("Something went wrong:", error);
+                    });
+            </div>
+            
+            <h3>Social Media Post Example</h3>
+            <div class="code-block">
+                uploadImage(myPhoto)
+                    .then(imageUrl => {
+                        // Image uploaded, now create the post
+                        return createPost(imageUrl, "Check out my cool photo!");
+                    })
+                    .then(post => {
+                        // Post created, now share it
+                        return sharePostWithFriends(post, ["Alex", "Taylor", "Jordan"]);
+                    })
+                    .then(shareResult => {
+                        console.log(`Post shared with ${shareResult.count} friends!`);
+                    })
+                    .catch(error => {
+                        console.error("Posting failed:", error);
+                    });
+            </div>
+            
+            <div class="key-point">
+                <strong>Cool trick:</strong> Each <code>.then()</code> passes its result to the next one in the chain!
+            </div>
+            
+            <h3>Doing Things at the Same Time</h3>
+            <div class="code-block">
+                // Load multiple things at once
+                Promise.all([
+                    loadCharacter(),
+                    loadBackground(),
+                    loadMusic()
+                ])
+                .then(([character, background, music]) => {
+                    console.log("All game assets loaded! Ready to play!");
+                    startGame(character, background, music);
+                })
+                .catch(error => {
+                    console.error("Failed to load game:", error);
+                });
+            </div>
+        </div>
+
+        <!-- Slide 10: Async/Await Basics -->
+        <div class="slide" id="slide10">
+            <div class="slide-title">
+                <h1>Async/Await - Super Powers for Waiting ✨</h1>
+            </div>
+            
+            <p><code>async/await</code> is like magic that makes your waiting code look normal!</p>
+            
+            <div class="key-point">
+                <strong>async:</strong> Tell JavaScript "this function will wait for things"<br>
+                <strong>await:</strong> Tell JavaScript "pause here until this finishes"
+            </div>
+            
+            <div class="diagram">
+                <img src="https://i.imgur.com/PKs5nlR.png" alt="Async/Await visual explanation" style="max-width: 100%; max-height: 250px;">
+            </div>
+            
+            <h3>Promises vs Async/Await</h3>
+            <div class="code-block">
+                // Using Promises (more complex)
+                function playGame() {
+                    return loadGame()
+                        .then(game => {
+                            console.log("Game loaded!");
+                            return game.loadLevel(1);
+                        })
+                        .then(level => {
+                            console.log("Level loaded!");
+                            return level.start();
+                        });
+                }
+                
+                // Using Async/Await (cleaner!)
+                async function playGame() {
+                    const game = await loadGame();
+                    console.log("Game loaded!");
+                    
+                    const level = await game.loadLevel(1);
+                    console.log("Level loaded!");
+                    
+                    return level.start();
+                }
+            </div>
+            
+            <div class="key-point">
+                <strong>It's still waiting!</strong> The code looks like normal code, but behind the scenes it's still waiting - just written in a cleaner way.
+            </div>
+        </div>
+
+        <!-- Slide 11: Async/Await Advanced -->
+        <div class="slide" id="slide11">
+            <div class="slide-title">
+                <h1>Async/Await Super Skills 🥋</h1>
+            </div>
+            
+            <h3>Handling Errors</h3>
+            <div class="code-block">
+                async function loadPlayerProfile() {
+                    try {
+                        const player = await fetchPlayer("PlayerOne");
+                        const stats = await fetchPlayerStats(player.id);
+                        const achievements = await fetchAchievements(player.id);
+                        
+                        return { player, stats, achievements };
+                    } catch (error) {
+                        console.error("Oops! Something went wrong:", error);
+                        alert("Couldn't load profile. Are you connected to the internet?");
+                    }
+                }
+            </div>
+            
+            <h3>Loading Multiple Things at Once</h3>
+            <div class="code-block">
+                async function loadGameAssets() {
+                    try {
+                        // Load everything at the same time!
+                        const [characters, levels, music] = await Promise.all([
+                            fetchCharacters(),
+                            fetchLevels(),
+                            fetchMusic()
+                        ]);
+                        
+                        console.log("All assets loaded! Ready to play!");
+                        return { characters, levels, music };
+                    } catch (error) {
+                        console.error("Failed to load game assets:", error);
+                    }
+                }
+            </div>
+            
+            <div class="key-point">
+                <strong>Remember:</strong> You can only use <code>await</code> inside a function that has <code>async</code> in front of it!
+            </div>
+            
+            <div class="exercise">
+                <strong>Try it yourself! 🚀</strong><br>
+                Create an async function that simulates loading a player profile, then their game scores, then displays a message with their highest score.
+            </div>
+        </div>
+
+        <!-- Slide 12: Real-world Examples -->
+        <div class="slide" id="slide12">
+            <div class="slide-title">
+                <h1>Real Stuff You Can Build 🎮</h1>
+            </div>
+            
+            <h3>Making a Loading Screen</h3>
+            <div class="code-block">
+                async function startGame() {
+                    // Show loading screen
+                    document.getElementById('loading').style.display = 'block';
+                    document.getElementById('game').style.display = 'none';
+                    
+                    try {
+                        // Load all game data
+                        await loadGameData();
+                        
+                        // Wait a bit so loading screen doesn't flash too quickly
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        
+                        // Hide loading screen, show game
+                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('game').style.display = 'block';
+                        
+                        // Start the game
+                        gameLoop();
+                    } catch (error) {
+                        alert("Game failed to load: " + error.message);
+                    }
+                }
+            </div>
+            
+            <h3>Cool Game Loop</h3>
+            <div class="code-block">
+                function gameLoop() {
+                    let player = {x: 0, y: 0, health: 100};
+                    let gameOver = false;
+                    
+                    const game = setInterval(() => {
+                        // Move player
+                        movePlayer(player);
+                        
+                        // Check for enemies
+                        checkEnemies(player);
+                        
+                        // Update screen
+                        updateScreen(player);
+                        
+                        // Check if game is over
+                        if (player.health <= 0) {
+                            gameOver = true;
+                            clearInterval(game);
+                            showGameOver();
+                        }
+                    }, 16); // ~60fps
+                }
+            </div>
+            
+            <h3>Social Media Posts</h3>
+            <div class="code-block">
+                async function loadFeed() {
+                    const feedElement = document.getElementById('feed');
+                    feedElement.innerHTML = '<p>Loading posts...</p>';
+                    
+                    try {
+                        const posts = await fetchPosts();
+                        
+                        feedElement.innerHTML = '';
+                        posts.forEach(post => {
+                            feedElement.innerHTML += `
+                                <div class="post">
+                                    <h3>${post.username}</h3>
+                                    <p>${post.text}</p>
+                                    <button onclick="likePost(${post.id})">Like (${post.likes})</button>
+                                </div>
+                            `;
+                        });
+                    } catch (error) {
+                        feedElement.innerHTML = '<p>Could not load posts. Try again later.</p>';
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- Slide 13: Fun Exercises -->
+        <div class="slide" id="slide13">
+            <div class="slide-title">
+                <h1>Fun Coding Challenges 🏆</h1>
+            </div>
+            
+            <div class="exercise">
+                <strong>Challenge 1: Countdown Game</strong>
+                <p>Make a countdown timer that changes colors as it gets closer to zero:</p>
+                <div class="code-block">
+                    function countdown(from) {
+                        const displayElement = document.getElementById('countdown');
+                        let count = from;
+                        
+                        const timer = setInterval(() => {
+                            // Your code here!
+                            // 1. Update the count
+                            // 2. Display the count
+                            // 3. Change colors (green → yellow → red)
+                            // 4. Stop at zero and show "Blast off!"
+                        }, 1000);
+                    }
+                    
+                    countdown(5);
+                </div>
+            </div>
+            
+            <div class="exercise">
+                <strong>Challenge 2: Typing Effect</strong>
+                <p>Create a function that types out text letter by letter, like in video games:</p>
+                <div class="code-block">
+                    function typeText(text, elementId) {
+                        const element = document.getElementById(elementId);
+                        let index = 0;
+                        
+                        // Your code here!
+                        // Use setInterval to add one letter at a time
+                        // Clear the interval when done
+                    }
+                    
+                    typeText("Welcome to the adventure, brave hero!", "game-dialog");
+                </div>
+            </div>
+            
+            <div class="exercise">
+                <strong>Challenge 3: Fetch Multiple Player Scores</strong>
+                <p>Use async/await to get scores for multiple players and determine the winner:</p>
+                <div class="code-block">
+                    async function getHighScore() {
+                        const players = ["player1", "player2", "player3"];
+                        
+                        // Your code here!
+                        // 1. Fetch all players' scores (use Promise.all)
+                        // 2. Find the highest score
+                        // 3. Display the winner
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Pro Tips -->
+        <div class="slide" id="slide14">
+            <div class="slide-title">
+                <h1>Pro Tips for Better Code 🧠</h1>
+            </div>
+            
+            <div class="key-point">
+                <strong>Always handle errors</strong> - What if loading fails? Always have a backup plan!
+            </div>
+            
+            <div class="code-block">
+                // Bad: No error handling
+                fetch('https://game-api.example.com/player')
+                    .then(response => response.json())
+                    .then(data => showPlayerData(data));
+
+                // Good: With error handling
+                fetch('https://game-api.example.com/player')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network error');
+                        return response.json();
+                    })
+                    .then(data => showPlayerData(data))
+                    .catch(error => {
+                        console.error('Problem loading player:', error);
+                        showBackupPlayerData();
+                    });
+            </div>
+            
+            <h3>Top Tips Chart</h3>
+            <table>
+                <tr>
+                    <th>Tip</th>
+                    <th>Why It's Important</th>
+                </tr>
+                <tr>
+                    <td>Always handle errors</td>
+                    <td>Your game/app won't crash when something goes wrong</td>
+                </tr>
+                <tr>
+                    <td>Use async/await for readability</td>
+                    <td>Your code will be easier to understand and debug</td>
+                </tr>
+                <tr>
+                    <td>Clear your intervals when done</td>
+                    <td>Prevents memory leaks that slow down your game</td>
+                </tr>
+                <tr>
+                    <td>Use Promise.all for loading multiple things</td>
+                    <td>Makes your game load faster by doing things at the same time</td>
+                </tr>
+                <tr>
+                    <td>Keep timeouts reasonable</td>
+                    <td>Users get bored waiting more than a few seconds</td>
+                </tr>
+            </table>
+            
+            <div class="key-point">
+                <strong>Remember:</strong> Test your code with slow internet! What happens if things take longer to load than expected?
+            </div>
+        </div>
+
+        <!-- Slide 15: Wrap-up -->
+        <div class="slide" id="slide15">
+            <div class="slide-title">
+                <h1>You're Now a Time Wizard! 🧙‍♂️</h1>
+            </div>
+            
+            <h3>What We Learned</h3>
+            <ul>
+                <li><strong>setTimeout</strong> - Run code after a delay (like a time bomb! ⏰)</li>
+                <li><strong>setInterval</strong> - Run code repeatedly (like a heartbeat! 💓)</li>
+                <li><strong>Callbacks</strong> - Functions that run after something else (like a notification! 📱)</li>
+                <li><strong>Promises</strong> - Better way to handle future results (like a movie ticket! 🎟️)</li>
+                <li><strong>Async/Await</strong> - The cleanest way to write waiting code (like magic! ✨)</li>
+            </ul>
+            
+            <div class="diagram">
+                <img src="https://i.imgur.com/YoJbS1Q.png" alt="JavaScript time concepts" style="max-width: 100%; max-height: 250px;">
+            </div>
+            
+            <h3>What You Can Build Now</h3>
+            <ul>
+                <li>Games with animations and timers</li>
+                <li>Apps that load data without freezing</li>
+                <li>Cool effects like typing text or countdowns</li>
+                <li>Programs that fetch information from the internet</li>
+            </ul>
+            
+            <div class="key-point">
+                <strong>Most Important:</strong> You can now make your code do things at different times - which is super important for making fun, interactive websites and games!
+            </div>
+            
+            <p style="font-size: 24px; text-align: center; margin-top: 30px;">Congrats! You're ready to build awesome time-based projects! 🚀</p>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button id="prev">Previous</button>
+        <button id="next">Next</button>
+    </div>
+    
+    <div class="slide-number" id="slideNumber">Slide 1 of 15</div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 15;
+
+        // Track timer demo timeouts to clear them if needed
+        let timerDemoTimeout1 = null;
+        let timerDemoTimeout2 = null;
+
+        function showSlide(n) {
+            // Hide all slides
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            // Show the current slide
+            document.getElementById(`slide${n}`).classList.add('active');
+
+            // Update slide number
+            document.getElementById('slideNumber').textContent = `Slide ${n} of ${totalSlides}`;
+
+            // Update progress bar
+            const progressPercent = ((n - 1) / (totalSlides - 1)) * 100;
+            document.getElementById('progress').style.width = `${progressPercent}%`;
+
+            // Update button states
+            document.getElementById('prev').disabled = n === 1;
+            document.getElementById('next').disabled = n === totalSlides;
+
+            // Run slide-specific demos
+            checkSlideForDemos(n);
+        }
+
+        document.getElementById('next').addEventListener('click', () => {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        });
+
+        document.getElementById('prev').addEventListener('click', () => {
+            if (currentSlide > 1) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                document.getElementById('next').click();
+            } else if (e.key === 'ArrowLeft') {
+                document.getElementById('prev').click();
+            }
+        });
+
+        // Demo for timer circle on slide 3
+        function runTimerDemo() {
+            const timerCircle = document.getElementById('timerCircle');
+            if (!timerCircle) return;
+
+            // Reset background and text
+            timerCircle.style.backgroundColor = '#f1f1f1';
+            timerCircle.textContent = '2';
+
+            // Clear previous timeouts if any
+            if (timerDemoTimeout1) clearTimeout(timerDemoTimeout1);
+            if (timerDemoTimeout2) clearTimeout(timerDemoTimeout2);
+
+            let count = 2;
+            timerCircle.textContent = count;
+
+            timerDemoTimeout1 = setTimeout(() => {
+                count = 1;
+                timerCircle.textContent = count;
+                timerCircle.style.backgroundColor = '#ffcccb';
+
+                timerDemoTimeout2 = setTimeout(() => {
+                    count = 0;
+                    timerCircle.textContent = 'Go!';
+                    timerCircle.style.backgroundColor = '#90EE90';
+                }, 1000);
+            }, 1000);
+        }
+
+        // Function to check which slide is active and run demos
+        function checkSlideForDemos(slideNum) {
+            // Only run timer demo on slide 3
+            if (slideNum === 3) {
+                runTimerDemo();
+            } else {
+                // If leaving slide 3, clear timer demo timeouts
+                if (timerDemoTimeout1) clearTimeout(timerDemoTimeout1);
+                if (timerDemoTimeout2) clearTimeout(timerDemoTimeout2);
+                const timerCircle = document.getElementById('timerCircle');
+                if (timerCircle) {
+                    timerCircle.style.backgroundColor = '#f1f1f1';
+                    timerCircle.textContent = '2';
+                }
+            }
+        }
+
+        // Initialize
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>
+`

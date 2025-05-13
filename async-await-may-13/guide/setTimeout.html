@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Understanding setTimeout in JavaScript - Visual Guide</title>
+    <style>
+        body { 
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif; 
+            margin: 30px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9ff;
+        }
+        h1, h2, h3 { 
+            color: #4527a0; 
+            border-bottom: 2px solid #7e57c2;
+            padding-bottom: 5px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .diagram { 
+            margin: 30px 0; 
+            text-align: center;
+        }
+        .diagram svg { 
+            background: #f3f3ff; 
+            border-radius: 10px;
+            border: 1px solid #ccc; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .code-example {
+            background: #f5f5f5;
+            border-left: 4px solid #7e57c2;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, monospace;
+        }
+        .analogy {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 5px;
+        }
+        .important-note {
+            background: #fce4ec;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ec407a;
+        }
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .comparison-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 0 10px;
+        }
+        .pitfall {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+        }
+        .best-practice {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+        }
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .steps {
+            counter-reset: step-counter;
+            list-style-type: none;
+            padding-left: 40px;
+        }
+        .steps li {
+            position: relative;
+            margin-bottom: 15px;
+            counter-increment: step-counter;
+        }
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -35px;
+            width: 25px;
+            height: 25px;
+            background-color: #7e57c2;
+            color: white;
+            font-weight: bold;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+        }
+        .demo-button {
+            background-color: #7e57c2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+            transition: background-color 0.3s;
+        }
+        .demo-button:hover {
+            background-color: #5e35b1;
+        }
+        .output-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 100px;
+            font-family: Consolas, monospace;
+        }
+        .timer-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .delay-box {
+            width: 80px;
+            padding: 8px;
+            margin: 0 5px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Understanding setTimeout in JavaScript ⏱️</h1>
+        <p>
+            Hey there, future coder! 👋 Today we're going to explore one of JavaScript's most useful functions: <code>setTimeout</code>.
+            This magical function lets you tell JavaScript, "Hey, run this code, but not right now... run it <em>later</em>!"
+        </p>
+
+        <div class="analogy">
+            <div class="analogy-title">⏰ Real-life Analogy: Setting an Alarm Clock</div>
+            <p>
+                Think of <code>setTimeout</code> like setting an alarm clock:
+                <ul>
+                    <li>You decide what should happen when the alarm goes off (the callback function)</li>
+                    <li>You set how many milliseconds to wait (the delay)</li>
+                    <li>You press the "set" button (calling setTimeout)</li>
+                    <li>Then you continue with your day (the rest of your code runs)</li>
+                    <li>When the alarm finally rings, you perform that action (the callback executes)</li>
+                </ul>
+                Just like an alarm clock doesn't stop you from doing other things while waiting, <code>setTimeout</code> doesn't stop JavaScript from running other code while it counts down!
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>What is setTimeout? 🤔</h2>
+        
+        <p><code>setTimeout</code> is a JavaScript function that lets you schedule code to run after a specified delay (in milliseconds). Here's the basic syntax:</p>
+        
+        <div class="code-example">
+            setTimeout(callback, delay, param1, param2, ...)<br><br>
+            
+            // Where:<br>
+            // - callback: the function to run after the delay<br>
+            // - delay: how long to wait in milliseconds (1000ms = 1 second)<br>
+            // - param1, param2, ...: optional parameters to pass to the callback
+        </div>
+        
+        <div class="diagram">
+            <svg width="700" height="250">
+                <!-- Title -->
+                <text x="350" y="30" font-size="18" text-anchor="middle" fill="#4527a0" font-weight="bold">How setTimeout Works Behind the Scenes</text>
+                
+                <!-- Call Stack Box -->
+                <rect x="50" y="60" width="160" height="120" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="10"/>
+                <text x="130" y="50" font-size="16" text-anchor="middle" fill="#1565c0" font-weight="bold">Call Stack</text>
+                <text x="130" y="85" font-size="13" text-anchor="middle">console.log("Hi");</text>
+                <text x="130" y="115" font-size="13" text-anchor="middle">setTimeout(cb, 1000);</text>
+                <text x="130" y="145" font-size="13" text-anchor="middle">console.log("Bye");</text>
+                <text x="130" y="200" font-size="12" text-anchor="middle" fill="#666">JavaScript engine</text>
+                
+                <!-- Web API Box -->
+                <rect x="270" y="60" width="160" height="120" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="10"/>
+                <text x="350" y="50" font-size="16" text-anchor="middle" fill="#ef6c00" font-weight="bold">Web APIs</text>
+                <text x="350" y="85" font-size="13" text-anchor="middle">Timer</text>
+                <text x="350" y="115" font-size="13" text-anchor="middle">⏱️ 1000ms</text>
+                <text x="350" y="145" font-size="13" text-anchor="middle">callback function</text>
+                <text x="350" y="200" font-size="12" text-anchor="middle" fill="#666">Browser environment</text>
+                
+                <!-- Callback Queue Box -->
+                <rect x="490" y="60" width="160" height="120" fill="#e8f5e9" stroke="#43a047" stroke-width="2" rx="10"/>
+                <text x="570" y="50" font-size="16" text-anchor="middle" fill="#2e7d32" font-weight="bold">Callback Queue</text>
+                <text x="570" y="115" font-size="13" text-anchor="middle">callback function</text>
+                <text x="570" y="135" font-size="13" text-anchor="middle">(waiting to execute)</text>
+                <text x="570" y="200" font-size="12" text-anchor="middle" fill="#666">After delay completes</text>
+                
+                <!-- Arrows with labels -->
+                <path d="M 215 110 L 265 110" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <text x="240" y="100" font-size="12" fill="#333">Send timer</text>
+                
+                <path d="M 435 110 L 485 110" stroke="#333" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <text x="460" y="100" font-size="12" fill="#333">After delay</text>
+        
+                <text x="350" y="235" font-size="12" fill="#333">Event Loop: When Call Stack is empty, move callback to stack</text>
+                
+                <!-- Arrowhead marker -->
+                <defs>
+                    <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <div class="steps">
+            <h3>How setTimeout Works in 5 Steps:</h3>
+            <li>When you call <code>setTimeout(callback, delay)</code>, JavaScript registers the timer with the browser's Web APIs</li>
+            <li>JavaScript continues executing other code without waiting</li>
+            <li>The browser counts down the specified delay time</li>
+            <li>When the delay is complete, the callback function moves to the Callback Queue (a.k.a Macrotask Queue)</li>
+            <li>The Event Loop checks if the Call Stack is empty, and if so, moves the callback from the Queue to the Stack to be executed</li>
+        </div>
+
+        <div class="code-example">
+            console.log("Starting..."); // 1. This runs first<br><br>
+            
+            setTimeout(() => {<br>
+            &nbsp;&nbsp;console.log("Timeout complete!"); // 3. This runs last<br>
+            }, 2000); // Wait 2 seconds<br><br>
+            
+            console.log("Continuing..."); // 2. This runs second<br>
+        </div>
+
+        <div class="output-box" id="basic-output">
+            <!-- JavaScript will fill this in during demo -->
+        </div>
+        <button class="demo-button" id="run-basic">Run Example</button>
+    </div>
+
+    <div class="container">
+        <h2>The Truth About setTimeout Timing ⏰</h2>
+        
+        <div class="important-note">
+            <h4>Important: setTimeout is NOT a Precise Timer!</h4>
+            <p>
+                The delay you specify is the <em>minimum</em> time before your callback runs, not the exact time. 
+                Your callback might run slightly later than expected because:
+            </p>
+            <ul>
+                <li>The Call Stack must be empty before callbacks can execute</li>
+                <li>Heavy processing can block the execution</li>
+                <li>Browser throttling (especially in background tabs)</li>
+                <li>Other callbacks might be ahead in the queue</li>
+            </ul>
+        </div>
+        
+        <h3>See the Imprecision for Yourself:</h3>
+        <div class="timer-display" id="timer-display">Waiting to start...</div>
+        <div style="display: flex; align-items: center; justify-content: center; margin: 20px 0;">
+            <button id="start-timer" class="demo-button">Start 1-Second Timer</button>
+            <div style="margin: 0 15px;">with delay:</div>
+            <input type="number" id="delay-input" class="delay-box" value="1000" min="0"> ms
+        </div>
+        
+        <div class="code-example">
+            // Try running a function that blocks the main thread<br>
+            console.log("Starting timer...");<br><br>
+            
+            const startTime = Date.now();<br>
+            setTimeout(() => {<br>
+            &nbsp;&nbsp;const actualDelay = Date.now() - startTime;<br>
+            &nbsp;&nbsp;console.log(`Requested delay: 1000ms, Actual delay: ${actualDelay}ms`);<br>
+            }, 1000);<br><br>
+            
+            // Block the main thread with a heavy calculation<br>
+            console.log("Doing heavy calculation...");
+            const endTime = Date.now() + 3000; // Block for 3 seconds<br>
+            while (Date.now() < endTime) {<br>
+            &nbsp;&nbsp;// Just blocking the thread...<br>
+            }<br><br>
+            
+            console.log("Heavy calculation finished!");
+        </div>
+        
+        <div class="output-box" id="delay-output">
+            <!-- JavaScript will fill this in during demo -->
+        </div>
+        <button class="demo-button" id="run-delay-demo">Run Delay Demo</button>
+    </div>
+
+    <div class="container">
+        <h2>Common setTimeout Patterns and Tricks 🧩</h2>
+        
+        <div class="comparison">
+            <div class="comparison-box pitfall">
+                <h3>⚠️ Common Pitfalls</h3>
+                <h4>1. Zero Delay Doesn't Mean Immediate Execution</h4>
+                <div class="code-example">
+                    // setTimeout with 0ms delay<br>
+                    setTimeout(() => {<br>
+                    &nbsp;&nbsp;console.log("This still waits!");<br>
+                    }, 0);<br><br>
+                    
+                    console.log("This runs first!");
+                </div>
+                <p>Even with 0ms delay, the callback still goes through the event queue!</p>
+                
+                <h4>2. Losing the 'this' Context</h4>
+                <div class="code-example">
+                    const user = {<br>
+                    &nbsp;&nbsp;name: "Alex",<br>
+                    &nbsp;&nbsp;greet() {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;// 'this' is lost in the callback!<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;setTimeout(function() {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(`Hello, ${this.name}`);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;}, 1000);<br>
+                    &nbsp;&nbsp;}<br>
+                    };<br><br>
+                    
+                    user.greet(); // "Hello, undefined"
+                </div>
+                <p>Fix it with arrow functions or .bind(this)!</p>
+            </div>
+            <div class="comparison-box best-practice">
+                <h3>✅ Useful Techniques</h3>
+                <h4>1. Debouncing User Input</h4>
+                <div class="code-example">
+                    let debounceTimeout;<br><br>
+                    
+                    function handleSearch(searchTerm) {<br>
+                    &nbsp;&nbsp;// Clear previous timeout<br>
+                    &nbsp;&nbsp;clearTimeout(debounceTimeout);<br><br>
+                    
+                    &nbsp;&nbsp;// Set new timeout<br>
+                    &nbsp;&nbsp;debounceTimeout = setTimeout(() => {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log(`Searching for: ${searchTerm}`);<br>
+                    &nbsp;&nbsp;}, 500); // Wait for typing to stop<br>
+                    }
+                </div>
+                
+                <h4>2. Creating Animation Loops (before requestAnimationFrame)</h4>
+                <div class="code-example">
+                    function animateCircle() {<br>
+                    &nbsp;&nbsp;// Update circle position<br>
+                    &nbsp;&nbsp;// ...<br><br>
+                    
+                    &nbsp;&nbsp;// Schedule next frame<br>
+                    &nbsp;&nbsp;setTimeout(animateCircle, 16); // ~60fps<br>
+                    }
+                </div>
+                <p>Modern approach: Use requestAnimationFrame instead!</p>
+            </div>
+        </div>
+
+        <h3>The Important setTimeout Return Value - Timer ID</h3>
+        <p>
+            setTimeout returns a numeric ID that you can use to cancel the timer with clearTimeout before it executes!
+        </p>
+        
+        <div class="code-example">
+            // Start a 5-second countdown<br>
+            const timerId = setTimeout(() => {<br>
+            &nbsp;&nbsp;console.log("BOOM! 💥");<br>
+            }, 5000);<br><br>
+            
+            // Oops, need to defuse the bomb!<br>
+            clearTimeout(timerId);<br>
+            console.log("Timer cancelled - phew! 😅");
+        </div>
+        
+        <div class="output-box" id="clear-timeout-output">
+            <!-- JavaScript will fill this in during demo -->
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="demo-button" id="start-countdown">Start 5s Countdown</button>
+            <button class="demo-button" id="cancel-countdown">Cancel Countdown</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>setTimeout vs setInterval: What's the Difference? 🔄</h2>
+        
+        <p>
+            While <code>setTimeout</code> runs a function once after a delay, <code>setInterval</code> runs a function repeatedly at a fixed time interval.
+        </p>
+        
+        <div class="diagram">
+            <svg width="650" height="280">
+                <!-- Title -->
+                <text x="325" y="30" font-size="18" text-anchor="middle" fill="#4527a0" font-weight="bold">setTimeout vs setInterval</text>
+                
+                <!-- setTimeout -->
+                <text x="125" y="70" font-size="16" text-anchor="middle" fill="#4527a0">setTimeout</text>
+                <rect x="25" y="80" width="200" height="160" rx="10" fill="#f5f2ff" stroke="#7e57c2" stroke-width="2"/>
+                
+                <rect x="45" y="100" width="20" height="120" fill="#bbdefb"/>
+                <text x="55" y="165" font-size="12" text-anchor="middle" transform="rotate(-90 55 165)">Code Execution</text>
+                
+                <rect x="75" y="100" width="130" height="20" fill="#e1bee7"/>
+                <text x="140" y="115" font-size="12" text-anchor="middle">Delay (2000ms)</text>
+                
+                <rect x="75" y="130" width="20" height="20" fill="#c8e6c9"/>
+                <text x="85" y="145" font-size="12" text-anchor="middle">✓</text>
+                
+                <rect x="75" y="160" width="130" height="20" fill="#e1bee7"/>
+                <text x="140" y="175" font-size="12" text-anchor="middle">Delay (2000ms)</text>
+                
+                <rect x="75" y="190" width="20" height="20" fill="#c8e6c9"/>
+                <text x="85" y="205" font-size="12" text-anchor="middle">✓</text>
+                
+                <text x="125" y="260" font-size="12" text-anchor="middle">Needs manual recursion for repeating</text>
+                
+                <!-- setInterval -->
+                <text x="475" y="70" font-size="16" text-anchor="middle" fill="#4527a0">setInterval</text>
+                <rect x="375" y="80" width="200" height="160" rx="10" fill="#f5f2ff" stroke="#7e57c2" stroke-width="2"/>
+                
+                <rect x="395" y="100" width="20" height="120" fill="#bbdefb"/>
+                <text x="405" y="165" font-size="12" text-anchor="middle" transform="rotate(-90 405 165)">Code Execution</text>
+                
+                <rect x="425" y="100" width="130" height="20" fill="#e1bee7"/>
+                <text x="490" y="115" font-size="12" text-anchor="middle">Interval (2000ms)</text>
+                
+                <rect x="425" y="130" width="20" height="20" fill="#c8e6c9"/>
+                <text x="435" y="145" font-size="12" text-anchor="middle">✓</text>
+                
+                <rect x="425" y="160" width="20" height="20" fill="#c8e6c9"/>
+                <text x="435" y="175" font-size="12" text-anchor="middle">✓</text>
+                
+                <rect x="425" y="190" width="20" height="20" fill="#c8e6c9"/>
+                <text x="435" y="205" font-size="12" text-anchor="middle">✓</text>
+                
+                <text x="475" y="260" font-size="12" text-anchor="middle">Automatically repeats at intervals</text>
+            </svg>
+        </div>
+        
+        <div class="comparison">
+            <div class="comparison-box">
+                <h3>setTimeout (One-time)</h3>
+                <div class="code-example">
+                    // Recursive setTimeout<br>
+                    function tick() {<br>
+                    &nbsp;&nbsp;console.log("Tick");<br>
+                    &nbsp;&nbsp;setTimeout(tick, 1000); // Schedule next tick<br>
+                    }<br><br>
+                    
+                    // Start the first tick<br>
+                    setTimeout(tick, 1000);
+                </div>
+                <p><strong>Pro:</strong> Guarantees time between executions<br>
+                <strong>Con:</strong> Need to call it again manually for repetition</p>
+            </div>
+            <div class="comparison-box">
+                <h3>setInterval (Repeating)</h3>
+                <div class="code-example">
+                    // Automatic interval<br>
+                    const intervalId = setInterval(() => {<br>
+                    &nbsp;&nbsp;console.log("Tick");<br>
+                    }, 1000);<br><br>
+                    
+                    // To stop:<br>
+                    // clearInterval(intervalId);
+                </div>
+                <p><strong>Pro:</strong> Automatically repeats<br>
+                <strong>Con:</strong> May stack callbacks if execution takes longer than interval</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>setTimeout in Different Environments ⚙️</h2>
+        
+        <p>
+            setTimeout is actually a bit different depending on where you run your JavaScript code:
+        </p>
+        
+        <ul>
+            <li><strong>In Browsers:</strong> Provided by the Window object (window.setTimeout)</li>
+            <li><strong>In Node.js:</strong> Implemented by Node's timer module</li>
+            <li><strong>Minimum Delay:</strong> Browsers usually limit setTimeout to 4ms minimum delay for inactive tabs and may throttle it to 1000ms (1 second) for very inactive tabs</li>
+            <li><strong>Precision:</strong> Node.js timers can be more precise than browser timers</li>
+        </ul>
+        
+        <div class="important-note">
+            <h4>Special Knowledge: setTimeout and the JavaScript Event Loop</h4>
+            <p>
+                Remember how we talked about Macrotasks vs Microtasks in our previous lesson? <code>setTimeout</code> callbacks are always scheduled as <strong>Macrotasks</strong>, not Microtasks.
+            </p>
+            <p>
+                This is why Promise callbacks (which are Microtasks) will always execute before setTimeout callbacks, even if the setTimeout has a delay of 0!
+            </p>
+        </div>
+
+        <div class="code-example">
+            console.log("1. Starting"); // Regular code<br><br>
+            
+            setTimeout(() => {<br>
+            &nbsp;&nbsp;console.log("4. setTimeout callback"); // Macrotask<br>
+            }, 0);<br><br>
+            
+            Promise.resolve().then(() => {<br>
+            &nbsp;&nbsp;console.log("2. Promise callback"); // Microtask<br>
+            }).then(() => {<br>
+            &nbsp;&nbsp;console.log("3. Another Promise callback"); // Another Microtask<br>
+            });<br><br>
+            
+            console.log("5. Script end"); // Regular code
+        </div>
+        
+        <div class="output-box" id="event-loop-output">
+            <!-- JavaScript will fill this in during demo -->
+        </div>
+        <button class="demo-button" id="run-event-loop">Run Event Loop Demo</button>
+    </div>
+
+    <div class="container">
+        <h2>Summary: Key Takeaways About setTimeout ⭐</h2>
+        <ul>
+            <li><strong>Purpose:</strong> Delaying execution of code by a specified number of milliseconds</li>
+            <li><strong>Mechanism:</strong> It doesn't pause JavaScript - it schedules code to run later</li>
+            <li><strong>Precision:</strong> The delay is a minimum guarantee, not exact timing</li>
+            <li><strong>Queue Type:</strong> Callbacks go into the Macrotask Queue</li>
+            <li><strong>Return Value:</strong> Returns a numeric ID that can be used with clearTimeout</li>
+            <li><strong>Zero Delay:</strong> setTimeout(fn, 0) doesn't run immediately, just ASAP after current code</li>
+        </ul>
+        
+        <div class="analogy">
+            <div class="analogy-title">🏃‍♂️ Final Analogy: The Marathon Runner</div>
+            <p>
+                Think of JavaScript as a marathon runner on a single track. Using setTimeout is like telling the runner:
+                "After you've run X more meters, please perform this special move (the callback)."
+            </p>
+            <p>
+                The runner can't stop the race to do the move immediately - they'll make a mental note, keep running,
+                and only perform the move after the specified distance. If there are multiple special moves scheduled,
+                the runner performs all "priority moves" (microtasks) first, before doing any regular moves (macrotasks like setTimeout callbacks).
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Demo for basic setTimeout
+        document.getElementById('run-basic').addEventListener('click', () => {
+            const output = document.getElementById('basic-output');
+            output.innerHTML = '';
+            
+            const log = (text) => {
+                const line = document.createElement('div');
+                line.textContent = text;
+                output.appendChild(line);
+            };
+            
+            log('Starting...');
+            
+            setTimeout(() => {
+                log('Timeout complete!');
+            }, 2000);
+            
+            log('Continuing...');
+        });
+        
+        // Timer precision demo
+        document.getElementById('start-timer').addEventListener('click', () => {
+            const display = document.getElementById('timer-display');
+            const delay = parseInt(document.getElementById('delay-input').value) || 1000;
+            
+            display.textContent = 'Timer started...';
+            const startTime = Date.now();
+            
+            setTimeout(() => {
+                const actualTime = Date.now() - startTime;
+                display.textContent = `Requested: ${delay}ms, Actual: ${actualTime}ms, Difference: ${actualTime - delay}ms`;
+            }, delay);
+        });
+        
+        // Demo for delay issues
+        document.getElementById('run-delay-demo').addEventListener('click', () => {
+            const output = document.getElementById('delay-output');
+            output.innerHTML = '';
+            
+            const log = (text) => {
+                const line = document.createElement('div');
+                line.textContent = text;
+                output.appendChild(line);
+            };
+            
+            log('Starting timer...');
+            
+            const startTime = Date.now();
+            setTimeout(() => {
+                const actualDelay = Date.now() - startTime;
+                log(`Requested delay: 1000ms, Actual delay: ${actualDelay}ms`);
+            }, 1000);
+            
+            log('Doing heavy calculation...');
+            const endTime = Date.now() + 3000; // Block for 3 seconds
+            while (Date.now() < endTime) {
+                // Just blocking the thread...
+            }
+            
+            log('Heavy calculation finished!');
+        });
+        
+        // Demo for clearTimeout
+        let countdownId = null;
+        const clearTimeoutOutput = document.getElementById('clear-timeout-output');
+        
+        document.getElementById('start-countdown').addEventListener('click', () => {
+            clearTimeoutOutput.innerHTML = 'Countdown started! BOOM in 5 seconds! 💣';
+            
+            // Cancel existing timer if there is one
+            if (countdownId !== null) {
+                clearTimeout(countdownId);
+            }
+            
+            countdownId = setTimeout(() => {
+                clearTimeoutOutput.innerHTML += '<br>BOOM! 💥';
+                countdownId = null;
+            }, 5000);
+        });
+        
+        document.getElementById('cancel-countdown').addEventListener('click', () => {
+            if (countdownId !== null) {
+                clearTimeout(countdownId);
+                clearTimeoutOutput.innerHTML += '<br>Timer cancelled - phew! 😅';
+                countdownId = null;
+            } else {
+                clearTimeoutOutput.innerHTML += '<br>No active countdown to cancel!';
+            }
+        });
+        
+        // Event loop demo
+        document.getElementById('run-event-loop').addEventListener('click', () => {
+            const output = document.getElementById('event-loop-output');
+            output.innerHTML = '';
+            
+            const log = (text) => {
+                const line = document.createElement('div');
+                line.textContent = text;
+                output.appendChild(line);
+            };
+            
+            log('1. Starting');
+            
+            setTimeout(() => {
+                log('4. setTimeout callback');
+            }, 0);
+            
+            Promise.resolve().then(() => {
+                log('2. Promise callback');
+            }).then(() => {
+                log('3. Another Promise callback');
+            });
+            
+            log('5. Script end');
+        });
+    </script>
+</body>
+</html>

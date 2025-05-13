@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advanced JavaScript: Task Queues & Promises - Visual Guide</title>
+    <style>
+        body { 
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif; 
+            margin: 30px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9ff;
+        }
+        h1, h2, h3 { 
+            color: #4527a0; 
+            border-bottom: 2px solid #7e57c2;
+            padding-bottom: 5px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .diagram { 
+            margin: 30px 0; 
+            text-align: center;
+        }
+        .diagram svg { 
+            background: #f3f3ff; 
+            border-radius: 10px;
+            border: 1px solid #ccc; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .code-example {
+            background: #f5f5f5;
+            border-left: 4px solid #7e57c2;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, monospace;
+        }
+        .analogy {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 5px;
+        }
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .comparison-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 0 10px;
+        }
+        .microtask {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+        }
+        .macrotask {
+            background: #fff3e0;
+            border: 1px solid #ffcc80;
+        }
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .important-note {
+            background: #fce4ec;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ec407a;
+        }
+        .vs-box {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .vs-item {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+        }
+        .vs-item h4 {
+            text-align: center;
+            margin-top: 0;
+        }
+        .steps {
+            counter-reset: step-counter;
+            list-style-type: none;
+            padding-left: 40px;
+        }
+        .steps li {
+            position: relative;
+            margin-bottom: 15px;
+            counter-increment: step-counter;
+        }
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: -35px;
+            width: 25px;
+            height: 25px;
+            background-color: #7e57c2;
+            color: white;
+            font-weight: bold;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Advanced JavaScript: Microtasks, Macrotasks & Promises 🧠</h1>
+        <p>
+            Hey there, coding explorer! 👋 Today we're diving deeper into how JavaScript handles tasks behind the scenes.
+            We'll learn about different types of task queues, promises, and how async/await magically makes your code work!
+        </p>
+
+        <div class="analogy">
+            <div class="analogy-title">🎮 Real-life Analogy: Video Game Quests</div>
+            <p>
+                Think of JavaScript like a video game character who has different quest lists:
+                <ul>
+                    <li>Main Quests (Call Stack) - These must be completed one at a time in order</li>
+                    <li>Side Quests (Macrotasks) - Less urgent quests you'll do after completing the current main quest</li>
+                    <li>Priority Side Quests (Microtasks) - Important side quests you'll finish before starting any regular side quest</li>
+                </ul>
+                Your character always finishes their current main quest, then all available priority side quests, before picking up the next regular side quest!
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Microtasks vs Macrotasks: The Two Waiting Lines ⏱️</h2>
+        
+        <p>Remember our Event Loop from the previous lesson? Well, it turns out there's not just one queue - there are actually <strong>two different types of queues</strong> for handling asynchronous tasks!</p>
+        
+        <div class="diagram">
+            <svg width="750" height="400">
+                <!-- Title -->
+                <text x="375" y="30" font-size="20" text-anchor="middle" fill="#4527a0" font-weight="bold">JavaScript's Two Task Queues</text>
+                
+                <!-- Event Loop -->
+                <ellipse cx="375" cy="200" rx="300" ry="150" fill="none" stroke="#7e57c2" stroke-width="3" stroke-dasharray="10,5"/>
+                <text x="375" y="200" font-size="18" text-anchor="middle" fill="#4527a0" font-weight="bold">Event Loop</text>
+                
+                <!-- Call Stack -->
+                <rect x="80" y="150" width="120" height="100" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="10"/>
+                <text x="140" y="140" font-size="16" text-anchor="middle" fill="#1565c0" font-weight="bold">Call Stack</text>
+                <text x="140" y="180" font-size="13" text-anchor="middle">console.log()</text>
+                <text x="140" y="210" font-size="13" text-anchor="middle">sayHello()</text>
+                <text x="140" y="240" font-size="13" text-anchor="middle">main()</text>
+                
+                <!-- Macrotask Queue -->
+                <rect x="550" y="110" width="150" height="80" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="10"/>
+                <text x="625" y="100" font-size="16" text-anchor="middle" fill="#ef6c00" font-weight="bold">Macrotask Queue</text>
+                <text x="625" y="140" font-size="13" text-anchor="middle">setTimeout callbacks</text>
+                <text x="625" y="165" font-size="13" text-anchor="middle">event handlers</text>
+                <text x="625" y="190" font-size="13" text-anchor="middle">setInterval</text>
+                
+                <!-- Microtask Queue -->
+                <rect x="550" y="240" width="150" height="80" fill="#e8f5e9" stroke="#43a047" stroke-width="2" rx="10"/>
+                <text x="625" y="230" font-size="16" text-anchor="middle" fill="#2e7d32" font-weight="bold">Microtask Queue</text>
+                <text x="625" y="270" font-size="13" text-anchor="middle">Promise callbacks</text>
+                <text x="625" y="295" font-size="13" text-anchor="middle">queueMicrotask()</text>
+                <text x="625" y="320" font-size="13" text-anchor="middle">MutationObserver</text>
+                
+                <!-- Arrows -->
+                <path d="M 320 200 L 210 200" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <path d="M 430 200 L 540 150" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <path d="M 430 200 L 540 280" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                
+                <!-- Special arrow from Microtask to Call Stack showing priority -->
+                <path d="M 540 280 C 450 320 300 320 200 260" stroke="#43a047" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#greenarrow)"/>
+                <path d="M 540 150 C 450 80 300 80 200 140" stroke="#ff9800" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#orangearrow)"/>
+                
+                <!-- Arrowhead markers -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                    </marker>
+                    <marker id="greenarrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#43a047"/>
+                    </marker>
+                    <marker id="orangearrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#ff9800"/>
+                    </marker>
+                </defs>
+                
+                <!-- Labels -->
+                <text x="280" y="180" font-size="12" fill="#333">Check</text>
+                <text x="460" y="170" font-size="12" fill="#333">Add tasks</text>
+                <text x="460" y="230" font-size="12" fill="#333">Add tasks</text>
+                <text x="370" y="330" font-size="14" fill="#43a047" font-weight="bold">Process first!</text>
+                <text x="370" y="90" font-size="14" fill="#ff9800" font-weight="bold">Process second!</text>
+            </svg>
+        </div>
+        
+        <div class="comparison">
+            <div class="comparison-box microtask">
+                <h3>Microtasks (VIP Tasks)</h3>
+                <p>🏆 The priority tasks:</p>
+                <ul>
+                    <li>Promise callbacks (.then, .catch, .finally)</li>
+                    <li>queueMicrotask() function results</li>
+                    <li>MutationObserver callbacks</li>
+                </ul>
+                <p><strong>Key Point:</strong> JavaScript processes <em>ALL</em> microtasks before moving to the next macrotask!</p>
+                <div class="code-example">
+                    Promise.resolve().then(() => {<br>
+                    &nbsp;&nbsp;console.log("I'm a microtask!");<br>
+                    });<br><br>
+                    
+                    // Direct way to create a microtask<br>
+                    queueMicrotask(() => {<br>
+                    &nbsp;&nbsp;console.log("Also a microtask!");<br>
+                    });
+                </div>
+            </div>
+            <div class="comparison-box macrotask">
+                <h3>Macrotasks (Regular Tasks)</h3>
+                <p>📋 The standard tasks:</p>
+                <ul>
+                    <li>setTimeout callbacks</li>
+                    <li>setInterval callbacks</li>
+                    <li>User events (click, keypress, etc.)</li>
+                    <li>DOM rendering operations</li>
+                </ul>
+                <p><strong>Key Point:</strong> JavaScript processes one macrotask per event loop iteration!</p>
+                <div class="code-example">
+                    setTimeout(() => {<br>
+                    &nbsp;&nbsp;console.log("I'm a macrotask!");<br>
+                    }, 0);<br><br>
+                    
+                    button.addEventListener("click", () => {<br>
+                    &nbsp;&nbsp;console.log("User clicked - I'm a macrotask!");<br>
+                    });
+                </div>
+            </div>
+        </div>
+
+        <div class="important-note">
+            <h4>🎯 Order of Operations:</h4>
+            <ol>
+                <li>Execute all code in the Call Stack</li>
+                <li>Process <strong>ALL</strong> microtasks in the Microtask Queue</li>
+                <li>Process <strong>ONE</strong> macrotask from the Macrotask Queue</li>
+                <li>Return to step 2 (process all new microtasks)</li>
+                <li>Repeat this cycle forever...</li>
+            </ol>
+        </div>
+
+        <div class="code-example">
+            console.log("1 - Call Stack"); // Runs first (Call Stack)<br><br>
+            
+            setTimeout(() => {<br>
+            &nbsp;&nbsp;console.log("4 - Macrotask"); // Runs fourth (Macrotask Queue)<br>
+            }, 0);<br><br>
+            
+            Promise.resolve().then(() => {<br>
+            &nbsp;&nbsp;console.log("2 - Microtask 1"); // Runs second (Microtask Queue)<br>
+            &nbsp;&nbsp;Promise.resolve().then(() => {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;console.log("3 - Microtask 2"); // Runs third! (New Microtask)<br>
+            &nbsp;&nbsp;});<br>
+            });<br><br>
+            
+            console.log("5 - Also Call Stack"); // Runs fifth (Call Stack)
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Promise.resolve() vs new Promise() 🔍</h2>
+        <p>
+            These are two different ways to create promises, but they behave differently. Let's understand both:
+        </p>
+
+        <div class="vs-box">
+            <div class="vs-item">
+                <h4>Promise.resolve()</h4>
+                <p>It's like ordering a pizza that's already made! 🍕</p>
+                <ul>
+                    <li>Creates a promise that's <span class="highlight">already resolved</span></li>
+                    <li>Value is immediately available (well, after microtasks)</li>
+                    <li>Perfect for when you already have the data</li>
+                    <li>Callbacks go straight to the microtask queue</li>
+                </ul>
+                <div class="code-example">
+                    // Already resolved with value "pizza"<br>
+                    const instantPizza = Promise.resolve("pizza");<br><br>
+                    
+                    instantPizza.then(food => {<br>
+                    &nbsp;&nbsp;console.log(`Yum! ${food}!`);<br>
+                    });
+                </div>
+            </div>
+            <div class="vs-item">
+                <h4>new Promise()</h4>
+                <p>It's like ordering a pizza they still need to make! 👨‍🍳</p>
+                <ul>
+                    <li>Creates a <span class="highlight">pending promise</span> (initially)</li>
+                    <li>You control when it resolves or rejects</li>
+                    <li>Perfect for wrapping async operations</li>
+                    <li>Nothing happens until you call resolve()/reject()</li>
+                </ul>
+                <div class="code-example">
+                    // Need to make the pizza first<br>
+                    const pizzaBeingMade = new Promise((resolve, reject) => {<br>
+                    &nbsp;&nbsp;// Cooking takes time<br>
+                    &nbsp;&nbsp;setTimeout(() => {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;resolve("pizza"); // Ready after 2 seconds<br>
+                    &nbsp;&nbsp;}, 2000);<br>
+                    });<br><br>
+                    
+                    pizzaBeingMade.then(food => {<br>
+                    &nbsp;&nbsp;console.log(`Finally! ${food}!`);<br>
+                    });
+                </div>
+            </div>
+        </div>
+
+        <div class="analogy">
+            <div class="analogy-title">🎁 Analogy: Gift Boxes</div>
+            <p>
+                <strong>Promise.resolve("toy")</strong> is like giving someone a gift box that's already opened, showing the toy inside. They can see what it is right away!<br><br>
+                <strong>new Promise(resolve => resolve("toy"))</strong> is like giving someone a wrapped gift box, then immediately telling them "go ahead and open it." There's a tiny delay before they can see the toy.<br><br>
+                <strong>new Promise(resolve => setTimeout(() => resolve("toy"), 1000))</strong> is like giving someone a gift box and saying "wait 1 second before opening it."
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Async/Await: The Magic Behind the Scenes 🧙‍♂️</h2>
+        
+        <p>
+            You know how async/await makes asynchronous code look clean and simple? Let's peek behind the curtain to see how it actually works!
+        </p>
+
+        <div class="diagram">
+            <svg width="700" height="350">
+                <!-- Title -->
+                <text x="350" y="30" font-size="18" text-anchor="middle" fill="#4527a0" font-weight="bold">How Async/Await Works Behind the Scenes</text>
+                
+                <!-- Function box -->
+                <rect x="50" y="50" width="600" height="270" rx="10" fill="#f5f2ff" stroke="#7e57c2" stroke-width="2"/>
+                <text x="350" y="75" font-size="16" text-anchor="middle" fill="#4527a0" font-weight="bold">async function getData() { ... }</text>
+                
+                <!-- Step 1 -->
+                <rect x="80" y="100" width="540" height="40" rx="5" fill="#e1bee7" stroke="#6a1b9a" stroke-width="1"/>
+                <text x="350" y="125" font-size="14" text-anchor="middle">console.log("Starting..."); // Regular code runs in Call Stack</text>
+                
+                <!-- Step 2 with await -->
+                <rect x="80" y="160" width="540" height="40" rx="5" fill="#ffcdd2" stroke="#c62828" stroke-width="1"/>
+                <text x="350" y="185" font-size="14" text-anchor="middle">const data = await fetchData(); // Pause here! Function returns a Promise</text>
+                
+                <!-- Step 3 after resuming -->
+                <rect x="80" y="220" width="540" height="40" rx="5" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1"/>
+                <text x="350" y="245" font-size="14" text-anchor="middle">console.log(data); // Continues later as a microtask!</text>
+                
+                <!-- Arrows -->
+                <path d="M 350 145 L 350 155" stroke="#333" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <text x="540" y="95" font-size="12" fill="#c62828">Function suspends</text>
+                <text x="150" y="285" font-size="12" fill="#2e7d32">Resumes later as microtask when Promise resolves</text>
+                
+                <!-- Arrowhead markers -->
+                <defs>
+                    <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                    </marker>
+                    <marker id="greenarrow3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#2e7d32"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <p>When you use <code>async/await</code>, here's what JavaScript does behind the scenes:</p>
+        
+        <ol class="steps">
+            <li>The <code>async</code> keyword tells JavaScript this function will return a Promise automatically</li>
+            <li>Code runs normally until it hits an <code>await</code> expression</li>
+            <li>At the <code>await</code>, JavaScript pauses execution of the function</li>
+            <li>It waits for the Promise after <code>await</code> to settle (resolve or reject)</li>
+            <li>While waiting, JavaScript can run other code outside the function</li>
+            <li>When the Promise resolves, the function continues from exactly where it paused</li>
+            <li>The continuation is scheduled as a microtask!</li>
+        </ol>
+
+        <div class="important-note">
+            <h4>🔍 What actually happens when you write async/await:</h4>
+            <p>
+                JavaScript transforms your async/await code into Promises and callbacks behind the scenes! It's like JavaScript is rewriting your simple-looking code into more complex code with promises.
+            </p>
+        </div>
+
+        <div class="vs-box">
+            <div class="vs-item">
+                <h4>Your Code (With async/await)</h4>
+                <div class="code-example">
+                    async function getData() {<br>
+                    &nbsp;&nbsp;console.log("Starting");<br><br>
+                    
+                    &nbsp;&nbsp;// Pause here and wait<br>
+                    &nbsp;&nbsp;const data = await fetchData();<br><br>
+                    
+                    &nbsp;&nbsp;// This runs later!<br>
+                    &nbsp;&nbsp;console.log(data);<br>
+                    &nbsp;&nbsp;return "Done!";<br>
+                    }
+                </div>
+            </div>
+            <div class="vs-item">
+                <h4>What JavaScript Actually Does</h4>
+                <div class="code-example">
+                    function getData() {<br>
+                    &nbsp;&nbsp;// Creates and returns a Promise<br>
+                    &nbsp;&nbsp;return new Promise((resolve, reject) => {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.log("Starting");<br><br>
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;// Attach a callback to run when ready<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;fetchData().then(data => {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// This becomes a microtask!<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(data);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resolve("Done!");<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;}).catch(error => {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reject(error);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+                    &nbsp;&nbsp;});<br>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="code-example">
+            // Let's see everything in action:<br><br>
+            
+            console.log("Script starts"); // 1st - Call Stack<br><br>
+            
+            setTimeout(() => {<br>
+            &nbsp;&nbsp;console.log("Timeout (macrotask)"); // 5th - Macrotask<br>
+            }, 0);<br><br>
+            
+            async function demo() {<br>
+            &nbsp;&nbsp;console.log("Inside async function"); // 2nd - Call Stack<br>
+            &nbsp;&nbsp;await Promise.resolve("Await done!");<br>
+            &nbsp;&nbsp;// Everything below the await becomes a microtask!<br>
+            &nbsp;&nbsp;console.log("After await"); // 4th - Microtask<br>
+            }<br><br>
+            
+            demo(); // Start the async function<br><br>
+            
+            Promise.resolve().then(() => {<br>
+            &nbsp;&nbsp;console.log("Promise (microtask)"); // 3rd - Microtask<br>
+            });<br><br>
+            
+            console.log("Script ends"); // 3rd - Call Stack
+        </div>
+
+        <div class="analogy">
+            <div class="analogy-title">🚦 Analogy: Traffic Signals</div>
+            <p>
+                Think of JavaScript as a one-lane road:
+                <ul>
+                    <li>Regular code is like green lights - traffic just flows through normally</li>
+                    <li>An <code>await</code> is like a red light - your function stops and pulls over</li>
+                    <li>While your function is "parked," other traffic (code) can still use the road</li>
+                    <li>When the promise resolves, your function gets a special "priority pass" (microtask) to reenter traffic</li>
+                    <li>Any code after <code>await</code> is like a separate car that only drives when the light turns green again</li>
+                </ul>
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Summary: Putting It All Together 🧠</h2>
+        <ul>
+            <li><strong>Microtasks:</strong> The VIP queue for callbacks from promises and queueMicrotask()</li>
+            <li><strong>Macrotasks:</strong> The regular queue for callbacks from setTimeout, events, etc.</li>
+            <li><strong>Order:</strong> Call Stack → ALL Microtasks → ONE Macrotask → ALL new Microtasks → etc.</li>
+            <li><strong>Promise.resolve():</strong> Instantly resolved promises (eager promises)</li>
+            <li><strong>new Promise():</strong> Gives you control over when to resolve or reject</li>
+            <li><strong>async/await:</strong> A clean way to write asynchronous code that gets transformed into promises and microtasks behind the scenes</li>
+        </ul>
+        
+        <div class="important-note">
+            <h4>Final Thought 💡</h4>
+            <p>
+                Now you know the secret: JavaScript is constantly juggling different types of tasks and managing priorities behind the scenes! This is what makes it possible to build responsive web applications even though JavaScript runs on a single thread.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

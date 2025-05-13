@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asynchronous JavaScript Explained</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 20px;
+        }
+
+        .visual-area {
+            display: flex;
+            gap: 15px; /* Gap between main areas */
+            padding: 15px;
+            background-color: #e9eef2;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            min-height: 250px; /* Ensure enough space */
+            align-items: flex-start; /* Align items to the top */
+        }
+
+        .js-engine, .web-apis, .queues-area {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 200px; /* Minimum width for these areas */
+        }
+
+        .js-engine { background-color: #d0e8ff; flex-basis: 25%; } /* Light Blue */
+        .web-apis { background-color: #ffe8d0; flex-basis: 25%; } /* Light Orange */
+        .queues-area { background-color: #d0ffd4; flex-basis: 35%;} /* Light Green */
+
+
+        h2, h3 {
+            margin-top: 0;
+            color: #0056b3;
+            text-align: center;
+        }
+        .js-engine h3 { color: #004085; }
+        .web-apis h3 { color: #854000; }
+        .queues-area h3 { color: #006400; }
+
+
+        .call-stack, .callback-queue, .microtask-queue, .api-item-area {
+            border: 2px solid #ccc;
+            min-height: 150px;
+            width: 90%;
+            margin-top: 10px;
+            padding: 5px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column-reverse; /* Stack items from bottom */
+            justify-content: flex-start; /* Align items to the bottom */
+        }
+        .callback-queue, .microtask-queue {
+             flex-direction: column; /* FIFO */
+             justify-content: flex-start;
+        }
+        .api-item-area {
+            min-height: 50px;
+            flex-direction: column;
+             justify-content: flex-start;
+        }
+
+
+        .task, .api-task {
+            background-color: #6c757d;
+            color: white;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.9em;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.3s ease;
+        }
+
+        .task.visible, .api-task.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .task.executing { background-color: #28a745; /* Green for executing */}
+        .task.sync { background-color: #007bff; } /* Blue */
+        .task.callback { background-color: #fd7e14; } /* Orange */
+        .task.promise-then { background-color: #6f42c1; } /* Purple */
+        .task.promise-catch { background-color: #dc3545; } /* Red */
+        .api-task { background-color: #ffc107; color: #333; } /* Yellow */
+
+
+        .event-loop {
+            width: 80px;
+            height: 80px;
+            background-color: #17a2b8; /* Info Blue */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px; /* Space it out a bit */
+            box-shadow: 0 0 10px #17a2b8;
+            animation: pulse 2s infinite ease-in-out;
+            align-self: center; /* Center within queues-area if direct child */
+        }
+        .event-loop-container { /* Added container for better centering of Event Loop */
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top:15px;
+        }
+
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(23, 162, 184, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(23, 162, 184, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(23, 162, 184, 0); }
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .controls button {
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .controls button:hover {
+            background-color: #0056b3;
+        }
+        .controls button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            min-height: 60px;
+            line-height: 1.6;
+        }
+        .code-display {
+            background-color: #282c34; /* Dark background for code */
+            color: #abb2bf; /* Light text for code */
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap; /* Keeps formatting */
+            text-align: left;
+            width: 90%;
+            max-width: 800px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .highlight {
+            background-color: yellow;
+            color: black;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Journey into Asynchronous JavaScript! (The Chef's Kitchen)</h1>
+
+    <div id="explanation">
+        Welcome! JavaScript is like a Chef who can only do one thing at a time (single-threaded).
+        Let's see how it manages tasks, especially slow ones!
+    </div>
+    <pre id="code-output" class="code-display">Console Output will appear here.</pre>
+
+
+    <div class="controls">
+        <button id="runSync">Run Synchronous Code</button>
+        <button id="runSetTimeout">Run with setTimeout (Callback)</button>
+        <button id="runPromise">Run with Promise</button>
+        <button id="runAsyncAwait">Run with async/await</button>
+        <button id="reset">Reset All</button>
+    </div>
+
+    <div class="container">
+        <div class="visual-area">
+            <div class="js-engine">
+                <h3>JavaScript Engine (Chef)</h3>
+                <div class="call-stack" id="callStack">
+                    <!-- Tasks will appear here -->
+                </div>
+            </div>
+
+            <div class="web-apis">
+                <h3>Web APIs (Kitchen Helpers)</h3>
+                <div class="api-item-area" id="apiTimeout">
+                    <h4>Oven (setTimeout)</h4>
+                    <!-- setTimeout tasks go here -->
+                </div>
+                 <div class="api-item-area" id="apiFetch">
+                    <h4>Delivery Service (fetch/Promises)</h4>
+                    <!-- fetch tasks go here -->
+                </div>
+            </div>
+
+            <div class="queues-area">
+                <h3>Queues (Waiting Lines)</h3>
+                 <div class="event-loop-container">
+                    <div class="event-loop" id="eventLoop">Event Loop</div>
+                </div>
+                <h4>Microtask Queue (VIP Line - Promises)</h4>
+                <div class="microtask-queue" id="microtaskQueue">
+                    <!-- Promise .then/.catch callbacks -->
+                </div>
+                <h4>Callback Queue (Regular Line - Timers, Events)</h4>
+                <div class="callback-queue" id="callbackQueue">
+                    <!-- setTimeout/event callbacks -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const callStackEl = document.getElementById('callStack');
+        const apiTimeoutEl = document.getElementById('apiTimeout');
+        const apiFetchEl = document.getElementById('apiFetch');
+        const callbackQueueEl = document.getElementById('callbackQueue');
+        const microtaskQueueEl = document.getElementById('microtaskQueue');
+        const eventLoopEl = document.getElementById('eventLoop');
+        const explanationEl = document.getElementById('explanation');
+        const codeOutputEl = document.getElementById('code-output');
+
+        const runSyncBtn = document.getElementById('runSync');
+        const runSetTimeoutBtn = document.getElementById('runSetTimeout');
+        const runPromiseBtn = document.getElementById('runPromise');
+        const runAsyncAwaitBtn = document.getElementById('runAsyncAwait');
+        const resetBtn = document.getElementById('reset');
+
+        let consoleOutput = [];
+        let animationDelay = 700; // ms for each step of animation
+        let isAnimating = false;
+
+        function updateExplanation(text, highlightText = "") {
+            if (highlightText) {
+                explanationEl.innerHTML = text.replace(highlightText, `<span class="highlight">${highlightText}</span>`);
+            } else {
+                explanationEl.textContent = text;
+            }
+        }
+
+        function logToConsole(message) {
+            consoleOutput.push(message);
+            codeOutputEl.textContent = consoleOutput.join('\n');
+            codeOutputEl.scrollTop = codeOutputEl.scrollHeight; // Scroll to bottom
+        }
+
+        function createTaskElement(name, type = 'sync') {
+            const task = document.createElement('div');
+            task.classList.add('task', type);
+            task.textContent = name;
+            // Add a slight delay for the transition to be visible on add
+            setTimeout(() => task.classList.add('visible'), 50);
+            return task;
+        }
+         function createApiTaskElement(name) {
+            const task = document.createElement('div');
+            task.classList.add('api-task');
+            task.textContent = name;
+            setTimeout(() => task.classList.add('visible'), 50);
+            return task;
+        }
+
+
+        function addToCallStack(taskName, type = 'sync') {
+            const task = createTaskElement(taskName, type);
+            callStackEl.insertBefore(task, callStackEl.firstChild); // Add to top visually
+            return task;
+        }
+
+        function removeFromCallStack() {
+            if (callStackEl.firstChild) {
+                const task = callStackEl.firstChild;
+                task.classList.remove('visible');
+                setTimeout(() => {
+                    if (callStackEl.contains(task)) callStackEl.removeChild(task);
+                }, animationDelay / 2);
+            }
+        }
+
+        function addToApi(taskName, apiElement) {
+            const task = createApiTaskElement(taskName);
+            apiElement.appendChild(task);
+            return task;
+        }
+        function removeFromApi(task, apiElement) {
+             if (apiElement.contains(task)) {
+                task.classList.remove('visible');
+                setTimeout(() => {
+                     if (apiElement.contains(task)) apiElement.removeChild(task);
+                }, animationDelay / 2);
+            }
+        }
+
+
+        function addToQueue(taskName, queueElement, type = 'callback') {
+            const task = createTaskElement(taskName, type);
+            queueElement.appendChild(task); // Add to bottom for FIFO
+            return task;
+        }
+
+        function processFromQueue(queueElement) {
+            if (queueElement.firstChild) {
+                const task = queueElement.firstChild;
+                task.classList.remove('visible'); // Start fade out from queue
+                setTimeout(() => {
+                    if (queueElement.contains(task)) queueElement.removeChild(task);
+                    // Simulate moving to call stack
+                    const callStackTask = addToCallStack(task.textContent, task.classList.contains('promise-then') ? 'promise-then' : 'callback');
+                    flashEventLoop();
+                    updateExplanation(`Event Loop moved '${task.textContent}' from Queue to Call Stack.`);
+                    setTimeout(() => {
+                        callStackTask.classList.add('executing');
+                        logToConsole(`CONSOLE: Executing ${task.textContent}`);
+                        updateExplanation(`'${task.textContent}' is now executing in the Call Stack.`);
+                         setTimeout(() => {
+                            removeFromCallStack();
+                            updateExplanation(`'${task.textContent}' finished and removed from Call Stack.`);
+                            // Crucial: Check queues again after a task finishes
+                            setTimeout(checkQueuesAndProcess, animationDelay);
+                        }, animationDelay);
+                    }, animationDelay);
+                }, animationDelay / 2);
+                return true; // Task was processed
+            }
+            return false; // No task to process
+        }
+
+        function flashEventLoop() {
+            eventLoopEl.style.backgroundColor = '#ffc107'; // Yellow flash
+            eventLoopEl.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                eventLoopEl.style.backgroundColor = '#17a2b8';
+                eventLoopEl.style.transform = 'scale(1)';
+            }, animationDelay / 2);
+        }
+
+        async function checkQueuesAndProcess() {
+            if (isAnimating && callStackEl.children.length === 0) { // Only if call stack is empty
+                updateExplanation("Event Loop: Checking Microtask Queue (VIPs first!)...");
+                flashEventLoop();
+                await new Promise(r => setTimeout(r, animationDelay / 2));
+
+                if (microtaskQueueEl.children.length > 0) {
+                    if(processFromQueue(microtaskQueueEl)) return; // Return to allow this to finish before checking callback queue
+                } else {
+                     updateExplanation("Event Loop: Microtask Queue is empty. Checking Callback Queue...");
+                     flashEventLoop();
+                     await new Promise(r => setTimeout(r, animationDelay / 2));
+                     if (callbackQueueEl.children.length > 0) {
+                        if(processFromQueue(callbackQueueEl)) return;
+                     } else {
+                        updateExplanation("Event Loop: All queues are empty. Waiting for new tasks or events.");
+                        // End of current simulation flow, re-enable buttons if appropriate
+                        // This part needs more sophisticated state management for complex flows
+                        if (callStackEl.children.length === 0 && microtaskQueueEl.children.length === 0 && callbackQueueEl.children.length === 0 ) {
+                             toggleButtons(false); // Re-enable buttons if everything is clear
+                             isAnimating = false;
+                        }
+                     }
+                }
+            } else if (callStackEl.children.length > 0) {
+                // Do nothing, JS Engine is busy
+            } else if (!isAnimating) {
+                 toggleButtons(false);
+            }
+        }
+
+
+        function toggleButtons(disable) {
+            isAnimating = disable;
+            runSyncBtn.disabled = disable;
+            runSetTimeoutBtn.disabled = disable;
+            runPromiseBtn.disabled = disable;
+            runAsyncAwaitBtn.disabled = disable;
+            // Reset button is always enabled unless specifically part of an animation lock
+        }
+
+        function resetVisuals() {
+            callStackEl.innerHTML = '';
+            apiTimeoutEl.innerHTML = '<h4>Oven (setTimeout)</h4>';
+            apiFetchEl.innerHTML = '<h4>Delivery Service (fetch/Promises)</h4>';
+            callbackQueueEl.innerHTML = '';
+            microtaskQueueEl.innerHTML = '';
+            consoleOutput = [];
+            codeOutputEl.textContent = 'Console Output will appear here.';
+            updateExplanation("Welcome! Select an action to see how JavaScript handles it.");
+            toggleButtons(false);
+            isAnimating = false; // Ensure animation flag is reset
+        }
+        resetBtn.addEventListener('click', resetVisuals);
+
+        // --- SCENARIO FUNCTIONS ---
+
+        async function runSyncScenario() {
+            if (isAnimating) return;
+            resetVisuals();
+            toggleButtons(true);
+            updateExplanation("Running Synchronous Code. Tasks go one-by-one on the Call Stack.", "Call Stack");
+
+            logToConsole("SCRIPT: Start Synchronous Script");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            const task1 = addToCallStack('Task A (Sync)');
+            logToConsole("CONSOLE: Executing Task A");
+            updateExplanation("Task A added to Call Stack. It's at the top, so it runs!", "Call Stack");
+            task1.classList.add('executing');
+            await new Promise(r => setTimeout(r, animationDelay));
+            removeFromCallStack();
+            updateExplanation("Task A finished and removed from Call Stack.");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            const task2 = addToCallStack('Task B (Sync)');
+            logToConsole("CONSOLE: Executing Task B");
+            updateExplanation("Task B added to Call Stack. Now it runs!", "Call Stack");
+            task2.classList.add('executing');
+            await new Promise(r => setTimeout(r, animationDelay));
+            removeFromCallStack();
+            updateExplanation("Task B finished and removed from Call Stack.");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            logToConsole("SCRIPT: End Synchronous Script");
+            updateExplanation("Synchronous script finished. Notice how everything waited its turn.");
+            toggleButtons(false);
+        }
+        runSyncBtn.addEventListener('click', runSyncScenario);
+
+
+        async function runSetTimeoutScenario() {
+            if (isAnimating) return;
+            resetVisuals();
+            toggleButtons(true);
+            updateExplanation("Running code with setTimeout (a Web API).", "setTimeout");
+
+            logToConsole("SCRIPT: Start setTimeout Script");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            const task1 = addToCallStack('Main Task 1');
+            logToConsole("CONSOLE: Executing Main Task 1");
+            task1.classList.add('executing');
+            await new Promise(r => setTimeout(r, animationDelay));
+            removeFromCallStack();
+            updateExplanation("Main Task 1 finished. Next line: setTimeout.");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            // Simulate setTimeout
+            addToCallStack('setTimeout setup');
+            updateExplanation("setTimeout('Pizza Ready', 2s) encountered. JS Engine hands it to Web API (Oven).", "Web API");
+            logToConsole("SCRIPT: setTimeout('Pizza Ready', 2000) called.");
+            await new Promise(r => setTimeout(r, animationDelay));
+            removeFromCallStack(); // setTimeout setup is quick
+            const apiTask = addToApi('Baking Pizza (2s)', apiTimeoutEl);
+            updateExplanation("Web API's 'Oven' is now 'Baking Pizza'. JS Engine is free for other tasks!", "JS Engine is free");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            const task2 = addToCallStack('Main Task 2');
+            logToConsole("CONSOLE: Executing Main Task 2");
+            updateExplanation("JS Engine runs Main Task 2 while 'Oven' works.", "Main Task 2");
+            task2.classList.add('executing');
+            await new Promise(r => setTimeout(r, animationDelay));
+            removeFromCallStack();
+            updateExplanation("Main Task 2 finished.");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            logToConsole("SCRIPT: Main script part finished, waiting for setTimeout's callback...");
+            updateExplanation("Main script lines done. Call Stack is empty. Event Loop watches...", "Call Stack is empty");
+
+            // Simulate API timer finishing
+            await new Promise(r => setTimeout(r, animationDelay * 2)); // Simulate the 2s wait for setTimeout
+            removeFromApi(apiTask, apiTimeoutEl);
+            addToQueue('Pizza Ready Callback', callbackQueueEl, 'callback');
+            logToConsole("WEB API: 'Pizza Ready' timer done. Callback moved to Callback Queue.");
+            updateExplanation("'Oven' finished! 'Pizza Ready Callback' put on the Callback Queue.", "Callback Queue");
+            flashEventLoop();
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            // Event loop checks
+            checkQueuesAndProcess(); // This will eventually re-enable buttons when all queues are clear
+        }
+        runSetTimeoutBtn.addEventListener('click', runSetTimeoutScenario);
+
+        async function runPromiseScenario() {
+            if (isAnimating) return;
+            resetVisuals();
+            toggleButtons(true);
+            updateExplanation("Running code with a Promise (e.g., from fetch).", "Promise");
+
+            logToConsole("SCRIPT: Start Promise Script");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            addToCallStack('fetchUserData() setup');
+            logToConsole("SCRIPT: Calling fetchUserData() which returns a Promise.");
+            updateExplanation("Calling fetchUserData(). It returns a Promise and is handed to Web API (Delivery Service).", "Web API");
+            await new Promise(r => setTimeout(r, animationDelay));
+            removeFromCallStack();
+            const apiTask = addToApi('Getting User Data (Net)', apiFetchEl);
+            updateExplanation("Web API is 'Getting User Data'. Promise is 'pending'. JS continues.", "pending");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            const thenCallbackTaskName = 'processUserData (.then)';
+            const catchCallbackTaskName = 'handleError (.catch)';
+
+            // This part is simplified. In reality, .then is registered immediately.
+            logToConsole("SCRIPT: .then(processUserData) and .catch(handleError) are registered.");
+            updateExplanation("`.then()` and `.catch()` are attached to the Promise, waiting for it to settle.", ".then()");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+
+            const task1 = addToCallStack('Other Main Task');
+            logToConsole("CONSOLE: Executing Other Main Task");
+            updateExplanation("JS Engine runs 'Other Main Task' while Promise is pending.", "Other Main Task");
+            task1.classList.add('executing');
+            await new Promise(r => setTimeout(r, animationDelay));
+            removeFromCallStack();
+            updateExplanation("'Other Main Task' finished. Call Stack empty. Waiting for Promise...");
+             await new Promise(r => setTimeout(r, animationDelay));
+
+
+            // Simulate Promise resolving
+            const success = Math.random() > 0.3; // 70% chance of success
+            await new Promise(r => setTimeout(r, animationDelay * 2)); // Simulate network delay
+            removeFromApi(apiTask, apiFetchEl);
+
+            if (success) {
+                logToConsole("WEB API: User data fetched! Promise RESOLVED.");
+                updateExplanation("Promise RESOLVED! `.then` callback ('processUserData') goes to Microtask Queue (VIP!).", "Microtask Queue");
+                addToQueue(thenCallbackTaskName, microtaskQueueEl, 'promise-then');
+            } else {
+                logToConsole("WEB API: Failed to fetch data! Promise REJECTED.");
+                updateExplanation("Promise REJECTED! `.catch` callback ('handleError') goes to Microtask Queue.", "Microtask Queue");
+                addToQueue(catchCallbackTaskName, microtaskQueueEl, 'promise-catch');
+            }
+            flashEventLoop();
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            checkQueuesAndProcess();
+        }
+        runPromiseBtn.addEventListener('click', runPromiseScenario);
+
+
+        async function runAsyncAwaitScenario() {
+            if (isAnimating) return;
+            resetVisuals();
+            toggleButtons(true);
+            updateExplanation("Running code with async/await (syntactic sugar for Promises).", "async/await");
+
+            logToConsole("SCRIPT: Start async/await Script");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            addToCallStack('call getUserDataAsync()');
+            logToConsole("SCRIPT: Calling async function getUserDataAsync().");
+            updateExplanation("Calling an `async` function. It implicitly returns a Promise.", "async");
+            await new Promise(r => setTimeout(r, animationDelay));
+            // The async function itself is now on the call stack
+
+            // --- Inside the async function ---
+            // (Simulating the async function's execution context)
+            updateExplanation("Inside `getUserDataAsync`: `await fetch(...)` is encountered.", "await fetch");
+            logToConsole("ASYNC FN: `await fetch(...)` - handing off to Web API.");
+            const apiTask = addToApi('Fetching with await (Net)', apiFetchEl);
+            // With await, the async function *pauses*. Control returns to the caller IF the await is for a promise that's not yet settled.
+            // So, the 'call getUserDataAsync()' frame is notionally popped here, but its state is saved.
+            removeFromCallStack(); // remove 'call getUserDataAsync()'
+            updateExplanation("`getUserDataAsync` PAUSES at `await`. JS Engine can do other work if any.", "PAUSES");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+
+            const taskAfterAsyncCall = addToCallStack('Task After Async Call');
+            logToConsole("CONSOLE: Executing 'Task After Async Call' (because async func paused).");
+            taskAfterAsyncCall.classList.add('executing');
+            updateExplanation("'Task After Async Call' runs because `getUserDataAsync` is paused waiting.", "Task After Async Call");
+            await new Promise(r => setTimeout(r, animationDelay));
+            removeFromCallStack();
+            updateExplanation("'Task After Async Call' finished. Now waiting for `await` to complete...");
+            await new Promise(r => setTimeout(r, animationDelay));
+
+
+            // Simulate Promise from fetch resolving
+            const success = Math.random() > 0.3;
+            await new Promise(r => setTimeout(r, animationDelay * 2)); // Simulate network delay
+            removeFromApi(apiTask, apiFetchEl);
+
+
+            // When await completes, the rest of the async function is scheduled (like a .then()) on the Microtask Queue
+            if (success) {
+                logToConsole("WEB API: `await fetch` data ready! Promise RESOLVED.");
+                updateExplanation("`await fetch` completed. Remainder of `getUserDataAsync` (after await) goes to Microtask Queue.", "Microtask Queue");
+                addToQueue('resume getUserDataAsync (after await)', microtaskQueueEl, 'promise-then');
+            } else {
+                 logToConsole("WEB API: `await fetch` FAILED! Promise REJECTED.");
+                 updateExplanation("`await fetch` REJECTED. The `catch` block (or propagation) part of `getUserDataAsync` scheduled.", "Microtask Queue");
+                 addToQueue('resume getUserDataAsync (catch)', microtaskQueueEl, 'promise-catch');
+            }
+            flashEventLoop();
+            await new Promise(r => setTimeout(r, animationDelay));
+
+            // Event loop will pick up the rest of the async function
+            checkQueuesAndProcess(); // This will eventually process the rest of async fn and then re-enable buttons.
+        }
+        runAsyncAwaitBtn.addEventListener('click', runAsyncAwaitScenario);
+
+
+        // Initialize
+        resetVisuals();
+        updateExplanation("Hi there! I'm your JavaScript Chef. Click a button to see how I cook (run code)!");
+
+    </script>
+
+</body>
+</html>
