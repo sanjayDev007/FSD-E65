@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>APIs with JavaScript - Visual Guide</title>
+    <style>
+        body { 
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif; 
+            margin: 30px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9ff;
+        }
+        h1, h2, h3 { 
+            color: #4527a0; 
+            border-bottom: 2px solid #7e57c2;
+            padding-bottom: 5px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .diagram { 
+            margin: 30px 0; 
+            text-align: center;
+        }
+        .diagram svg { 
+            background: #f3f3ff; 
+            border-radius: 10px;
+            border: 1px solid #ccc; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .methods { margin-top: 30px; }
+        .methods ul { list-style: none; }
+        .methods li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+        }
+        .methods li:before {
+            content: "🔹";
+            position: absolute;
+            left: 0;
+        }
+        .code-example {
+            background: #f5f5f5;
+            border-left: 4px solid #7e57c2;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, monospace;
+        }
+        .analogy {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 5px;
+        }
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .comparison-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 0 10px;
+        }
+        .method-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 8px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .get { border-left-color: #4CAF50; }
+        .post { border-left-color: #2196F3; }
+        .put { border-left-color: #FF9800; }
+        .patch { border-left-color: #9C27B0; }
+        .delete { border-left-color: #F44336; }
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .dev-tools-image {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>APIs with JavaScript 🌐</h1>
+        <p>
+            Hey there! Today we're going to learn about something super important in the world of programming: <strong>APIs</strong>. 
+            Don't worry if you've never heard of them before - by the end of this guide, you'll be an API expert! 😎
+        </p>
+
+        <div class="analogy">
+            <div class="analogy-title">🍕 Real-life Analogy: Pizza Restaurant</div>
+            <p>
+                Think of an API like ordering pizza over the phone. You (the client) call the restaurant (the server) with your request. You don't need to know how they make the pizza - you just need to know their phone number and how to order (the API). The restaurant has a menu (API documentation) that tells you what pizzas are available, and you speak a language both of you understand ("I want a large pepperoni pizza"). The pizza is then delivered to you (the response). That's basically how APIs work!
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>What is an API? 🤔</h2>
+        <p>
+            <strong>API</strong> stands for <strong>Application Programming Interface</strong>. But what does that actually mean?
+        </p>
+        
+        <p>
+            An API is simply a way for different software programs to talk to each other. It's like a messenger that takes your request, tells the system what you want to do, and then returns the response back to you.
+        </p>
+        
+        <p>
+            In web development, an API is often just a special <strong>URL</strong> (web address) that you can send requests to. Instead of returning a webpage (like when you visit a site in your browser), it returns data - usually in a format called JSON.
+        </p>
+        
+        <div class="diagram">
+            <svg width="700" height="200">
+                <rect x="50" y="50" width="150" height="100" fill="#bbdefb" stroke="#1565c0" stroke-width="2" rx="10"/>
+                <text x="125" y="105" font-size="16" text-anchor="middle">Your App</text>
+                
+                <rect x="500" y="50" width="150" height="100" fill="#ffecb3" stroke="#ff8f00" stroke-width="2" rx="10"/>
+                <text x="575" y="105" font-size="16" text-anchor="middle">Server/Database</text>
+                
+                <rect x="275" y="75" width="150" height="50" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" rx="15"/>
+                <text x="350" y="105" font-size="16" text-anchor="middle">API</text>
+                
+                <path d="M 200 85 L 275 85" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="240" y="70" font-size="12" fill="#333">Request</text>
+                
+                <path d="M 425 115 L 500 115" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="460" y="135" font-size="12" fill="#333">Request</text>
+                
+                <path d="M 500 95 L 425 95" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="460" y="80" font-size="12" fill="#333">Response</text>
+                
+                <path d="M 275 115 L 200 115" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <text x="240" y="135" font-size="12" fill="#333">Response</text>
+                
+                <!-- Arrowhead marker -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <p>
+            The important thing to understand is that APIs help different software talk to each other - like a translator between two people who speak different languages!
+        </p>
+    </div>
+
+    <div class="container">
+        <h2>What is a URL? 🔗</h2>
+        <p>
+            Since web APIs are accessed through URLs, let's understand what a URL is first!
+        </p>
+        
+        <p>
+            A <strong>URL</strong> (Uniform Resource Locator) is basically a web address - it tells your browser exactly where to find something on the internet.
+        </p>
+        
+        <div class="diagram">
+            <svg width="700" height="120">
+                <rect x="50" y="30" width="600" height="50" fill="#f5f5f5" stroke="#333" stroke-width="1" rx="5"/>
+                
+                <!-- Protocol -->
+                <rect x="50" y="30" width="80" height="50" fill="#e1bee7" stroke="#333" stroke-width="1"/>
+                <text x="90" y="60" font-size="14" text-anchor="middle">https://</text>
+                <text x="90" y="95" font-size="12" text-anchor="middle">Protocol</text>
+                
+                <!-- Domain -->
+                <rect x="130" y="30" width="170" height="50" fill="#bbdefb" stroke="#333" stroke-width="1"/>
+                <text x="215" y="60" font-size="14" text-anchor="middle">api.example.com</text>
+                <text x="215" y="95" font-size="12" text-anchor="middle">Domain</text>
+                
+                <!-- Path -->
+                <rect x="300" y="30" width="190" height="50" fill="#c8e6c9" stroke="#333" stroke-width="1"/>
+                <text x="395" y="60" font-size="14" text-anchor="middle">/users/123</text>
+                <text x="395" y="95" font-size="12" text-anchor="middle">Path</text>
+                
+                <!-- Query Parameters -->
+                <rect x="490" y="30" width="160" height="50" fill="#ffecb3" stroke="#333" stroke-width="1"/>
+                <text x="570" y="60" font-size="14" text-anchor="middle">?name=Alex</text>
+                <text x="570" y="95" font-size="12" text-anchor="middle">Query Parameters</text>
+            </svg>
+        </div>
+        
+        <p>
+            In an API URL:
+        </p>
+        <ul>
+            <li>The <span class="highlight">domain</span> usually points to the API service (like api.weather.com)</li>
+            <li>The <span class="highlight">path</span> often specifies what resource you want (like /forecast)</li>
+            <li>The <span class="highlight">query parameters</span> let you filter or specify details (like ?city=Paris)</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h2>API Methods 🛠️</h2>
+        <p>
+            When you interact with APIs, you use different "methods" (also called HTTP verbs) to tell the API what you want to do. Think of these methods like different actions or verbs - they tell the API if you want to get, create, update, or delete data.
+        </p>
+        
+        <div class="method-card get">
+            <h3>GET 📥</h3>
+            <p><strong>What it does:</strong> Fetches or retrieves data from the server</p>
+            <p><strong>Real-life example:</strong> Like checking the menu at a restaurant - you're just looking, not changing anything</p>
+            <div class="code-example">
+                // Fetching a list of users<br>
+                fetch('https://api.example.com/users')<br>
+                &nbsp;&nbsp;.then(response => response.json())<br>
+                &nbsp;&nbsp;.then(data => console.log(data));<br>
+            </div>
+        </div>
+        
+        <div class="method-card post">
+            <h3>POST 📤</h3>
+            <p><strong>What it does:</strong> Sends data to create a new resource on the server</p>
+            <p><strong>Real-life example:</strong> Like placing a new order at a restaurant - you're adding something new</p>
+            <div class="code-example">
+                // Creating a new user<br>
+                fetch('https://api.example.com/users', {<br>
+                &nbsp;&nbsp;method: 'POST',<br>
+                &nbsp;&nbsp;headers: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;'Content-Type': 'application/json'<br>
+                &nbsp;&nbsp;},<br>
+                &nbsp;&nbsp;body: JSON.stringify({<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;name: 'Alex',<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;age: 15<br>
+                &nbsp;&nbsp;})<br>
+                })<br>
+                &nbsp;&nbsp;.then(response => response.json())<br>
+                &nbsp;&nbsp;.then(data => console.log('User created:', data));<br>
+            </div>
+        </div>
+        
+        <div class="method-card put">
+            <h3>PUT 🔄</h3>
+            <p><strong>What it does:</strong> Updates an existing resource by replacing it entirely</p>
+            <p><strong>Real-life example:</strong> Like replacing your entire meal with a different one - "I don't want pasta anymore, I want pizza instead"</p>
+            <div class="code-example">
+                // Updating a user completely<br>
+                fetch('https://api.example.com/users/123', {<br>
+                &nbsp;&nbsp;method: 'PUT',<br>
+                &nbsp;&nbsp;headers: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;'Content-Type': 'application/json'<br>
+                &nbsp;&nbsp;},<br>
+                &nbsp;&nbsp;body: JSON.stringify({<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;name: 'Alex',<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;age: 16,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;email: 'alex@example.com'<br>
+                &nbsp;&nbsp;})<br>
+                })<br>
+                &nbsp;&nbsp;.then(response => response.json())<br>
+                &nbsp;&nbsp;.then(data => console.log('User updated:', data));<br>
+            </div>
+        </div>
+        
+        <div class="method-card patch">
+            <h3>PATCH 🩹</h3>
+            <p><strong>What it does:</strong> Partially updates an existing resource</p>
+            <p><strong>Real-life example:</strong> Like modifying just part of your order - "Can I add extra cheese to my pizza?"</p>
+            <div class="code-example">
+                // Updating just the age of a user<br>
+                fetch('https://api.example.com/users/123', {<br>
+                &nbsp;&nbsp;method: 'PATCH',<br>
+                &nbsp;&nbsp;headers: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;'Content-Type': 'application/json'<br>
+                &nbsp;&nbsp;},<br>
+                &nbsp;&nbsp;body: JSON.stringify({<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;age: 16<br>
+                &nbsp;&nbsp;})<br>
+                })<br>
+                &nbsp;&nbsp;.then(response => response.json())<br>
+                &nbsp;&nbsp;.then(data => console.log('User partially updated:', data));<br>
+            </div>
+        </div>
+        
+        <div class="method-card delete">
+            <h3>DELETE 🗑️</h3>
+            <p><strong>What it does:</strong> Removes a resource from the server</p>
+            <p><strong>Real-life example:</strong> Like canceling your order - "I don't want this pizza anymore"</p>
+            <div class="code-example">
+                // Deleting a user<br>
+                fetch('https://api.example.com/users/123', {<br>
+                &nbsp;&nbsp;method: 'DELETE'<br>
+                })<br>
+                &nbsp;&nbsp;.then(response => {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (response.ok) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log('User deleted successfully');<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;});<br>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>How to See API Calls Behind the Scenes 🕵️‍♂️</h2>
+        <p>
+            When you're working with APIs, it's super helpful to see what's happening behind the scenes. Your web browser has amazing tools that let you do just that!
+        </p>
+        
+        <h3>Using Developer Tools to Inspect API Calls:</h3>
+        <ol>
+            <li>Open your web browser (Chrome, Firefox, Edge, etc.)</li>
+            <li>Right-click anywhere on a webpage and select <span class="highlight">Inspect</span> or <span class="highlight">Inspect Element</span></li>
+            <li>Click on the <span class="highlight">Network</span> tab at the top of the developer tools panel</li>
+            <li>Filter the requests by clicking on <span class="highlight">Fetch/XHR</span></li>
+            <li>Now interact with the website, and you'll see all the API calls appear in this panel!</li>
+        </ol>
+        
+        <div class="diagram">
+            <svg width="700" height="300">
+                <!-- Browser Window -->
+                <rect x="50" y="30" width="600" height="240" fill="#f5f5f5" stroke="#333" stroke-width="2" rx="10"/>
+                
+                <!-- Address Bar -->
+                <rect x="70" y="50" width="560" height="30" fill="white" stroke="#ccc" stroke-width="1" rx="5"/>
+                <text x="110" y="70" font-size="14">https://example.com</text>
+                
+                <!-- Content Area -->
+                <rect x="70" y="90" width="560" height="100" fill="white" stroke="#ccc" stroke-width="1"/>
+                <text x="350" y="140" font-size="14" text-anchor="middle">Website Content</text>
+                
+                <!-- Dev Tools -->
+                <rect x="70" y="190" width="560" height="60" fill="#e1f5fe" stroke="#0288d1" stroke-width="2"/>
+                <text x="110" y="210" font-size="12">Network</text>
+                <text x="170" y="210" font-size="12">Console</text>
+                <text x="230" y="210" font-size="12">Elements</text>
+                <rect x="95" y="205" width="60" height="1" fill="#0288d1" stroke="#0288d1" stroke-width="2"/>
+                
+                <!-- Network Panel -->
+                <rect x="80" y="220" width="540" height="20" fill="white" stroke="#ccc" stroke-width="1"/>
+                <text x="230" y="235" font-size="12">GET https://api.example.com/users (200 OK)</text>
+                
+                <!-- Callouts -->
+                <rect x="100" y="185" width="60" height="20" fill="rgba(255,152,0,0.3)" stroke="#ff9800" stroke-width="1" rx="5"/>
+                <text x="350" y="280" font-size="14" fill="#d32f2f" font-weight="bold">This is where you see API calls!</text>
+                <path d="M 350 275 L 130 240" stroke="#d32f2f" stroke-width="2" marker-end="url(#arrowhead)"/>
+            </svg>
+        </div>
+        
+        <p>
+            What you can see in the Network tab:
+        </p>
+        <ul>
+            <li>The URL of each API call</li>
+            <li>The method used (GET, POST, etc.)</li>
+            <li>The status code (200 means success, 404 means not found, etc.)</li>
+            <li>When you click on a request, you can see the headers, request data, and response data</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h2>Using APIs in JavaScript 💻</h2>
+        
+        <h3>How to Get Data from an API (GET)</h3>
+        <p>
+            The most common way to work with APIs in JavaScript is using the <code>fetch()</code> function. It's built right into your browser!
+        </p>
+        
+        <div class="code-example">
+            // Basic GET request<br>
+            fetch('https://jsonplaceholder.typicode.com/users')<br>
+            &nbsp;&nbsp;.then(response => {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Check if the request was successful<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;if (!response.ok) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error('Network response was not ok');<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;return response.json(); // Parse the JSON data<br>
+            &nbsp;&nbsp;})<br>
+            &nbsp;&nbsp;.then(data => {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Do something with the data<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;console.log('Users:', data);<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Display users on the page<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;const userList = document.getElementById('userList');<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;data.forEach(user => {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const listItem = document.createElement('li');<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listItem.textContent = user.name;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;userList.appendChild(listItem);<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+            &nbsp;&nbsp;})<br>
+            &nbsp;&nbsp;.catch(error => {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Handle any errors<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;console.error('There was a problem with the fetch operation:', error);<br>
+            &nbsp;&nbsp;});
+        </div>
+        
+        <h3>How to Post Data to an API (POST)</h3>
+        <p>
+            When you want to send data to an API (like creating a new user account), you'll use a POST request.
+        </p>
+        
+        <div class="code-example">
+            // Data to send to the server<br>
+            const newUser = {<br>
+            &nbsp;&nbsp;name: 'Alex Johnson',<br>
+            &nbsp;&nbsp;email: 'alex@example.com',<br>
+            &nbsp;&nbsp;username: 'alexcoder15'<br>
+            };<br><br>
+            
+            // POST request<br>
+            fetch('https://jsonplaceholder.typicode.com/users', {<br>
+            &nbsp;&nbsp;method: 'POST', // Specify the method<br>
+            &nbsp;&nbsp;headers: {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;'Content-Type': 'application/json' // Tell the server we're sending JSON<br>
+            &nbsp;&nbsp;},<br>
+            &nbsp;&nbsp;body: JSON.stringify(newUser) // Convert the JavaScript object to a JSON string<br>
+            })<br>
+            &nbsp;&nbsp;.then(response => response.json())<br>
+            &nbsp;&nbsp;.then(data => {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;console.log('Success! New user created:', data);<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Show success message<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;document.getElementById('result').textContent = `User ${data.name} created with ID: ${data.id}`;<br>
+            &nbsp;&nbsp;})<br>
+            &nbsp;&nbsp;.catch(error => {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;console.error('Error creating user:', error);<br>
+            &nbsp;&nbsp;});
+        </div>
+        
+        <h3>Using Async/Await with APIs (Modern Way)</h3>
+        <p>
+            A cleaner way to work with APIs is using async/await, which makes your code look more like regular synchronous code.
+        </p>
+        
+        <div class="code-example">
+            // Async function to fetch users<br>
+            async function getUsers() {<br>
+            &nbsp;&nbsp;try {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Wait for the fetch to complete<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch('https://jsonplaceholder.typicode.com/users');<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Check if request was successful<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;if (!response.ok) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error(`HTTP error! status: ${response.status}`);<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Parse the JSON<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;const data = await response.json();<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;// Use the data<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;console.log('Users:', data);<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;return data;<br>
+            &nbsp;&nbsp;} catch (error) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;console.error('Error fetching users:', error);<br>
+            &nbsp;&nbsp;}<br>
+            }<br><br>
+            
+            // Call the async function<br>
+            getUsers().then(users => {<br>
+            &nbsp;&nbsp;// Do something with the users data<br>
+            &nbsp;&nbsp;if (users) {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;console.log(`We found ${users.length} users!`);<br>
+            &nbsp;&nbsp;}<br>
+            });
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Summary: The Big Picture 🖼️</h2>
+        <ul>
+            <li><strong>API:</strong> A way for different software programs to talk to each other, often using URLs on the web</li>
+            <li><strong>URL:</strong> A web address that points to a specific resource</li>
+            <li><strong>API Methods:</strong> GET, POST, PUT, PATCH, and DELETE - different ways to interact with data</li>
+            <li><strong>Inspecting API Calls:</strong> Use the Network tab in Developer Tools to see what's happening</li>
+            <li><strong>Using APIs in JavaScript:</strong> Use the fetch() function to make requests and handle responses</li>
+        </ul>
+        
+        <div class="analogy">
+            <div class="analogy-title">📚 Final Analogy: Library</div>
+            <p>
+                Think of an API like a library system:
+            </p>
+            <ul>
+                <li><strong>GET</strong> is like checking what books are available or borrowing a book</li>
+                <li><strong>POST</strong> is like donating a new book to the library</li>
+                <li><strong>PUT</strong> is like replacing an outdated book with a completely new edition</li>
+                <li><strong>PATCH</strong> is like updating just some pages or information in an existing book</li>
+                <li><strong>DELETE</strong> is like removing a book from the library catalog</li>
+            </ul>
+            <p>
+                You don't need to know how the library catalogs or organizes all their books internally - you just need to know how to use their system to find, borrow, donate, or return books!
+            </p>
+        </div>
+        
+        <p style="text-align: center; margin-top: 30px;">
+            <a href="simple-application.html" style="display: inline-block; background: #7e57c2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                Next: Build Your First API App →
+            </a>
+        </p>
+    </div>
+</body>
+</html>

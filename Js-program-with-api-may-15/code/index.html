@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Library Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>📚 My Book Library</h1>
+    </header>
+
+    <main>
+      <!-- Book List Section -->
+      <section id="book-list-section">
+        <h2>My Books</h2>
+        <div id="books-container">
+          <!-- Books will be displayed here -->
+          <p id="loading-message">Loading books...</p>
+        </div>
+      </section>
+
+      <!-- Add Book Form -->
+      <section id="add-book-section">
+        <h2>Add New Book</h2>
+        <form id="add-book-form">
+          <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+          </div>
+
+          <div class="form-group">
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" required>
+          </div>
+
+          <div class="form-group">
+            <label for="year">Year:</label>
+            <input type="number" id="year" name="year" required>
+          </div>
+
+          <button type="submit" class="btn primary-btn">Add Book</button>
+        </form>
+      </section>
+
+      <!-- Edit Book Modal (Hidden by default) -->
+      <div id="edit-modal" class="modal">
+        <div class="modal-content">
+          <span class="close-btn">×</span>
+          <h2>Edit Book</h2>
+          <form id="edit-book-form">
+            <input type="hidden" id="edit-book-id">
+            <div class="form-group">
+              <label for="edit-title">Title:</label>
+              <input type="text" id="edit-title" name="edit-title" required>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-author">Author:</label>
+              <input type="text" id="edit-author" name="edit-author" required>
+            </div>
+
+            <div class="form-group">
+              <label for="edit-year">Year:</label>
+              <input type="number" id="edit-year" name="edit-year" required>
+            </div>
+
+            <button type="submit" class="btn primary-btn">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Status Message Area -->
+      <div id="status-message" class="status-message"></div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

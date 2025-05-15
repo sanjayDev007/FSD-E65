@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Building a Simple API Application - Step-by-Step Guide</title>
+    <style>
+        body { 
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif; 
+            margin: 30px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9ff;
+        }
+        h1, h2, h3 { 
+            color: #4527a0; 
+            border-bottom: 2px solid #7e57c2;
+            padding-bottom: 5px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .diagram { 
+            margin: 30px 0; 
+            text-align: center;
+        }
+        .diagram svg { 
+            background: #f3f3ff; 
+            border-radius: 10px;
+            border: 1px solid #ccc; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .code-example {
+            background: #f5f5f5;
+            border-left: 4px solid #7e57c2;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, monospace;
+        }
+        .analogy {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 5px;
+        }
+        .step {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 5px solid #7e57c2;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #7e57c2;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        .preview {
+            border: 1px dashed #ccc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #7e57c2;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .result {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+        .note {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Building a Simple API Application 🚀</h1>
+        <p>
+            Hey there, future developer! Today we're going to build a cool app that talks to an API. By the end of this guide, you'll have created your very own "Book Library Manager" that can:
+        </p>
+        <ul>
+            <li>Fetch books from an online database (GET)</li>
+            <li>Add new books to the collection (POST)</li>
+            <li>Update book information (PUT/PATCH)</li>
+            <li>Remove books (DELETE)</li>
+        </ul>
+        
+        <div class="analogy">
+            <div class="analogy-title">🧩 What We're Building</div>
+            <p>
+                Imagine we're creating a digital bookshelf where you can see all your books, add new ones, edit information about them, and remove books you don't want anymore. The actual books are stored in an online database (the API), and our app is just the interface that helps you manage your collection.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Getting Started: Project Setup 🔧</h2>
+        
+        <div class="step">
+            <h3><span class="step-number">1</span> Create the Basic Files</h3>
+            <p>First, let's create our project files:</p>
+            <ol>
+                <li>Create a new folder called <code>book-library-app</code></li>
+                <li>Inside that folder, create three files:
+                    <ul>
+                        <li><code>index.html</code> - The main HTML file</li>
+                        <li><code>styles.css</code> - For our styling</li>
+                        <li><code>app.js</code> - Where our JavaScript code will live</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">2</span> Set Up the HTML Structure</h3>
+            <p>Open your <code>index.html</code> file and add this basic structure:</p>
+            
+            <div class="code-example">
+                &lt;!DOCTYPE html&gt;<br>
+                &lt;html lang="en"&gt;<br>
+                &lt;head&gt;<br>
+                &nbsp;&nbsp;&lt;meta charset="UTF-8"&gt;<br>
+                &nbsp;&nbsp;&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;<br>
+                &nbsp;&nbsp;&lt;title&gt;Book Library Manager&lt;/title&gt;<br>
+                &nbsp;&nbsp;&lt;link rel="stylesheet" href="styles.css"&gt;<br>
+                &lt;/head&gt;<br>
+                &lt;body&gt;<br>
+                &nbsp;&nbsp;&lt;div class="app-container"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;header&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;📚 My Book Library&lt;/h1&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;/header&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;main&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Book List Section --&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;section id="book-list-section"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;My Books&lt;/h2&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div id="books-container"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Books will be displayed here --&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p id="loading-message"&gt;Loading books...&lt;/p&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/section&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Add Book Form --&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;section id="add-book-section"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;Add New Book&lt;/h2&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;form id="add-book-form"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="form-group"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="title"&gt;Title:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" id="title" name="title" required&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="form-group"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="author"&gt;Author:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" id="author" name="author" required&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="form-group"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="year"&gt;Year:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="number" id="year" name="year" required&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button type="submit" class="btn primary-btn"&gt;Add Book&lt;/button&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/section&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Edit Book Modal (Hidden by default) --&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div id="edit-modal" class="modal"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="modal-content"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="close-btn"&gt;&times;&lt;/span&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;Edit Book&lt;/h2&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;form id="edit-book-form"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="hidden" id="edit-book-id"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="form-group"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="edit-title"&gt;Title:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" id="edit-title" name="edit-title" required&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="form-group"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="edit-author"&gt;Author:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="text" id="edit-author" name="edit-author" required&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="form-group"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;label for="edit-year"&gt;Year:&lt;/label&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type="number" id="edit-year" name="edit-year" required&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button type="submit" class="btn primary-btn"&gt;Save Changes&lt;/button&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!-- Status Message Area --&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div id="status-message" class="status-message"&gt;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+                &nbsp;&nbsp;&lt;/div&gt;<br>
+                <br>
+                &nbsp;&nbsp;&lt;script src="app.js"&gt;&lt;/script&gt;<br>
+                &lt;/body&gt;<br>
+                &lt;/html&gt;
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">3</span> Add Some Style</h3>
+            <p>Let's make our app look nice by adding some CSS. Open your <code>styles.css</code> file and add:</p>
+            
+            <div class="code-example">
+                /* Basic styles for our book library app */<br>
+                * {<br>
+                &nbsp;&nbsp;box-sizing: border-box;<br>
+                &nbsp;&nbsp;margin: 0;<br>
+                &nbsp;&nbsp;padding: 0;<br>
+                }<br>
+                <br>
+                body {<br>
+                &nbsp;&nbsp;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;<br>
+                &nbsp;&nbsp;line-height: 1.6;<br>
+                &nbsp;&nbsp;color: #333;<br>
+                &nbsp;&nbsp;background-color: #f5f5f5;<br>
+                }<br>
+                <br>
+                .app-container {<br>
+                &nbsp;&nbsp;max-width: 1000px;<br>
+                &nbsp;&nbsp;margin: 0 auto;<br>
+                &nbsp;&nbsp;padding: 20px;<br>
+                }<br>
+                <br>
+                header {<br>
+                &nbsp;&nbsp;background-color: #6a1b9a;<br>
+                &nbsp;&nbsp;color: white;<br>
+                &nbsp;&nbsp;padding: 20px;<br>
+                &nbsp;&nbsp;text-align: center;<br>
+                &nbsp;&nbsp;border-radius: 10px 10px 0 0;<br>
+                &nbsp;&nbsp;margin-bottom: 20px;<br>
+                }<br>
+                <br>
+                main {<br>
+                &nbsp;&nbsp;display: grid;<br>
+                &nbsp;&nbsp;grid-template-columns: 2fr 1fr;<br>
+                &nbsp;&nbsp;gap: 20px;<br>
+                }<br>
+                <br>
+                section {<br>
+                &nbsp;&nbsp;background: white;<br>
+                &nbsp;&nbsp;border-radius: 10px;<br>
+                &nbsp;&nbsp;padding: 20px;<br>
+                &nbsp;&nbsp;box-shadow: 0 2px 5px rgba(0,0,0,0.1);<br>
+                }<br>
+                <br>
+                h2 {<br>
+                &nbsp;&nbsp;color: #6a1b9a;<br>
+                &nbsp;&nbsp;margin-bottom: 15px;<br>
+                &nbsp;&nbsp;border-bottom: 2px solid #e1bee7;<br>
+                &nbsp;&nbsp;padding-bottom: 5px;<br>
+                }<br>
+                <br>
+                /* Form styles */<br>
+                .form-group {<br>
+                &nbsp;&nbsp;margin-bottom: 15px;<br>
+                }<br>
+                <br>
+                label {<br>
+                &nbsp;&nbsp;display: block;<br>
+                &nbsp;&nbsp;margin-bottom: 5px;<br>
+                &nbsp;&nbsp;font-weight: bold;<br>
+                }<br>
+                <br>
+                input[type="text"],<br>
+                input[type="number"] {<br>
+                &nbsp;&nbsp;width: 100%;<br>
+                &nbsp;&nbsp;padding: 10px;<br>
+                &nbsp;&nbsp;border: 1px solid #ddd;<br>
+                &nbsp;&nbsp;border-radius: 5px;<br>
+                &nbsp;&nbsp;font-size: 16px;<br>
+                }<br>
+                <br>
+                .btn {<br>
+                &nbsp;&nbsp;padding: 10px 15px;<br>
+                &nbsp;&nbsp;border: none;<br>
+                &nbsp;&nbsp;border-radius: 5px;<br>
+                &nbsp;&nbsp;cursor: pointer;<br>
+                &nbsp;&nbsp;font-size: 16px;<br>
+                }<br>
+                <br>
+                .primary-btn {<br>
+                &nbsp;&nbsp;background-color: #6a1b9a;<br>
+                &nbsp;&nbsp;color: white;<br>
+                }<br>
+                <br>
+                .edit-btn {<br>
+                &nbsp;&nbsp;background-color: #1565c0;<br>
+                &nbsp;&nbsp;color: white;<br>
+                &nbsp;&nbsp;margin-right: 5px;<br>
+                }<br>
+                <br>
+                .delete-btn {<br>
+                &nbsp;&nbsp;background-color: #c62828;<br>
+                &nbsp;&nbsp;color: white;<br>
+                }<br>
+                <br>
+                /* Book card styles */<br>
+                .book-card {<br>
+                &nbsp;&nbsp;background: #f9f9f9;<br>
+                &nbsp;&nbsp;border-radius: 8px;<br>
+                &nbsp;&nbsp;padding: 15px;<br>
+                &nbsp;&nbsp;margin-bottom: 15px;<br>
+                &nbsp;&nbsp;box-shadow: 0 1px 3px rgba(0,0,0,0.1);<br>
+                }<br>
+                <br>
+                .book-title {<br>
+                &nbsp;&nbsp;font-weight: bold;<br>
+                &nbsp;&nbsp;font-size: 18px;<br>
+                &nbsp;&nbsp;margin-bottom: 5px;<br>
+                }<br>
+                <br>
+                .book-author {<br>
+                &nbsp;&nbsp;color: #666;<br>
+                &nbsp;&nbsp;margin-bottom: 5px;<br>
+                }<br>
+                <br>
+                .book-year {<br>
+                &nbsp;&nbsp;color: #888;<br>
+                &nbsp;&nbsp;font-size: 14px;<br>
+                &nbsp;&nbsp;margin-bottom: 10px;<br>
+                }<br>
+                <br>
+                .book-actions {<br>
+                &nbsp;&nbsp;margin-top: 10px;<br>
+                }<br>
+                <br>
+                /* Modal styles */<br>
+                .modal {<br>
+                &nbsp;&nbsp;display: none;<br>
+                &nbsp;&nbsp;position: fixed;<br>
+                &nbsp;&nbsp;z-index: 999;<br>
+                &nbsp;&nbsp;left: 0;<br>
+                &nbsp;&nbsp;top: 0;<br>
+                &nbsp;&nbsp;width: 100%;<br>
+                &nbsp;&nbsp;height: 100%;<br>
+                &nbsp;&nbsp;background-color: rgba(0,0,0,0.5);<br>
+                }<br>
+                <br>
+                .modal-content {<br>
+                &nbsp;&nbsp;background-color: white;<br>
+                &nbsp;&nbsp;margin: 10% auto;<br>
+                &nbsp;&nbsp;padding: 20px;<br>
+                &nbsp;&nbsp;width: 70%;<br>
+                &nbsp;&nbsp;max-width: 500px;<br>
+                &nbsp;&nbsp;border-radius: 10px;<br>
+                }<br>
+                <br>
+                .close-btn {<br>
+                &nbsp;&nbsp;float: right;<br>
+                &nbsp;&nbsp;font-size: 28px;<br>
+                &nbsp;&nbsp;font-weight: bold;<br>
+                &nbsp;&nbsp;cursor: pointer;<br>
+                }<br>
+                <br>
+                /* Status message */<br>
+                .status-message {<br>
+                &nbsp;&nbsp;grid-column: 1 / span 2;<br>
+                &nbsp;&nbsp;padding: 10px;<br>
+                &nbsp;&nbsp;border-radius: 5px;<br>
+                &nbsp;&nbsp;margin-top: 15px;<br>
+                &nbsp;&nbsp;text-align: center;<br>
+                &nbsp;&nbsp;display: none;<br>
+                }<br>
+                <br>
+                .success {<br>
+                &nbsp;&nbsp;background-color: #e8f5e9;<br>
+                &nbsp;&nbsp;color: #2e7d32;<br>
+                &nbsp;&nbsp;border: 1px solid #a5d6a7;<br>
+                }<br>
+                <br>
+                .error {<br>
+                &nbsp;&nbsp;background-color: #ffebee;<br>
+                &nbsp;&nbsp;color: #c62828;<br>
+                &nbsp;&nbsp;border: 1px solid #ef9a9a;<br>
+                }<br>
+                <br>
+                /* Responsive design */<br>
+                @media (max-width: 768px) {<br>
+                &nbsp;&nbsp;main {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;grid-template-columns: 1fr;<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Building the App Functionality 🧩</h2>
+        
+        <div class="step">
+            <h3><span class="step-number">4</span> JavaScript Setup and API Configuration</h3>
+            <p>Now let's write our JavaScript code. Open your <code>app.js</code> file and start with the basic setup:</p>
+            
+            <div class="code-example">
+                // Book Library App JavaScript<br><br>
+                
+                // For this example, we'll use the JSONPlaceholder API<br>
+                // Normally you'd use a real books API, but this free testing API works for our demo<br>
+                const API_URL = 'https://jsonplaceholder.typicode.com';<br><br>
+                
+                // We'll treat the 'posts' endpoint as our 'books' for this example<br>
+                // In a real app, you'd use a proper books API endpoint<br><br>
+                
+                // DOM Elements<br>
+                const booksContainer = document.getElementById('books-container');<br>
+                const addBookForm = document.getElementById('add-book-form');<br>
+                const editBookForm = document.getElementById('edit-book-form');<br>
+                const editModal = document.getElementById('edit-modal');<br>
+                const closeBtn = document.querySelector('.close-btn');<br>
+                const statusMessage = document.getElementById('status-message');<br>
+                const loadingMessage = document.getElementById('loading-message');<br><br>
+                
+                // Initialize the app when the page loads<br>
+                document.addEventListener('DOMContentLoaded', initApp);<br><br>
+                
+                // Initialize the application<br>
+                function initApp() {<br>
+                &nbsp;&nbsp;// Fetch and display books when the page loads<br>
+                &nbsp;&nbsp;fetchBooks();<br><br>
+                
+                &nbsp;&nbsp;// Set up event listeners<br>
+                &nbsp;&nbsp;addBookForm.addEventListener('submit', handleAddBook);<br>
+                &nbsp;&nbsp;editBookForm.addEventListener('submit', handleEditBook);<br>
+                &nbsp;&nbsp;closeBtn.addEventListener('click', () => editModal.style.display = 'none');<br>
+                <br>
+                &nbsp;&nbsp;// Close modal if user clicks outside of it<br>
+                &nbsp;&nbsp;window.addEventListener('click', (e) => {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (e.target === editModal) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;editModal.style.display = 'none';<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;});<br>
+                }
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">5</span> Implementing the GET Request - Fetch Books</h3>
+            <p>Let's add the function to fetch books from the API:</p>
+            
+            <div class="code-example">
+                // Fetch all books from the API (GET)<br>
+                async function fetchBooks() {<br>
+                &nbsp;&nbsp;try {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Show loading message<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;loadingMessage.style.display = 'block';<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Fetch data from API<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch(`${API_URL}/posts`);<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Check if the request was successful<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (!response.ok) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error(`HTTP error! status: ${response.status}`);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Parse the JSON response<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const books = await response.json();<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Hide loading message<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;loadingMessage.style.display = 'none';<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Display the books<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;displayBooks(books);<br>
+                <br>
+                &nbsp;&nbsp;} catch (error) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Handle any errors<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;console.error('Error fetching books:', error);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;loadingMessage.textContent = 'Error loading books. Please try again.';<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;showStatusMessage('Error loading books from the server.', 'error');<br>
+                &nbsp;&nbsp;}<br>
+                }<br>
+                <br>
+                // Display books in the UI<br>
+                function displayBooks(books) {<br>
+                &nbsp;&nbsp;// Clear the books container first<br>
+                &nbsp;&nbsp;booksContainer.innerHTML = '';<br>
+                <br>
+                &nbsp;&nbsp;// Check if we have any books<br>
+                &nbsp;&nbsp;if (books.length === 0) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;booksContainer.innerHTML = '&lt;p&gt;No books found. Add some books!&lt;/p&gt;';<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+                &nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;// Loop through each book and create HTML for it<br>
+                &nbsp;&nbsp;books.forEach(book => {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Create a book card element<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const bookCard = document.createElement('div');<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;bookCard.className = 'book-card';<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;bookCard.dataset.id = book.id; // Store the book ID as a data attribute<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// In our test API, 'title' is the book title and 'body' is the description<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// We'll use 'userId' as the year published (just for this example)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;bookCard.innerHTML = `<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="book-title"&gt;${book.title}&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="book-author"&gt;By: ${getAuthorNameFromBody(book.body)}&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="book-year"&gt;Published: ${book.userId + 2000}&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="book-actions"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="btn edit-btn" data-id="${book.id}"&gt;Edit&lt;/button&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="btn delete-btn" data-id="${book.id}"&gt;Delete&lt;/button&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;`;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Add event listeners to the buttons<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const editBtn = bookCard.querySelector('.edit-btn');<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const deleteBtn = bookCard.querySelector('.delete-btn');<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;editBtn.addEventListener('click', () => openEditModal(book));<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;deleteBtn.addEventListener('click', () => deleteBook(book.id));<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Add the book card to the container<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;booksContainer.appendChild(bookCard);<br>
+                &nbsp;&nbsp;});<br>
+                }<br>
+                <br>
+                // Helper function to extract an author name from the body text<br>
+                // In a real app, you'd have proper author data<br>
+                function getAuthorNameFromBody(body) {<br>
+                &nbsp;&nbsp;// Just grab the first word as a fake author name<br>
+                &nbsp;&nbsp;const firstWords = body.split(' ').slice(0, 2).join(' ');<br>
+                &nbsp;&nbsp;return firstWords.charAt(0).toUpperCase() + firstWords.slice(1);<br>
+                }
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">6</span> Implementing the POST Request - Add a New Book</h3>
+            <p>Now let's implement the functionality to add a new book to the library:</p>
+            
+            <div class="code-example">
+                // Handle adding a new book (POST)<br>
+                async function handleAddBook(e) {<br>
+                &nbsp;&nbsp;e.preventDefault(); // Prevent the form from submitting normally<br>
+                <br>
+                &nbsp;&nbsp;// Get the values from the form<br>
+                &nbsp;&nbsp;const title = document.getElementById('title').value.trim();<br>
+                &nbsp;&nbsp;const author = document.getElementById('author').value.trim();<br>
+                &nbsp;&nbsp;const year = parseInt(document.getElementById('year').value);<br>
+                <br>
+                &nbsp;&nbsp;// Basic validation<br>
+                &nbsp;&nbsp;if (!title || !author || !year) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;showStatusMessage('Please fill in all fields.', 'error');<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+                &nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;// For our JSONPlaceholder API, we need to format it like a 'post'<br>
+                &nbsp;&nbsp;// In a real book API, the structure would match your book data model<br>
+                &nbsp;&nbsp;const newBook = {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;title: title,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;body: `Written by ${author}. ${title} is a great book.`, // We'll store author in the body<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;userId: year - 2000 // We'll pretend userId is related to year<br>
+                &nbsp;&nbsp;};<br>
+                <br>
+                &nbsp;&nbsp;try {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Send POST request to create a new book<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch(`${API_URL}/posts`, {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method: 'POST',<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headers: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Content-Type': 'application/json'<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;body: JSON.stringify(newBook)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (!response.ok) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error(`HTTP error! status: ${response.status}`);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Parse the response data<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const createdBook = await response.json();<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Show success message<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;showStatusMessage(`Book "${title}" added successfully!`, 'success');<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Reset the form<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;addBookForm.reset();<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// In a real app, we might refresh the book list here<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// For now, let's just add the new book to our display<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const updatedBooks = await fetch(`${API_URL}/posts`).then(res => res.json());<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;displayBooks(updatedBooks);<br>
+                <br>
+                &nbsp;&nbsp;} catch (error) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;console.error('Error adding book:', error);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;showStatusMessage('Error adding book. Please try again.', 'error');<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">7</span> Implementing the PUT/PATCH Request - Edit a Book</h3>
+            <p>Let's add the functionality to edit an existing book:</p>
+            
+            <div class="code-example">
+                // Open the edit modal with book data<br>
+                function openEditModal(book) {<br>
+                &nbsp;&nbsp;// Set the book ID in the hidden field<br>
+                &nbsp;&nbsp;document.getElementById('edit-book-id').value = book.id;<br>
+                <br>
+                &nbsp;&nbsp;// Fill in the form with the book's current data<br>
+                &nbsp;&nbsp;document.getElementById('edit-title').value = book.title;<br>
+                <br>
+                &nbsp;&nbsp;// Extract author from the body text (in a real app, you'd have proper author data)<br>
+                &nbsp;&nbsp;document.getElementById('edit-author').value = getAuthorNameFromBody(book.body);<br>
+                <br>
+                &nbsp;&nbsp;// Calculate year from userId (just for our example)<br>
+                &nbsp;&nbsp;document.getElementById('edit-year').value = book.userId + 2000;<br>
+                <br>
+                &nbsp;&nbsp;// Show the modal<br>
+                &nbsp;&nbsp;editModal.style.display = 'block';<br>
+                }<br>
+                <br>
+                // Handle the edit book form submission (PUT)<br>
+                async function handleEditBook(e) {<br>
+                &nbsp;&nbsp;e.preventDefault(); // Prevent the form from submitting normally<br>
+                <br>
+                &nbsp;&nbsp;// Get the values from the form<br>
+                &nbsp;&nbsp;const bookId = document.getElementById('edit-book-id').value;<br>
+                &nbsp;&nbsp;const title = document.getElementById('edit-title').value.trim();<br>
+                &nbsp;&nbsp;const author = document.getElementById('edit-author').value.trim();<br>
+                &nbsp;&nbsp;const year = parseInt(document.getElementById('edit-year').value);<br>
+                <br>
+                &nbsp;&nbsp;// Basic validation<br>
+                &nbsp;&nbsp;if (!title || !author || !year) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;showStatusMessage('Please fill in all fields.', 'error');<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+                &nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;// Prepare the updated book data<br>
+                &nbsp;&nbsp;const updatedBook = {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;id: bookId, // Include the ID for updating<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;title: title,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;body: `Written by ${author}. ${title} is a great book.`,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;userId: year - 2000<br>
+                &nbsp;&nbsp;};<br>
+                <br>
+                &nbsp;&nbsp;try {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Send PUT request to update the book<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// We could also use PATCH if we only wanted to update specific fields<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch(`${API_URL}/posts/${bookId}`, {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method: 'PUT',<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headers: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Content-Type': 'application/json'<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;body: JSON.stringify(updatedBook)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (!response.ok) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error(`HTTP error! status: ${response.status}`);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Parse the response data<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const updatedBookData = await response.json();<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Close the modal<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;editModal.style.display = 'none';<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Show success message<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;showStatusMessage(`Book "${title}" updated successfully!`, 'success');<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Refresh the book list<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;fetchBooks();<br>
+                <br>
+                &nbsp;&nbsp;} catch (error) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;console.error('Error updating book:', error);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;showStatusMessage('Error updating book. Please try again.', 'error');<br>
+                &nbsp;&nbsp;}<br>
+                }<br>
+                <br>
+                // Example of a PATCH request (only updating some fields)<br>
+                // This function shows how to use PATCH instead of PUT<br>
+                async function updateBookPartially(bookId, updateData) {<br>
+                &nbsp;&nbsp;try {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch(`${API_URL}/posts/${bookId}`, {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method: 'PATCH', // Use PATCH for partial updates<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headers: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Content-Type': 'application/json'<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;body: JSON.stringify(updateData) // Only send the fields that changed<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (!response.ok) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error(`HTTP error! status: ${response.status}`);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return await response.json();<br>
+                <br>
+                &nbsp;&nbsp;} catch (error) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;console.error('Error with PATCH update:', error);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;throw error;<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">8</span> Implementing the DELETE Request - Remove a Book</h3>
+            <p>Finally, let's add the functionality to delete books:</p>
+            
+            <div class="code-example">
+                // Delete a book (DELETE)<br>
+                async function deleteBook(bookId) {<br>
+                &nbsp;&nbsp;// Ask for confirmation<br>
+                &nbsp;&nbsp;if (!confirm('Are you sure you want to delete this book?')) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return; // User cancelled<br>
+                &nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;try {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Send DELETE request<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch(`${API_URL}/posts/${bookId}`, {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method: 'DELETE'<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;});<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (!response.ok) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw new Error(`HTTP error! status: ${response.status}`);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Show success message<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;showStatusMessage('Book deleted successfully!', 'success');<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// Remove the book from the UI<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;const bookCard = document.querySelector(`.book-card[data-id="${bookId}"]`);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (bookCard) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bookCard.remove();<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;// If no books left, show message<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;if (booksContainer.children.length === 0) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;booksContainer.innerHTML = '&lt;p&gt;No books found. Add some books!&lt;/p&gt;';<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                <br>
+                &nbsp;&nbsp;} catch (error) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;console.error('Error deleting book:', error);<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;showStatusMessage('Error deleting book. Please try again.', 'error');<br>
+                &nbsp;&nbsp;}<br>
+                }
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">9</span> Utility Functions and Finishing Touches</h3>
+            <p>Let's add some helper functions to complete our application:</p>
+            
+            <div class="code-example">
+                // Display a status message to the user<br>
+                function showStatusMessage(message, type) {<br>
+                &nbsp;&nbsp;// Update the message content<br>
+                &nbsp;&nbsp;statusMessage.textContent = message;<br>
+                <br>
+                &nbsp;&nbsp;// Clear any existing classes<br>
+                &nbsp;&nbsp;statusMessage.className = 'status-message';<br>
+                <br>
+                &nbsp;&nbsp;// Add the appropriate type class<br>
+                &nbsp;&nbsp;statusMessage.classList.add(type);<br>
+                <br>
+                &nbsp;&nbsp;// Show the message<br>
+                &nbsp;&nbsp;statusMessage.style.display = 'block';<br>
+                <br>
+                &nbsp;&nbsp;// Hide the message after 3 seconds<br>
+                &nbsp;&nbsp;setTimeout(() => {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;statusMessage.style.display = 'none';<br>
+                &nbsp;&nbsp;}, 3000);<br>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Testing and Using Your Application 🧪</h2>
+        
+        <div class="step">
+            <h3><span class="step-number">10</span> Run and Test Your Application</h3>
+            <p>Now it's time to see your application in action!</p>
+            <ol>
+                <li>Open your <code>index.html</code> file in a web browser</li>
+                <li>You should see your Book Library app with the interface we designed</li>
+                <li>Try all the functions:
+                    <ul>
+                        <li>The app should load books from the API automatically (GET)</li>
+                        <li>Try adding a new book using the form (POST)</li>
+                        <li>Try editing a book by clicking the Edit button (PUT)</li>
+                        <li>Try deleting a book by clicking the Delete button (DELETE)</li>
+                    </ul>
+                </li>
+                <li>Open the browser's Developer Tools and look at the Network tab to watch the API requests happen!</li>
+            </ol>
+            
+            <div class="note">
+                <p><strong>Note:</strong> The JSONPlaceholder API is a "fake" API, so it won't actually save your changes permanently. This means that if you refresh the page, your changes will be lost. In a real app with a real API, your changes would be saved to a database.</p>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">11</span> Debugging Common Issues</h3>
+            <p>If something isn't working, here are some common issues to check:</p>
+            <ul>
+                <li><strong>404 errors:</strong> Make sure your API URLs are correct</li>
+                <li><strong>CORS errors:</strong> This happens when an API doesn't allow requests from your domain. JSONPlaceholder should work fine, but other APIs might need special permission.</li>
+                <li><strong>Data not displaying correctly:</strong> Use <code>console.log()</code> to check what data you're getting from the API</li>
+                <li><strong>JavaScript errors:</strong> Check the Console tab in Developer Tools for any error messages</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Taking It Further: Ideas for Improvement 🚀</h2>
+        <p>Once you have the basic app working, here are some ways you could extend it:</p>
+        
+        <ul>
+            <li><strong>Add authentication:</strong> Implement login functionality so only authorized users can modify the library</li>
+            <li><strong>Add search and filtering:</strong> Allow users to search for books by title or author</li>
+            <li><strong>Add categories/genres:</strong> Let users categorize books by genre</li>
+            <li><strong>Use a real books API:</strong> Try connecting to a real books API like Google Books API</li>
+            <li><strong>Improve error handling:</strong> Add more detailed error messages for different types of problems</li>
+            <li><strong>Add pagination:</strong> If you have lots of books, split them across multiple pages</li>
+            <li><strong>Add local storage:</strong> Store the book data locally so it persists even when the API isn't available</li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h2>Summary: What We've Learned 🎓</h2>
+        <ul>
+            <li>How to set up a web application that uses an API</li>
+            <li>How to use the fetch() function to make API requests</li>
+            <li>How to implement all CRUD operations (Create, Read, Update, Delete) using API methods:
+                <ul>
+                    <li>GET - to retrieve data from the server</li>
+                    <li>POST - to create new data on the server</li>
+                    <li>PUT/PATCH - to update existing data</li>
+                    <li>DELETE - to remove data from the server</li>
+                </ul>
+            </li>
+            <li>How to handle responses from the API</li>
+            <li>How to build a user interface that interacts with an API</li>
+            <li>How to handle errors in API requests</li>
+        </ul>
+        
+        <div class="analogy">
+            <div class="analogy-title">📚 Final Thought</div>
+            <p>
+                APIs are like magic bridges that connect your app to the vast world of data and services on the internet. By mastering API usage, you've unlocked the ability to create applications that can interact with almost any service online - from social media platforms to payment systems, from weather services to game databases.
+            </p>
+            <p>
+                The Book Library app you just built is just the beginning. The same techniques you learned here can be applied to create any kind of application that needs to communicate with a server or external service!
+            </p>
+        </div>
+        
+        <p style="text-align: center; margin-top: 30px;">
+            <a href="api.html" style="display: inline-block; background: #7e57c2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                ← Back to API Guide
+            </a>
+        </p>
+    </div>
+</body>
+</html>
