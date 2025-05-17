@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Arrays - Advanced Guide</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+            margin: 30px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9ff;
+        }
+        h1, h2, h3 {
+            color: #1565c0;
+            border-bottom: 2px solid #64b5f6;
+            padding-bottom: 5px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .analogy {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 5px;
+        }
+        .diagram {
+            margin: 30px 0;
+            text-align: center;
+        }
+        .diagram svg {
+            background: #f3f3ff;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .method-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 8px solid #64b5f6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .forEach { border-left-color: #43a047; }
+        .map { border-left-color: #039be5; }
+        .filter { border-left-color: #fb8c00; }
+        .reduce { border-left-color: #8e24aa; }
+        .search { border-left-color: #e53935; }
+        .multi { border-left-color: #6d4c41; }
+        .code-example {
+            background: #f5f5f5;
+            border-left: 4px solid #64b5f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, monospace;
+        }
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        ul {
+            margin-left: 20px;
+        }
+        a {
+            color: #1565c0;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JavaScript Arrays - Advanced Guide 🚀</h1>
+        <p>
+            Ready to level up your array skills? Let's dive into more powerful array methods and concepts!
+        </p>
+        <p>
+            <a href="index.html">← Back to Array Basics</a>
+        </p>
+    </div>
+
+    <div class="container">
+        <h2>Iterating Over Arrays 🔄</h2>
+        <div class="method-card forEach">
+            <h3>forEach()</h3>
+            <p><strong>What it does:</strong> Runs a function for each item in the array.</p>
+            <p><strong>Analogy:</strong> Like checking every item in your shopping cart, one by one.</p>
+            <div class="code-example">
+                let fruits = ['🍎', '🍌', '🍒'];
+                fruits.forEach(function(fruit, index) {
+                    console.log(index, fruit);
+                });
+                // 0 '🍎'
+                // 1 '🍌'
+                // 2 '🍒'
+            </div>
+        </div>
+        <div class="method-card map">
+            <h3>map()</h3>
+            <p><strong>What it does:</strong> Creates a <span class="highlight">new array</span> by transforming each item.</p>
+            <p><strong>Analogy:</strong> Like putting stickers on every item in your cart and making a new cart with the stickers.</p>
+            <div class="code-example">
+                let prices = [10, 20, 30];
+                let doubled = prices.map(price => price * 2);
+                // doubled is [20, 40, 60]
+            </div>
+        </div>
+        <div class="method-card filter">
+            <h3>filter()</h3>
+            <p><strong>What it does:</strong> Creates a <span class="highlight">new array</span> with only the items that pass a test.</p>
+            <p><strong>Analogy:</strong> Like picking only the ripe fruits from your cart.</p>
+            <div class="code-example">
+                let numbers = [1, 2, 3, 4, 5];
+                let even = numbers.filter(n => n % 2 === 0);
+                // even is [2, 4]
+            </div>
+        </div>
+        <div class="method-card reduce">
+            <h3>reduce()</h3>
+            <p><strong>What it does:</strong> Reduces the array to a single value by combining items.</p>
+            <p><strong>Analogy:</strong> Like adding up the total price of everything in your cart.</p>
+            <div class="code-example">
+                let prices = [10, 20, 30];
+                let total = prices.reduce((sum, price) => sum + price, 0);
+                // total is 60
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Searching in Arrays 🔍</h2>
+        <div class="method-card search">
+            <h3>find()</h3>
+            <p><strong>What it does:</strong> Returns the <span class="highlight">first</span> item that matches a test.</p>
+            <div class="code-example">
+                let users = [
+                    { name: 'Alex', age: 15 },
+                    { name: 'Sam', age: 20 }
+                ];
+                let teen = users.find(u => u.age < 18);
+                // teen is { name: 'Alex', age: 15 }
+            </div>
+            <h3>includes()</h3>
+            <p><strong>What it does:</strong> Checks if the array contains a value.</p>
+            <div class="code-example">
+                let fruits = ['apple', 'banana', 'cherry'];
+                fruits.includes('banana'); // true
+                fruits.includes('grape'); // false
+            </div>
+            <h3>indexOf()</h3>
+            <p><strong>What it does:</strong> Returns the index of a value, or -1 if not found.</p>
+            <div class="code-example">
+                let fruits = ['apple', 'banana', 'cherry'];
+                fruits.indexOf('banana'); // 1
+                fruits.indexOf('grape'); // -1
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Multidimensional Arrays 🧮</h2>
+        <div class="method-card multi">
+            <h3>What are they?</h3>
+            <p>
+                Arrays can hold other arrays! This is useful for things like grids, tables, or matrices.
+            </p>
+            <div class="diagram">
+                <svg width="300" height="120">
+                    <rect x="30" y="30" width="60" height="60" fill="#bbdefb" stroke="#1565c0" rx="8"/>
+                    <rect x="100" y="30" width="60" height="60" fill="#bbdefb" stroke="#1565c0" rx="8"/>
+                    <rect x="170" y="30" width="60" height="60" fill="#bbdefb" stroke="#1565c0" rx="8"/>
+                    <text x="60" y="65" font-size="16" text-anchor="middle">[1,2,3]</text>
+                    <text x="130" y="65" font-size="16" text-anchor="middle">[4,5,6]</text>
+                    <text x="200" y="65" font-size="16" text-anchor="middle">[7,8,9]</text>
+                    <text x="150" y="105" font-size="14" fill="#333">let grid = [[1,2,3],[4,5,6],[7,8,9]];</text>
+                </svg>
+            </div>
+            <div class="code-example">
+                let grid = [
+                    [1, 2, 3],
+                    [4, 5, 6],
+                    [7, 8, 9]
+                ];
+                // Access the number 5:
+                let middle = grid[1][1]; // 5
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Summary & Practice 📝</h2>
+        <ul>
+            <li><strong>forEach:</strong> Do something for every item</li>
+            <li><strong>map:</strong> Make a new array by transforming items</li>
+            <li><strong>filter:</strong> Make a new array with only some items</li>
+            <li><strong>reduce:</strong> Turn an array into a single value</li>
+            <li><strong>find/includes/indexOf:</strong> Search for items</li>
+            <li><strong>Multidimensional arrays:</strong> Arrays inside arrays!</li>
+        </ul>
+        <div class="analogy">
+            <div class="analogy-title">🧰 Analogy: Toolbox</div>
+            <p>
+                Think of these methods as different tools in your JavaScript toolbox. Each one helps you shape, search, or build with arrays in a different way!
+            </p>
+        </div>
+        <p>
+            <a href="index.html">← Back to Array Basics</a>
+        </p>
+    </div>
+</body>
+</html>
