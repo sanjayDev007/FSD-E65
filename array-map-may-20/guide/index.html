@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Arrays - The Fundamentals</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+            margin: 30px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9ff;
+        }
+        h1, h2, h3 {
+            color: #1565c0;
+            border-bottom: 2px solid #64b5f6;
+            padding-bottom: 5px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .analogy {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 5px;
+        }
+        .diagram {
+            margin: 30px 0;
+            text-align: center;
+        }
+        .diagram svg {
+            background: #f3f3ff;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .method-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 8px solid #64b5f6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .rest-spread { border-left-color: #673ab7; }
+        .forEach { border-left-color: #43a047; }
+        .map { border-left-color: #039be5; }
+        .filter { border-left-color: #fb8c00; }
+        .reduce { border-left-color: #8e24aa; }
+        .code-example {
+            background: #f5f5f5;
+            border-left: 4px solid #64b5f6;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, monospace;
+        }
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .steps {
+            counter-reset: step;
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .steps li {
+            position: relative;
+            margin-bottom: 15px;
+            padding-left: 40px;
+        }
+        .steps li:before {
+            content: counter(step);
+            counter-increment: step;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            background: #1565c0;
+            color: white;
+            text-align: center;
+            border-radius: 50%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #e3f2fd;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        a {
+            color: #1565c0;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JavaScript Arrays - Array Methods & Operators Guide 📚</h1>
+        <p>
+            Welcome to our comprehensive guide on JavaScript arrays! In this tutorial, we'll explore powerful array methods and operators that will transform how you work with data collections.
+        </p>
+        <p>
+            <a href="array-advanced.html">Advanced Array Techniques →</a>
+        </p>
+    </div>
+
+    <div class="container">
+        <h2>Rest & Spread Operators (...) 🪄</h2>
+        <div class="method-card rest-spread">
+            <h3>Spread Operator (...)</h3>
+            <p><strong>What it does:</strong> Expands an array into individual elements.</p>
+            <p><strong>Analogy:</strong> Like unpacking a box of items onto a table, spreading them out.</p>
+            <div class="code-example">
+                // Combining arrays
+                let fruits = ['apple', 'banana'];
+                let moreFruits = ['orange', 'grape'];
+                let allFruits = [...fruits, ...moreFruits];
+                // allFruits is ['apple', 'banana', 'orange', 'grape']
+
+                // Copying arrays
+                let original = [1, 2, 3];
+                let copy = [...original];
+                // copy is [1, 2, 3] (a new array)
+
+                // Spreading into function arguments
+                let numbers = [5, 2, 8];
+                let max = Math.max(...numbers); 
+                // Same as Math.max(5, 2, 8)
+                // max is 8
+            </div>
+
+            <div class="analogy">
+                <div class="analogy-title">🧩 Spread Operator Visualization</div>
+                <p>
+                    Imagine the spread operator as taking items out of a container:
+                </p>
+                <div class="diagram">
+                    <svg width="500" height="120">
+                        <rect x="30" y="40" width="140" height="60" fill="#bbdefb" stroke="#1565c0" rx="8"/>
+                        <text x="100" y="75" font-size="16" text-anchor="middle">[1, 2, 3]</text>
+                        
+                        <path d="M180,70 L220,70" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                        <text x="200" y="60" font-size="18" text-anchor="middle">...</text>
+                        
+                        <rect x="230" y="40" width="40" height="60" fill="#e1bee7" stroke="#8e24aa" rx="8"/>
+                        <text x="250" y="75" font-size="16" text-anchor="middle">1</text>
+                        
+                        <rect x="280" y="40" width="40" height="60" fill="#e1bee7" stroke="#8e24aa" rx="8"/>
+                        <text x="300" y="75" font-size="16" text-anchor="middle">2</text>
+                        
+                        <rect x="330" y="40" width="40" height="60" fill="#e1bee7" stroke="#8e24aa" rx="8"/>
+                        <text x="350" y="75" font-size="16" text-anchor="middle">3</text>
+                        
+                        <defs>
+                            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                <path d="M0,0 L0,6 L9,3 z" fill="#333" />
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+
+            <h3>Rest Operator (...)</h3>
+            <p><strong>What it does:</strong> Collects multiple elements into an array.</p>
+            <p><strong>Analogy:</strong> Like gathering scattered items and putting them back into a container.</p>
+            <div class="code-example">
+                // Collecting remaining function arguments
+                function sum(first, ...others) {
+                    console.log(first);    // 1
+                    console.log(others);   // [2, 3, 4, 5]
+                    
+                    return others.reduce((total, num) => total + num, first);
+                }
+                sum(1, 2, 3, 4, 5);  // 15
+
+                // Destructuring with rest
+                const [head, ...tail] = [1, 2, 3, 4];
+                console.log(head);  // 1
+                console.log(tail);  // [2, 3, 4]
+            </div>
+
+            <div class="analogy">
+                <div class="analogy-title">📦 Rest Operator Visualization</div>
+                <p>
+                    The rest operator is like putting items into a container:
+                </p>
+                <div class="diagram">
+                    <svg width="500" height="120">
+                        <rect x="30" y="40" width="40" height="60" fill="#e1bee7" stroke="#8e24aa" rx="8"/>
+                        <text x="50" y="75" font-size="16" text-anchor="middle">1</text>
+                        
+                        <rect x="80" y="40" width="40" height="60" fill="#e1bee7" stroke="#8e24aa" rx="8"/>
+                        <text x="100" y="75" font-size="16" text-anchor="middle">2</text>
+                        
+                        <rect x="130" y="40" width="40" height="60" fill="#e1bee7" stroke="#8e24aa" rx="8"/>
+                        <text x="150" y="75" font-size="16" text-anchor="middle">3</text>
+                        
+                        <path d="M180,70 L220,70" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                        <text x="200" y="60" font-size="18" text-anchor="middle">...</text>
+                        
+                        <rect x="230" y="40" width="140" height="60" fill="#bbdefb" stroke="#1565c0" rx="8"/>
+                        <text x="300" y="75" font-size="16" text-anchor="middle">[1, 2, 3]</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Array Iteration Methods 🔄</h2>
+        
+        <div class="method-card forEach">
+            <h3>forEach()</h3>
+            <p><strong>What it does:</strong> Executes a function once for each array element.</p>
+            <p><strong>Return value:</strong> <span class="highlight">undefined</span> (doesn't create a new array)</p>
+            <p><strong>Analogy:</strong> Like a delivery person going door-to-door delivering packages without reporting back.</p>
+            
+            <div class="code-example">
+                const numbers = [1, 2, 3, 4, 5];
+                
+                // Basic forEach
+                numbers.forEach(function(number) {
+                    console.log(number * 2);
+                });
+                // Console: 2, 4, 6, 8, 10
+
+                // forEach with all parameters
+                numbers.forEach(function(value, index, array) {
+                    console.log(`Value: ${value}, Index: ${index}, Array: ${array}`);
+                });
+
+                // Arrow function syntax
+                numbers.forEach(number => console.log(number * 2));
+            </div>
+            
+            <p><strong>Use cases:</strong></p>
+            <ul>
+                <li>When you need to perform an action with each element</li>
+                <li>When you don't need to create a new array</li>
+                <li>For side effects (like DOM updates, logging, etc.)</li>
+            </ul>
+
+            <p><strong>Limitations:</strong></p>
+            <ul>
+                <li>Cannot break out of the loop early</li>
+                <li>Cannot use await inside the forEach callback</li>
+                <li>Does not return a useful value</li>
+            </ul>
+        </div>
+        
+        <div class="method-card map">
+            <h3>map()</h3>
+            <p><strong>What it does:</strong> Creates a <span class="highlight">new array</span> by applying a function to each element.</p>
+            <p><strong>Return value:</strong> A <span class="highlight">new array</span> with the transformed elements.</p>
+            <p><strong>Analogy:</strong> Like a factory that takes raw materials (original array) and produces finished goods (new array).</p>
+            
+            <div class="code-example">
+                const numbers = [1, 2, 3, 4, 5];
+                
+                // Basic map
+                const doubled = numbers.map(function(number) {
+                    return number * 2;
+                });
+                console.log(doubled); // [2, 4, 6, 8, 10]
+
+                // Map with all parameters
+                const transformed = numbers.map(function(value, index, array) {
+                    return `Item ${index}: ${value} (from array: ${array})`;
+                });
+
+                // Arrow function syntax
+                const squared = numbers.map(number => number * number);
+                console.log(squared); // [1, 4, 9, 16, 25]
+
+                // Mapping objects
+                const users = [
+                    { name: 'John', age: 30 },
+                    { name: 'Jane', age: 25 }
+                ];
+                const names = users.map(user => user.name);
+                console.log(names); // ['John', 'Jane']
+            </div>
+            
+            <div class="analogy">
+                <div class="analogy-title">🔄 map() Visualization</div>
+                <p>
+                    Each element goes through a transformation function:
+                </p>
+                <div class="diagram">
+                    <svg width="500" height="180">
+                        <!-- Input Array -->
+                        <rect x="20" y="20" width="40" height="40" fill="#bbdefb" stroke="#1565c0" rx="5"/>
+                        <rect x="20" y="70" width="40" height="40" fill="#bbdefb" stroke="#1565c0" rx="5"/>
+                        <rect x="20" y="120" width="40" height="40" fill="#bbdefb" stroke="#1565c0" rx="5"/>
+                        <text x="40" y="45" font-size="16" text-anchor="middle">1</text>
+                        <text x="40" y="95" font-size="16" text-anchor="middle">2</text>
+                        <text x="40" y="145" font-size="16" text-anchor="middle">3</text>
+                        
+                        <!-- Transformation Function -->
+                        <rect x="100" y="50" width="120" height="80" fill="#e8f5e9" stroke="#43a047" rx="10"/>
+                        <text x="160" y="90" font-size="16" text-anchor="middle">x => x * 2</text>
+                        
+                        <!-- Output Array -->
+                        <rect x="260" y="20" width="40" height="40" fill="#e1bee7" stroke="#8e24aa" rx="5"/>
+                        <rect x="260" y="70" width="40" height="40" fill="#e1bee7" stroke="#8e24aa" rx="5"/>
+                        <rect x="260" y="120" width="40" height="40" fill="#e1bee7" stroke="#8e24aa" rx="5"/>
+                        <text x="280" y="45" font-size="16" text-anchor="middle">2</text>
+                        <text x="280" y="95" font-size="16" text-anchor="middle">4</text>
+                        <text x="280" y="145" font-size="16" text-anchor="middle">6</text>
+                        
+                        <!-- Arrows -->
+                        <path d="M60,40 L100,80" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M60,90 L100,90" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M60,140 L100,100" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M220,80 L260,40" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M220,90 L260,90" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M220,100 L260,140" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <p><strong>Use cases:</strong></p>
+            <ul>
+                <li>When you need to transform all elements in an array</li>
+                <li>When you need a new array with the same length as the original</li>
+                <li>Data processing, formatting, or conversion</li>
+            </ul>
+
+            <table>
+                <tr>
+                    <th>map()</th>
+                    <th>forEach()</th>
+                </tr>
+                <tr>
+                    <td>Returns a new array</td>
+                    <td>Returns undefined</td>
+                </tr>
+                <tr>
+                    <td>Designed for transformations</td>
+                    <td>Designed for side effects</td>
+                </tr>
+                <tr>
+                    <td>Functional/declarative approach</td>
+                    <td>Imperative approach</td>
+                </tr>
+                <tr>
+                    <td>Chainable with other methods</td>
+                    <td>Not chainable</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="method-card filter">
+            <h3>filter()</h3>
+            <p><strong>What it does:</strong> Creates a <span class="highlight">new array</span> with elements that pass a test.</p>
+            <p><strong>Return value:</strong> A <span class="highlight">new array</span> containing elements that passed the test.</p>
+            <p><strong>Analogy:</strong> Like a sieve that only keeps items meeting certain criteria.</p>
+            
+            <div class="code-example">
+                const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                
+                // Basic filter
+                const evens = numbers.filter(function(number) {
+                    return number % 2 === 0;
+                });
+                console.log(evens); // [2, 4, 6, 8, 10]
+
+                // Filter with all parameters
+                const bigNumbers = numbers.filter(function(value, index, array) {
+                    console.log(`Testing ${value} at index ${index}`);
+                    return value > 5;
+                });
+                console.log(bigNumbers); // [6, 7, 8, 9, 10]
+
+                // Arrow function syntax
+                const odds = numbers.filter(number => number % 2 !== 0);
+                console.log(odds); // [1, 3, 5, 7, 9]
+
+                // Filtering objects
+                const people = [
+                    { name: 'Alice', age: 25 },
+                    { name: 'Bob', age: 17 },
+                    { name: 'Charlie', age: 30 }
+                ];
+                const adults = people.filter(person => person.age >= 18);
+                console.log(adults); // [{name: 'Alice', age: 25}, {name: 'Charlie', age: 30}]
+            </div>
+            
+            <div class="analogy">
+                <div class="analogy-title">🧲 filter() Visualization</div>
+                <p>
+                    Elements passing the test go into the new array:
+                </p>
+                <div class="diagram">
+                    <svg width="500" height="220">
+                        <rect x="50" y="20" width="400" height="180" fill="#f5f5f5" stroke="#bdbdbd" rx="10" stroke-dasharray="5,5"/>
+                        <text x="250" y="50" font-size="16" text-anchor="middle">Filter: x => x % 2 === 0</text>
+                        
+                        <!-- Original elements -->
+                        <circle cx="100" cy="100" r="20" fill="#bbdefb" stroke="#1565c0"/>
+                        <circle cx="160" cy="100" r="20" fill="#bbdefb" stroke="#1565c0"/>
+                        <circle cx="220" cy="100" r="20" fill="#bbdefb" stroke="#1565c0"/>
+                        <circle cx="280" cy="100" r="20" fill="#bbdefb" stroke="#1565c0"/>
+                        <circle cx="340" cy="100" r="20" fill="#bbdefb" stroke="#1565c0"/>
+                        <text x="100" y="105" font-size="16" text-anchor="middle">1</text>
+                        <text x="160" y="105" font-size="16" text-anchor="middle">2</text>
+                        <text x="220" y="105" font-size="16" text-anchor="middle">3</text>
+                        <text x="280" y="105" font-size="16" text-anchor="middle">4</text>
+                        <text x="340" y="105" font-size="16" text-anchor="middle">5</text>
+                        
+                        <!-- Filter action -->
+                        <rect x="100" y="140" width="240" height="40" fill="#e8f5e9" stroke="#43a047" rx="8"/>
+                        <text x="220" y="165" font-size="16" text-anchor="middle">New Array: [2, 4]</text>
+                        
+                        <!-- Arrows for passing elements -->
+                        <path d="M160,120 L180,140" stroke="#43a047" stroke-width="2" marker-end="url(#arrow)"/>
+                        <path d="M280,120 L260,140" stroke="#43a047" stroke-width="2" marker-end="url(#arrow)"/>
+                        
+                        <!-- X marks for filtered out elements -->
+                        <path d="M90,90 L110,110" stroke="#e53935" stroke-width="2"/>
+                        <path d="M110,90 L90,110" stroke="#e53935" stroke-width="2"/>
+                        <path d="M210,90 L230,110" stroke="#e53935" stroke-width="2"/>
+                        <path d="M230,90 L210,110" stroke="#e53935" stroke-width="2"/>
+                        <path d="M330,90 L350,110" stroke="#e53935" stroke-width="2"/>
+                        <path d="M350,90 L330,110" stroke="#e53935" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <p><strong>Use cases:</strong></p>
+            <ul>
+                <li>Removing unwanted elements based on a condition</li>
+                <li>Creating a subset of an array</li>
+                <li>Data validation</li>
+                <li>Search results filtering</li>
+            </ul>
+        </div>
+        
+        <div class="method-card reduce">
+            <h3>reduce()</h3>
+            <p><strong>What it does:</strong> Reduces an array to a single value by accumulating the result of a function.</p>
+            <p><strong>Return value:</strong> The final accumulated value after processing all elements.</p>
+            <p><strong>Analogy:</strong> Like snowball rolling downhill, gathering more snow as it goes.</p>
+            
+            <div class="code-example">
+                const numbers = [1, 2, 3, 4, 5];
+                
+                // Basic sum
+                const sum = numbers.reduce(function(accumulator, currentValue) {
+                    return accumulator + currentValue;
+                }, 0);
+                console.log(sum); // 15
+
+                // With all parameters
+                const result = numbers.reduce(function(accumulator, currentValue, index, array) {
+                    console.log(`Accumulator: ${accumulator}, Current: ${currentValue}, Index: ${index}`);
+                    return accumulator + currentValue;
+                }, 0);
+
+                // Arrow function syntax
+                const product = numbers.reduce((acc, val) => acc * val, 1);
+                console.log(product); // 120
+
+                // Advanced example: grouping objects
+                const students = [
+                    { name: 'John', grade: 'A' },
+                    { name: 'Jane', grade: 'B' },
+                    { name: 'Jim', grade: 'A' },
+                    { name: 'Jill', grade: 'C' }
+                ];
+                
+                const groupedByGrade = students.reduce((groups, student) => {
+                    const grade = student.grade;
+                    if (!groups[grade]) {
+                        groups[grade] = [];
+                    }
+                    groups[grade].push(student);
+                    return groups;
+                }, {});
+                
+                console.log(groupedByGrade);
+                // {
+                //   A: [{name: 'John', grade: 'A'}, {name: 'Jim', grade: 'A'}],
+                //   B: [{name: 'Jane', grade: 'B'}],
+                //   C: [{name: 'Jill', grade: 'C'}]
+                // }
+            </div>
+            
+            <div class="analogy">
+                <div class="analogy-title">🏗️ reduce() Visualization</div>
+                <p>
+                    Step-by-step accumulation:
+                </p>
+                <ol class="steps">
+                    <li>Start with initial value: <code>acc = 0</code></li>
+                    <li>Process first element: <code>acc = 0 + 1 = 1</code></li>
+                    <li>Process second element: <code>acc = 1 + 2 = 3</code></li>
+                    <li>Process third element: <code>acc = 3 + 3 = 6</code></li>
+                    <li>Process fourth element: <code>acc = 6 + 4 = 10</code></li>
+                    <li>Process fifth element: <code>acc = 10 + 5 = 15</code></li>
+                    <li>Return final accumulated value: <code>15</code></li>
+                </ol>
+            </div>
+            
+            <p><strong>Use cases:</strong></p>
+            <ul>
+                <li>Summing all values in an array</li>
+                <li>Calculating averages</li>
+                <li>Flattening arrays of arrays</li>
+                <li>Grouping or counting items</li>
+                <li>Converting arrays to objects</li>
+                <li>Any situation where you need to process all elements to produce a single result</li>
+            </ul>
+            
+            <p><strong>Important notes:</strong></p>
+            <ul>
+                <li>The initial value (second parameter) is optional but recommended</li>
+                <li>If no initial value is provided, the first element becomes the initial accumulator</li>
+                <li>Can transform an array into any data type (number, string, object, array, etc.)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Practical Examples & Exercises 💻</h2>
+        
+        <div class="method-card">
+            <h3>Combining Methods</h3>
+            <div class="code-example">
+                const prices = [9.99, 12.50, 19.99, 5.75, 35.00];
+
+                // Calculate total after applying 20% discount and filtering out items under $10
+                const discountedTotal = prices
+                    .filter(price => price >= 10)           // Keep only prices $10 or more
+                    .map(price => price * 0.8)              // Apply 20% discount
+                    .reduce((total, price) => total + price, 0);  // Sum up
+                
+                console.log(discountedTotal); // (12.50 + 19.99 + 35.00) * 0.8 = 53.99
+            </div>
+            
+            <h3>Processing JSON Data</h3>
+            <div class="code-example">
+                const users = [
+                    { id: 1, name: "Alice", active: true, age: 29 },
+                    { id: 2, name: "Bob", active: false, age: 32 },
+                    { id: 3, name: "Charlie", active: true, age: 25 },
+                    { id: 4, name: "Diana", active: true, age: 19 },
+                    { id: 5, name: "Eve", active: false, age: 42 }
+                ];
+
+                // Get active users' names who are over 20 years old
+                const activeAdultNames = users
+                    .filter(user => user.active && user.age > 20)
+                    .map(user => user.name);
+                
+                console.log(activeAdultNames); // ["Alice", "Charlie"]
+
+                // Calculate average age of active users
+                const activeCount = users.filter(user => user.active).length;
+                const ageSum = users
+                    .filter(user => user.active)
+                    .reduce((sum, user) => sum + user.age, 0);
+                const averageAge = ageSum / activeCount;
+                
+                console.log(averageAge); // (29 + 25 + 19) / 3 = 24.33
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Summary & Best Practices 📝</h2>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>Returns</th>
+                <th>Use When</th>
+            </tr>
+            <tr>
+                <td>forEach()</td>
+                <td>undefined</td>
+                <td>You need to perform an action for each item</td>
+            </tr>
+            <tr>
+                <td>map()</td>
+                <td>New array</td>
+                <td>You need to transform each item in the array</td>
+            </tr>
+            <tr>
+                <td>filter()</td>
+                <td>New array</td>
+                <td>You need to select specific items from the array</td>
+            </tr>
+            <tr>
+                <td>reduce()</td>
+                <td>Single value</td>
+                <td>You need to calculate a single result from all items</td>
+            </tr>
+            <tr>
+                <td>Spread (...)</td>
+                <td>N/A</td>
+                <td>You need to expand an array into individual items</td>
+            </tr>
+            <tr>
+                <td>Rest (...)</td>
+                <td>N/A</td>
+                <td>You need to collect multiple items into an array</td>
+            </tr>
+        </table>
+        
+        <div class="analogy">
+            <div class="analogy-title">🧰 Choosing the Right Tool</div>
+            <p>
+                <strong>forEach():</strong> Like going door-to-door delivering flyers (you visit each house but don't collect anything)<br>
+                <strong>map():</strong> Like a clothing alteration service (each item comes out transformed)<br>
+                <strong>filter():</strong> Like a bouncer at a club (only lets in people who meet the criteria)<br>
+                <strong>reduce():</strong> Like a food processor (combines ingredients into one result)<br>
+                <strong>Spread (...):</strong> Like emptying a bag of marbles onto the floor<br>
+                <strong>Rest (...):</strong> Like sweeping marbles into a dustpan
+            </p>
+        </div>
+        
+        <p>
+            <a href="array-advanced.html">Continue to Advanced Array Techniques →</a>
+        </p>
+    </div>
+</body>
+</html>

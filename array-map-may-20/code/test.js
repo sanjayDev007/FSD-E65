@@ -1,0 +1,4 @@
+const result = numbers.reduce(function (accumulator, currentValue, index, array) { console.log(`Accumulator: ${accumulator}, Current: ${currentValue}, Index: ${index}`); return accumulator + currentValue; }, 0); // Arrow function syntax
+const product = numbers.reduce((acc, val) => acc * val, 1); console.log(product); // 120 // Advanced example: grouping objects
+const students = [{ name: 'John', grade: 'A' }, { name: 'Jane', grade: 'B' }, { name: 'Jim', grade: 'A' }, { name: 'Jill', grade: 'C' }];
+const groupedByGrade = students.reduce((groups, student) => { const grade = student.grade; if (!groups[grade]) { groups[grade] = []; } groups[grade].push(student); return groups; }, {}); console.log(groupedByGrade); // { // A: [{name: 'John', grade: 'A'}, {name: 'Jim', grade: 'A'}], // B: [{name: 'Jane', grade: 'B'}], // C: [{name: 'Jill', grade: 'C'}] // }
