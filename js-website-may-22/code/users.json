@@ -1,0 +1,12 @@
+[
+  {
+    "username": "sanjay",
+    "hash": "79f4e9426a2e1e8201d15e74c25e94286cf185a5f7c1744f771736c22225989d21730e6d729fb11b48f73e2cc6e8da566432d0c651432f960ff16b6991e28ac5",
+    "salt": "3c968858d195a710bc63aec42a13d8bb"
+  },
+  {
+    "username": "test",
+    "hash": "9931e899ca7eddb07d461e866f6751d876771c0f4dbf92bc599887d2da52f2cf270c01cf57d59fb041123ce1bf936b13f9ed1b69b6581992426a47df658f6fab",
+    "salt": "dc39fce8ccb9e0243232ec98e1544649"
+  }
+]

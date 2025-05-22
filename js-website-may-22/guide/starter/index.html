@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Guide</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .content section {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .dark-theme .content section {
+      background-color: #2d2d2d;
+    }
+    
+    .sidebar {
+      background-color: rgba(255,255,255,0.6);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    
+    .dark-theme .sidebar {
+      background-color: rgba(45,45,45,0.6);
+    }
+    
+    h1 {
+      font-weight: 600;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    h2 {
+      font-weight: 500;
+      border-bottom: none;
+      color: var(--secondary-color);
+    }
+    
+    .concept {
+      background: none;
+      box-shadow: none;
+      padding: 0;
+    }
+    
+    #logout-btn {
+      background-color: #f8f9fa;
+      color: var(--secondary-color);
+      border: 1px solid var(--border-color);
+      transition: all 0.2s ease;
+    }
+    
+    #logout-btn:hover {
+      background-color: var(--accent-color);
+      color: white;
+      border-color: var(--accent-color);
+    }
+    
+    .dark-theme #logout-btn {
+      background-color: #333;
+      color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">JavaScript Guide</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#" id="login-link">Login</a></li>
+        <li><a href="#" id="register-link">Register</a></li>
+        <li><a href="#" id="logout-link" style="display: none;">Logout</a></li>
+      </ul>
+      <div class="theme-toggle">
+        <button id="theme-btn">🌙</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="sidebar">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#welcome">Welcome</a></li>
+        <li><a href="#user-info">Your Profile</a></li>
+      </ul>
+    </div>
+
+    <div class="content">
+      <section id="welcome">
+        <h1>Welcome to JavaScript Guide</h1>
+        <div class="concept">
+          <p>This is a comprehensive guide to JavaScript programming.</p>
+          <p id="auth-message">Please login or register to access all features.</p>
+        </div>
+      </section>
+
+      <section id="user-info" style="display: none;">
+        <h2>Your Profile</h2>
+        <div class="concept">
+          <p>Welcome, <span id="username-display" style="font-weight: 600;"></span>!</p>
+          <p style="margin-bottom: 1.5rem;">You are currently logged in.</p>
+          <button id="logout-btn" class="btn">Logout</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2023 JavaScript Guide. All rights reserved.</p>
+  </footer>
+
+ 
+</body>
+</html>

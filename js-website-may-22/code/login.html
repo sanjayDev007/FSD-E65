@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - JavaScript Guide</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    body {
+      background-color: #f5f7fa;
+    }
+    
+    .dark-theme {
+      background-color: #1a1a1a;
+    }
+    
+    .login-container {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 2.5rem;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .dark-theme .login-container {
+      background-color: #2d2d2d;
+    }
+    
+    .form-group {
+      margin-bottom: 1.8rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    
+    .dark-theme .form-group label {
+      color: #bbb;
+    }
+    
+    .login-container h1 {
+      margin-bottom: 2rem;
+      text-align: center;
+      font-weight: 500;
+      color: var(--secondary-color);
+      border: none;
+    }
+    
+    .login-footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+    }
+    
+    .dark-theme .login-footer {
+      color: #999;
+    }
+    
+    #login-error {
+      color: var(--accent-color);
+      margin-bottom: 1.5rem;
+      display: none;
+      background-color: rgba(231, 76, 60, 0.1);
+      padding: 0.8rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: #f9f9f9;
+      transition: all 0.2s ease;
+    }
+    
+    .dark-theme input[type="text"], .dark-theme input[type="password"] {
+      background-color: #333;
+      border-color: #444;
+      color: #eee;
+    }
+    
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: var(--primary-color);
+      background-color: white;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    .dark-theme input[type="text"]:focus, .dark-theme input[type="password"]:focus {
+      background-color: #2d2d2d;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    button[type="submit"] {
+      width: 100%;
+      padding: 0.8rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 500;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    
+    button[type="submit"]:hover {
+      background-color: #2980b9;
+    }
+    
+    header {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">JavaScript Guide</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+      </ul>
+      <div class="theme-toggle">
+        <button id="theme-btn">🌙</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="login-container">
+      <h1>Log in to your account</h1>
+      <div id="login-error"></div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+      <div class="login-footer">
+        <p>Don't have an account? <a href="register.html">Register</a></p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2023 JavaScript Guide. All rights reserved.</p>
+  </footer>
+  <script src="./apiUrl.js"></script>
+  <script>
+    const form = document.getElementById('login-form');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (!username || !password) {
+        document.getElementById('login-error').innerText = 'Please fill in all fields.';
+        document.getElementById('login-error').style.display = 'block';
+        return;
+      }
+      const response = await fetch(`${apiUrl}/api/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+      console.log(data);
+      if (data.success) {
+        localStorage.setItem('sessionId', data.sessionId);
+        document.getElementById('login-error').style.display = 'none';
+        window.location.href = 'index.html';
+      } else {
+        document.getElementById('login-error').innerText = data.message || data.error || 'Login failed. Please try again.';
+        document.getElementById('login-error').style.display = 'block';
+      }
+    });
+
+  </script>
+</body>
+</html>
