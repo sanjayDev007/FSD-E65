@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced JavaScript for Beginners</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .slide {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #764ba2;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            margin: 20px 0 10px 0;
+            font-size: 1.3em;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'JavaScript';
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+
+        .highlight {
+            background: #ffd700;
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: #333;
+        }
+
+        .example-box {
+            background: #f7fafc;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .fun-fact {
+            background: #fff5f5;
+            border-left: 5px solid #f56565;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .navigation {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin: 20px 0;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .try-it {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .output {
+            background: #2d3748;
+            color: #68d391;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+
+        ul {
+            margin-left: 20px;
+            line-height: 1.6;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>🚀 Advanced JavaScript</h1>
+            <h2 style="text-align: center; border: none;">For Smart 15-Year-Olds!</h2>
+            <div class="example-box">
+                <h3>What You'll Learn Today:</h3>
+                <ul>
+                    <li>🎯 Functions and Arrow Functions</li>
+                    <li>🔒 Closures (Functions inside Functions)</li>
+                    <li>⚡ Asynchronous JavaScript</li>
+                    <li>🏗️ Objects and Classes</li>
+                    <li>🌐 DOM Manipulation</li>
+                    <li>🛠️ Error Handling</li>
+                    <li>✨ Modern JavaScript Features</li>
+                </ul>
+            </div>
+            <div class="fun-fact">
+                <strong>Fun Fact:</strong> JavaScript was created in just 10 days in 1995! Today it's one of the most popular programming languages in the world! 🌍
+            </div>
+        </div>
+
+        <!-- Slide 2: Functions -->
+        <div class="slide">
+            <h2>1. Functions - Your Code's Best Friends 🤝</h2>
+            
+            <h3>Regular Functions vs Arrow Functions</h3>
+            <div class="code-block">
+// Regular Function
+function sayHello(name) {
+    return "Hello, " + name + "!";
+}
+
+// Arrow Function (Shorter way!)
+const sayHelloArrow = (name) => {
+    return "Hello, " + name + "!";
+}
+
+// Super Short Arrow Function
+const greet = name => "Hello, " + name + "!";
+
+console.log(sayHello("Alex")); // Hello, Alex!
+console.log(greet("Sam"));     // Hello, Sam!
+            </div>
+
+            <div class="example-box">
+                <h3>Think of Functions Like Recipes:</h3>
+                <ul>
+                    <li><strong>Ingredients</strong> = Parameters (what you put in)</li>
+                    <li><strong>Instructions</strong> = Function body (what happens)</li>
+                    <li><strong>Final dish</strong> = Return value (what you get out)</li>
+                </ul>
+            </div>
+
+            <button class="try-it" onclick="demoFunctions()">Try It! 🎮</button>
+            <div id="function-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Slide 3: Closures -->
+        <div class="slide">
+            <h2>2. Closures - Functions with Memory 🧠</h2>
+            
+            <div class="code-block">
+// A function that remembers things!
+function createCounter() {
+    let count = 0; // This variable is "trapped" inside
+    
+    return function() {
+        count++; // The inner function can access count
+        return count;
+    };
+}
+
+const counter1 = createCounter();
+const counter2 = createCounter();
+
+console.log(counter1()); // 1
+console.log(counter1()); // 2
+console.log(counter2()); // 1 (separate counter!)
+            </div>
+
+            <div class="example-box">
+                <h3>Real-World Example: Bank Account</h3>
+                <div class="code-block">
+function createBankAccount(initialBalance) {
+    let balance = initialBalance;
+    
+    return {
+        deposit: (amount) => {
+            balance += amount;
+            return `Deposited $${amount}. Balance: $${balance}`;
+        },
+        withdraw: (amount) => {
+            if (amount <= balance) {
+                balance -= amount;
+                return `Withdrew $${amount}. Balance: $${balance}`;
+            }
+            return "Insufficient funds!";
+        },
+        getBalance: () => balance
+    };
+}
+
+const myAccount = createBankAccount(100);
+                </div>
+            </div>
+
+            <button class="try-it" onclick="demoClosures()">Try Bank Account! 💰</button>
+            <div id="closure-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Slide 4: Callbacks -->
+        <div class="slide">
+            <h2>3. Callbacks - Functions Calling Functions 📞</h2>
+            
+            <div class="code-block">
+// A callback is a function passed to another function
+function processData(data, callback) {
+    console.log("Processing:", data);
+    // Do some work...
+    callback(data.toUpperCase());
+}
+
+function displayResult(result) {
+    console.log("Result:", result);
+}
+
+// Pass displayResult as a callback
+processData("hello world", displayResult);
+// Output: Processing: hello world
+//         Result: HELLO WORLD
+            </div>
+
+            <div class="example-box">
+                <h3>Array Methods with Callbacks</h3>
+                <div class="code-block">
+const numbers = [1, 2, 3, 4, 5];
+
+// map - transform each item
+const doubled = numbers.map(num => num * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]
+
+// filter - keep items that pass a test
+const evenNumbers = numbers.filter(num => num % 2 === 0);
+console.log(evenNumbers); // [2, 4]
+
+// find - get first item that matches
+const found = numbers.find(num => num > 3);
+console.log(found); // 4
+                </div>
+            </div>
+
+            <button class="try-it" onclick="demoCallbacks()">Try Callbacks! 🔄</button>
+            <div id="callback-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Slide 5: Objects and Classes -->
+        <div class="slide">
+            <h2>4. Objects and Classes - Building Blocks 🏗️</h2>
+            
+            <h3>Objects - Like Real-World Things</h3>
+            <div class="code-block">
+// Object Literal
+const student = {
+    name: "Emma",
+    age: 15,
+    grades: [85, 92, 78],
+    
+    // Method (function in object)
+    getAverage() {
+        const sum = this.grades.reduce((a, b) => a + b, 0);
+        return sum / this.grades.length;
+    }
+};
+
+console.log(student.name); // Emma
+console.log(student.getAverage()); // 85
+            </div>
+
+            <h3>Classes - Templates for Objects</h3>
+            <div class="code-block">
+class Animal {
+    constructor(name, species) {
+        this.name = name;
+        this.species = species;
+    }
+    
+    speak() {
+        return `${this.name} makes a sound!`;
+    }
+}
+
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name, "Dog"); // Call parent constructor
+        this.breed = breed;
+    }
+    
+    speak() {
+        return `${this.name} barks!`;
+    }
+    
+    wagTail() {
+        return `${this.name} is wagging their tail!`;
+    }
+}
+
+const buddy = new Dog("Buddy", "Golden Retriever");
+console.log(buddy.speak()); // Buddy barks!
+            </div>
+
+            <button class="try-it" onclick="demoClasses()">Try Classes! 🐕</button>
+            <div id="class-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Slide 6: Promises -->
+        <div class="slide">
+            <h2>5. Promises - Dealing with Future Results ⏰</h2>
+            
+            <div class="example-box">
+                <h3>Think of Promises like ordering food:</h3>
+                <ul>
+                    <li><strong>Pending:</strong> Your order is being prepared</li>
+                    <li><strong>Fulfilled:</strong> Your food is ready!</li>
+                    <li><strong>Rejected:</strong> Sorry, we're out of that item</li>
+                </ul>
+            </div>
+
+            <div class="code-block">
+// Creating a Promise
+function orderFood(item) {
+    return new Promise((resolve, reject) => {
+        console.log(`Preparing ${item}...`);
+        
+        setTimeout(() => {
+            const available = Math.random() > 0.3; // 70% success rate
+            
+            if (available) {
+                resolve(`${item} is ready! 🍕`);
+            } else {
+                reject(`Sorry, ${item} is out of stock 😞`);
+            }
+        }, 2000); // Wait 2 seconds
+    });
+}
+
+// Using the Promise
+orderFood("Pizza")
+    .then(result => console.log(result))
+    .catch(error => console.log(error));
+            </div>
+
+            <h3>Async/Await - Cleaner Way to Handle Promises</h3>
+            <div class="code-block">
+async function getFood() {
+    try {
+        const result = await orderFood("Burger");
+        console.log(result);
+        console.log("Enjoy your meal!");
+    } catch (error) {
+        console.log(error);
+        console.log("Maybe try something else?");
+    }
+}
+
+getFood();
+            </div>
+
+            <button class="try-it" onclick="demoPromises()">Try Ordering Food! 🍔</button>
+            <div id="promise-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Slide 7: DOM Manipulation -->
+        <div class="slide">
+            <h2>6. DOM Manipulation - Making Websites Interactive 🎨</h2>
+            
+            <div class="code-block">
+// Finding elements
+const button = document.getElementById('myButton');
+const title = document.querySelector('h1');
+const allParagraphs = document.querySelectorAll('p');
+
+// Changing content
+title.textContent = "New Title!";
+title.innerHTML = "&lt;em&gt;Fancy Title!&lt;/em&gt;";
+
+// Changing styles
+button.style.backgroundColor = "blue";
+button.style.color = "white";
+
+// Adding event listeners
+button.addEventListener('click', function() {
+    alert("Button clicked!");
+});
+
+// Creating new elements
+const newDiv = document.createElement('div');
+newDiv.textContent = "I'm new!";
+document.body.appendChild(newDiv);
+            </div>
+
+            <div class="example-box">
+                <h3>Interactive Example:</h3>
+                <button id="demo-btn" style="padding: 10px 20px; font-size: 16px;">Click me!</button>
+                <p id="demo-text">This text will change when you click the button!</p>
+            </div>
+
+            <button class="try-it" onclick="demoDom()">Try DOM Magic! ✨</button>
+            <div id="dom-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Slide 8: Error Handling -->
+        <div class="slide">
+            <h2>7. Error Handling - When Things Go Wrong 🚨</h2>
+            
+            <div class="code-block">
+// Try-Catch - Like a safety net
+function divideNumbers(a, b) {
+    try {
+        if (b === 0) {
+            throw new Error("Cannot divide by zero!");
+        }
+        return a / b;
+    } catch (error) {
+        console.log("Oops! Something went wrong:", error.message);
+        return null;
+    } finally {
+        console.log("Division operation completed");
+    }
+}
+
+console.log(divideNumbers(10, 2)); // 5
+console.log(divideNumbers(10, 0)); // null (with error message)
+            </div>
+
+            <div class="example-box">
+                <h3>Common Error Types:</h3>
+                <ul>
+                    <li><strong>SyntaxError:</strong> Typos in your code</li>
+                    <li><strong>TypeError:</strong> Using wrong data type</li>
+                    <li><strong>ReferenceError:</strong> Using undefined variables</li>
+                    <li><strong>RangeError:</strong> Number out of range</li>
+                </ul>
+            </div>
+
+            <div class="code-block">
+// Async error handling
+async function fetchUserData(userId) {
+    try {
+        const response = await fetch(`/api/users/${userId}`);
+        if (!response.ok) {
+            throw new Error(`User not found: ${response.status}`);
+        }
+        const user = await response.json();
+        return user;
+    } catch (error) {
+        console.log("Error fetching user:", error.message);
+        return { error: "User not found" };
+    }
+}
+            </div>
+
+            <button class="try-it" onclick="demoErrorHandling()">Try Error Handling! 🛡️</button>
+            <div id="error-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Slide 9: Modern JavaScript -->
+        <div class="slide">
+            <h2>8. Modern JavaScript Features 🌟</h2>
+            
+            <h3>Destructuring - Unpacking Values</h3>
+            <div class="code-block">
+// Array Destructuring
+const colors = ["red", "green", "blue"];
+const [first, second, third] = colors;
+console.log(first); // red
+
+// Object Destructuring
+const person = { name: "Alice", age: 15, city: "New York" };
+const { name, age } = person;
+console.log(name); // Alice
+
+// Function parameter destructuring
+function greetPerson({ name, age }) {
+    return `Hello ${name}, you are ${age} years old!`;
+}
+console.log(greetPerson(person));
+            </div>
+
+            <h3>Template Literals - Better Strings</h3>
+            <div class="code-block">
+const name = "JavaScript";
+const year = 2024;
+
+// Old way
+const message1 = "I love " + name + " in " + year + "!";
+
+// New way (template literals)
+const message2 = `I love ${name} in ${year}!`;
+
+// Multi-line strings
+const poem = `
+    Roses are red,
+    Violets are blue,
+    JavaScript is awesome,
+    And so are you!
+`;
+            </div>
+
+            <h3>Spread Operator - Expanding Things</h3>
+            <div class="code-block">
+// Array spreading
+const fruits = ["apple", "banana"];
+const moreFruits = ["orange", "grape"];
+const allFruits = [...fruits, ...moreFruits];
+console.log(allFruits); // ["apple", "banana", "orange", "grape"]
+
+// Object spreading
+const basicInfo = { name: "John", age: 15 };
+const fullInfo = { ...basicInfo, school: "High School", grade: 10 };
+console.log(fullInfo);
+            </div>
+
+            <button class="try-it" onclick="demoModernJS()">Try Modern Features! 🚀</button>
+            <div id="modern-output" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Slide 10: Practice Project -->
+        <div class="slide">
+            <h2>9. Practice Project: Todo List App 📝</h2>
+            
+            <div class="example-box">
+                <h3>Let's build a simple Todo List using everything we learned!</h3>
+                <div style="border: 2px solid #667eea; padding: 20px; margin: 20px 0; border-radius: 10px;">
+                    <input type="text" id="todo-input" placeholder="Enter a task..." style="padding: 10px; width: 70%; border: 1px solid #ccc; border-radius: 5px;">
+                    <button onclick="addTodo()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; margin-left: 10px;">Add Task</button>
+                    <ul id="todo-list" style="margin-top: 20px; list-style: none;"></ul>
+                </div>
+            </div>
+
+            <div class="code-block">
+class TodoApp {
+    constructor() {
+        this.todos = [];
+        this.nextId = 1;
+    }
+    
+    addTodo(text) {
+        const todo = {
+            id: this.nextId++,
+            text: text,
+            completed: false,
+            createdAt: new Date()
+        };
+        this.todos.push(todo);
+        this.render();
+    }
+    
+    deleteTodo(id) {
+        this.todos = this.todos.filter(todo => todo.id !== id);
+        this.render();
+    }
+    
+    toggleComplete(id) {
+        const todo = this.todos.find(todo => todo.id === id);
+        if (todo) {
+            todo.completed = !todo.completed;
+            this.render();
+        }
+    }
+    
+    render() {
+        const todoList = document.getElementById('todo-list');
+        todoList.innerHTML = '';
+        
+        this.todos.forEach(todo => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                &lt;span style="${todo.completed ? 'text-decoration: line-through;' : ''}"&gt;
+                    ${todo.text}
+                &lt;/span&gt;
+                &lt;button onclick="todoApp.toggleComplete(${todo.id})"&gt;
+                    ${todo.completed ? 'Undo' : 'Complete'}
+                &lt;/button&gt;
+                &lt;button onclick="todoApp.deleteTodo(${todo.id})"&gt;Delete&lt;/button&gt;
+            `;
+            li.style.margin = '10px 0';
+            li.style.padding = '10px';
+            li.style.background = '#f7fafc';
+            li.style.borderRadius = '5px';
+            todoList.appendChild(li);
+        });
+    }
+}
+
+const todoApp = new TodoApp();
+            </div>
+
+            <div class="fun-fact">
+                <strong>Congratulations! 🎉</strong> You've learned the building blocks of modern JavaScript. Keep practicing and building projects to become a JavaScript ninja! 🥷
+            </div>
+        </div>
+
+        <!-- Slide 11: Summary -->
+        <div class="slide">
+            <h2>🎯 What You've Mastered Today!</h2>
+            
+            <div class="example-box">
+                <h3>✅ Advanced JavaScript Concepts:</h3>
+                <ul>
+                    <li><strong>Functions & Arrow Functions:</strong> Different ways to write reusable code</li>
+                    <li><strong>Closures:</strong> Functions that remember their environment</li>
+                    <li><strong>Callbacks:</strong> Passing functions as arguments</li>
+                    <li><strong>Objects & Classes:</strong> Organizing code and data</li>
+                    <li><strong>Promises & Async/Await:</strong> Handling asynchronous operations</li>
+                    <li><strong>DOM Manipulation:</strong> Making websites interactive</li>
+                    <li><strong>Error Handling:</strong> Gracefully dealing with problems</li>
+                    <li><strong>Modern JavaScript:</strong> Latest language features</li>
+                </ul>
+            </div>
+
+            <div class="fun-fact">
+                <h3>🚀 Next Steps:</h3>
+                <ul>
+                    <li>Build more projects (calculator, weather app, game)</li>
+                    <li>Learn about JavaScript frameworks (React, Vue, Angular)</li>
+                    <li>Explore Node.js for backend development</li>
+                    <li>Practice on coding platforms like freeCodeCamp</li>
+                    <li>Join coding communities and share your projects!</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <h2>Keep Coding! You're Amazing! 🌟</h2>
+                <p style="font-size: 1.2em; margin-top: 20px;">
+                    Remember: Every expert was once a beginner. Keep practicing and never stop learning! 💪
+                </p>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">Previous</button>
+            <span id="slideInfo">1 / 11</span>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('slideInfo').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            
+            // Update progress bar
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Demo functions
+        function demoFunctions() {
+            const output = document.getElementById('function-output');
+            output.style.display = 'block';
+            output.innerHTML = '';
+            
+            const greet = name => `Hello, ${name}! 👋`;
+            const multiply = (a, b) => a * b;
+            
+            const results = [
+                greet('JavaScript Learner'),
+                `5 × 7 = ${multiply(5, 7)}`,
+                `Arrow functions are ${greet('awesome').replace('Hello, ', '').replace('! 👋', '')}!`
+            ];
+            
+            results.forEach((result, i) => {
+                setTimeout(() => {
+                    output.innerHTML += result + '<br>';
+                }, i * 1000);
+            });
+        }
+
+        function demoClosures() {
+            const output = document.getElementById('closure-output');
+            output.style.display = 'block';
+            output.innerHTML = '';
+            
+            function createBankAccount(initialBalance) {
+                let balance = initialBalance;
+                return {
+                    deposit: (amount) => {
+                        balance += amount;
+                        return `Deposited $${amount}. Balance: $${balance}`;
+                    },
+                    withdraw: (amount) => {
+                        if (amount <= balance) {
+                            balance -= amount;
+                            return `Withdrew $${amount}. Balance: $${balance}`;
+                        }
+                        return "Insufficient funds!";
+                    },
+                    getBalance: () => balance
+                };
+            }
+            
+            const account = createBankAccount(100);
+            const actions = [
+                account.deposit(50),
+                account.withdraw(30),
+                account.withdraw(200),
+                `Current balance: $${account.getBalance()}`
+            ];
+            
+            actions.forEach((result, i) => {
+                setTimeout(() => {
+                    output.innerHTML += result + '<br>';
+                }, i * 1000);
+            });
+        }
+
+        function demoCallbacks() {
+            const output = document.getElementById('callback-output');
+            output.style.display = 'block';
+            output.innerHTML = '';
+            
+            const numbers = [1, 2, 3, 4, 5];
+            const doubled = numbers.map(num => num * 2);
+            const evens = numbers.filter(num => num % 2 === 0);
+            
+            const results = [
+                `Original: [${numbers.join(', ')}]`,
+                `Doubled: [${doubled.join(', ')}]`,
+                `Even numbers: [${evens.join(', ')}]`,
+                `Sum: ${numbers.reduce((a, b) => a + b, 0)}`
+            ];
+            
+            results.forEach((result, i) => {
+                setTimeout(() => {
+                    output.innerHTML += result + '<br>';
+                }, i * 800);
+            });
+        }
+
+        function demoClasses() {
+            const output = document.getElementById('class-output');
+            output.style.display = 'block';
+            output.innerHTML = '';
+            
+            class Animal {
+                constructor(name, species) {
+                    this.name = name;
+                    this.species = species;
+                }
+                speak() {
+                    return `${this.name} makes a sound!`;
+                }
+            }
+            
+            class Dog extends Animal {
+                constructor(name, breed) {
+                    super(name, "Dog");
+                    this.breed = breed;
+                }
+                speak() {
+                    return `${this.name} barks! Woof! 🐕`;
+                }
+                wagTail() {
+                    return `${this.name} is wagging their tail! 🐕`;
+                }
+            }
+            
+            const buddy = new Dog("Buddy", "Golden Retriever");
+            const results = [
+                `Created ${buddy.name} the ${buddy.breed}`,
+                buddy.speak(),
+                buddy.wagTail(),
+                `Species: ${buddy.species}`
+            ];
+            
+            results.forEach((result, i) => {
+                setTimeout(() => {
+                    output.innerHTML += result + '<br>';
+                }, i * 1000);
+            });
+        }
+
+        function demoPromises() {
+            const output = document.getElementById('promise-output');
+            output.style.display = 'block';
+            output.innerHTML = 'Ordering food... 🍔<br>';
+            
+            function orderFood(item) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        const available = Math.random() > 0.3;
+                        if (available) {
+                            resolve(`${item} is ready! 🍕`);
+                        } else {
+                            reject(`Sorry, ${item} is out of stock 😞`);
+                        }
+                    }, 2000);
+                });
+            }
+            
+            orderFood("Pizza")
+                .then(result => {
+                    output.innerHTML += result + '<br>';
+                    output.innerHTML += 'Enjoy your meal! 😋';
+                })
+                .catch(error => {
+                    output.innerHTML += error + '<br>';
+                    output.innerHTML += 'Maybe try something else? 🤔';
+                });
+        }
+
+        function demoDom() {
+            const btn = document.getElementById('demo-btn');
+            const text = document.getElementById('demo-text');
+            const output = document.getElementById('dom-output');
+            
+            output.style.display = 'block';
+            output.innerHTML = 'DOM manipulation activated! ✨<br>';
+            
+            btn.addEventListener('click', function() {
+                const colors = ['red', 'blue', 'green', 'purple', 'orange'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                text.style.color = randomColor;
+                text.textContent = `Text color changed to ${randomColor}! 🎨`;
+                
+                output.innerHTML += `Button clicked! Color: ${randomColor}<br>`;
+            });
+            
+            output.innerHTML += 'Click the button above to see DOM magic! 🪄<br>';
+        }
+
+        function demoErrorHandling() {
+            const output = document.getElementById('error-output');
+            output.style.display = 'block';
+            output.innerHTML = '';
+            
+            function safeDivide(a, b) {
+                try {
+                    if (b === 0) {
+                        throw new Error("Cannot divide by zero!");
+                    }
+                    return `${a} ÷ ${b} = ${a / b}`;
+                } catch (error) {
+                    return `Error: ${error.message}`;
+                } finally {
+                    return "Operation completed";
+                }
+            }
+            
+            const tests = [
+                safeDivide(10, 2),
+                safeDivide(15, 3),
+                safeDivide(8, 0),
+                safeDivide(20, 4)
+            ];
+            
+            tests.forEach((result, i) => {
+                setTimeout(() => {
+                    output.innerHTML += result + '<br>';
+                }, i * 1000);
+            });
+        }
+
+        function demoModernJS() {
+            const output = document.getElementById('modern-output');
+            output.style.display = 'block';
+            output.innerHTML = '';
+            
+            // Destructuring
+            const person = { name: "Alex", age: 15, city: "Tokyo" };
+            const { name, age } = person;
+            
+            // Template literals
+            const greeting = `Hello ${name}, you are ${age} years old!`;
+            
+            // Spread operator
+            const fruits = ["apple", "banana"];
+            const moreFruits = ["orange", "grape"];
+            const allFruits = [...fruits, ...moreFruits];
+            
+            const results = [
+                `Destructured: name = ${name}, age = ${age}`,
+                `Template literal: ${greeting}`,
+                `Spread operator: [${allFruits.join(', ')}]`,
+                `Modern JavaScript is amazing! 🚀`
+            ];
+            
+            results.forEach((result, i) => {
+                setTimeout(() => {
+                    output.innerHTML += result + '<br>';
+                }, i * 1000);
+            });
+        }
+
+        // Todo App
+        class TodoApp {
+            constructor() {
+                this.todos = [];
+                this.nextId = 1;
+            }
+            
+            addTodo(text) {
+                if (!text.trim()) return;
+                
+                const todo = {
+                    id: this.nextId++,
+                    text: text,
+                    completed: false,
+                    createdAt: new Date()
+                };
+                this.todos.push(todo);
+                this.render();
+            }
+            
+            deleteTodo(id) {
+                this.todos = this.todos.filter(todo => todo.id !== id);
+                this.render();
+            }
+            
+            toggleComplete(id) {
+                const todo = this.todos.find(todo => todo.id === id);
+                if (todo) {
+                    todo.completed = !todo.completed;
+                    this.render();
+                }
+            }
+            
+            render() {
+                const todoList = document.getElementById('todo-list');
+                todoList.innerHTML = '';
+                
+                this.todos.forEach(todo => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span style="${todo.completed ? 'text-decoration: line-through; color: #888;' : ''}">${todo.text}</span>
+                        <button onclick="todoApp.toggleComplete(${todo.id})" style="margin-left: 10px; padding: 5px 10px; background: ${todo.completed ? '#ffa500' : '#28a745'}; color: white; border: none; border-radius: 3px;">
+                            ${todo.completed ? 'Undo' : 'Complete'}
+                        </button>
+                        <button onclick="todoApp.deleteTodo(${todo.id})" style="margin-left: 5px; padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 3px;">Delete</button>
+                    `;
+                    li.style.margin = '10px 0';
+                    li.style.padding = '10px';
+                    li.style.background = '#f7fafc';
+                    li.style.borderRadius = '5px';
+                    li.style.display = 'flex';
+                    li.style.justifyContent = 'space-between';
+                    li.style.alignItems = 'center';
+                    todoList.appendChild(li);
+                });
+            }
+        }
+
+        const todoApp = new TodoApp();
+
+        function addTodo() {
+            const input = document.getElementById('todo-input');
+            todoApp.addTodo(input.value);
+            input.value = '';
+        }
+
+        // Enter key support for todo input
+        document.addEventListener('DOMContentLoaded', function() {
+            const todoInput = document.getElementById('todo-input');
+            if (todoInput) {
+                todoInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addTodo();
+                    }
+                });
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                changeSlide(-1);
+            }
+        });
+    </script>
+</body>
+</html>
