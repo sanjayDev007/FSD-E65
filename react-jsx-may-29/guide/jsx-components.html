@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSX & Components - From HTML to React</title>
+    <style>
+        body { 
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif; 
+            margin: 30px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        h1, h2, h3 { 
+            color: #1565c0; 
+            border-bottom: 2px solid #42a5f5;
+            padding-bottom: 5px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .diagram { 
+            margin: 30px 0; 
+            text-align: center;
+        }
+        .diagram svg { 
+            background: #f8fbff; 
+            border-radius: 10px;
+            border: 1px solid #ccc; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .code-example {
+            background: #f5f5f5;
+            border-left: 4px solid #42a5f5;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, monospace;
+            position: relative;
+        }
+        .code-label {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #42a5f5;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .analogy {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 5px;
+        }
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .comparison-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            min-width: 300px;
+        }
+        .html-box {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+        }
+        .jsx-box {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+        }
+        .css-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .css-method {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+        .inline-css { border-color: #dc3545; background: #f8d7da; }
+        .css-modules { border-color: #ffc107; background: #fff3cd; }
+        .styled-components { border-color: #6610f2; background: #e2e3f3; }
+        .css-files { border-color: #20c997; background: #d1ecf1; }
+        .component-tree {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #6c757d;
+        }
+        .conversion-steps {
+            background: #fff9c4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #fbc02d;
+        }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #42a5f5;
+        }
+        .warning {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f44336;
+            margin: 15px 0;
+        }
+        .success {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+            margin: 15px 0;
+        }
+        .module-flow {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #9c27b0;
+        }
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JSX & Components: From HTML to React Magic ✨</h1>
+        <p>
+            Welcome to the exciting world of JSX and React Components! 🎉 Today we'll learn how to transform regular HTML into powerful, 
+            reusable React components. Think of this as learning to turn simple LEGO blocks into sophisticated, programmable robots!
+        </p>
+
+        <div class="analogy">
+            <div class="analogy-title">🧩 Analogy: From Static Painting to Interactive Movie</div>
+            <p>
+                Converting HTML to React is like transforming a static painting into an interactive movie. HTML is beautiful but static - like a painting on the wall. 
+                React components are like movie scenes that can change, respond to user actions, and be reused throughout your application!
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Step 1: Converting HTML to JSX 🔄</h2>
+        
+        <p>Let's start with a real example - converting a simple HTML webpage to React JSX!</p>
+        
+        <div class="comparison">
+            <div class="comparison-box html-box">
+                <h3>Original HTML 📄</h3>
+                <div class="code-example">
+                    <div class="code-label">HTML</div>
+                    &lt;!DOCTYPE html&gt;<br>
+                    &lt;html&gt;<br>
+                    &lt;head&gt;<br>
+                    &nbsp;&nbsp;&lt;title&gt;My Portfolio&lt;/title&gt;<br>
+                    &nbsp;&nbsp;&lt;style&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;.header { background: blue; color: white; }<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;.card { border: 1px solid #ccc; padding: 20px; }<br>
+                    &nbsp;&nbsp;&lt;/style&gt;<br>
+                    &lt;/head&gt;<br>
+                    &lt;body&gt;<br>
+                    &nbsp;&nbsp;&lt;div class="header"&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;John Doe&lt;/h1&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Web Developer&lt;/p&gt;<br>
+                    &nbsp;&nbsp;&lt;/div&gt;<br>
+                    &nbsp;&nbsp;&lt;div class="card"&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;About Me&lt;/h2&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;I love coding!&lt;/p&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;button onclick="showMore()"&gt;Learn More&lt;/button&gt;<br>
+                    &nbsp;&nbsp;&lt;/div&gt;<br>
+                    &lt;/body&gt;<br>
+                    &lt;/html&gt;
+                </div>
+            </div>
+            
+            <div class="comparison-box jsx-box">
+                <h3>Converted JSX ⚛️</h3>
+                <div class="code-example">
+                    <div class="code-label">JSX</div>
+                    // App.jsx<br>
+                    import './App.css';<br><br>
+                    
+                    function App() {<br>
+                    &nbsp;&nbsp;const showMore = () =&gt; {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;alert('More info coming soon!');<br>
+                    &nbsp;&nbsp;};<br><br>
+                    
+                    &nbsp;&nbsp;return (<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="App"&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="header"&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;John Doe&lt;/h1&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Web Developer&lt;/p&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="card"&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;About Me&lt;/h2&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;I love coding!&lt;/p&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={showMore}&gt;Learn More&lt;/button&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                    &nbsp;&nbsp;);<br>
+                    }<br><br>
+                    
+                    export default App;
+                </div>
+            </div>
+        </div>
+
+        <div class="conversion-steps">
+            <h3>🔧 Key Conversion Rules</h3>
+            
+            <div class="step">
+                <strong>1. class → className</strong><br>
+                HTML: <code>&lt;div class="header"&gt;</code><br>
+                JSX: <code>&lt;div className="header"&gt;</code>
+            </div>
+            
+            <div class="step">
+                <strong>2. onclick → onClick (camelCase)</strong><br>
+                HTML: <code>&lt;button onclick="showMore()"&gt;</code><br>
+                JSX: <code>&lt;button onClick={showMore}&gt;</code>
+            </div>
+            
+            <div class="step">
+                <strong>3. Self-closing tags need closing slash</strong><br>
+                HTML: <code>&lt;img src="photo.jpg"&gt;</code><br>
+                JSX: <code>&lt;img src="photo.jpg" /&gt;</code>
+            </div>
+            
+            <div class="step">
+                <strong>4. JavaScript expressions in curly braces</strong><br>
+                HTML: <code>&lt;p&gt;Static text&lt;/p&gt;</code><br>
+                JSX: <code>&lt;p&gt;{dynamicVariable}&lt;/p&gt;</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Step 2: CSS Integration Methods 🎨</h2>
+        
+        <p>React gives you multiple ways to style your components. Each method has its own superpowers!</p>
+        
+        <div class="css-methods">
+            <div class="css-method css-files">
+                <h3>🗂️ CSS Files (Traditional)</h3>
+                <p><strong>Best for:</strong> Global styles, beginners</p>
+                
+                <div class="code-example">
+                    <div class="code-label">CSS File</div>
+                    /* App.css */<br>
+                    .header {<br>
+                    &nbsp;&nbsp;background: linear-gradient(45deg, #667eea, #764ba2);<br>
+                    &nbsp;&nbsp;color: white;<br>
+                    &nbsp;&nbsp;padding: 2rem;<br>
+                    &nbsp;&nbsp;text-align: center;<br>
+                    }
+                </div>
+                
+                <div class="code-example">
+                    <div class="code-label">JSX</div>
+                    import './App.css';<br><br>
+                    
+                    function App() {<br>
+                    &nbsp;&nbsp;return &lt;div className="header"&gt;Hello!&lt;/div&gt;;<br>
+                    }
+                </div>
+                
+                <div class="success">✅ Pros: Familiar, easy to learn, good for global styles</div>
+                <div class="warning">⚠️ Cons: Global scope can cause conflicts</div>
+            </div>
+            
+            <div class="css-method inline-css">
+                <h3>📝 Inline Styles (JavaScript Objects)</h3>
+                <p><strong>Best for:</strong> Dynamic styles, component-specific styling</p>
+                
+                <div class="code-example">
+                    <div class="code-label">JSX</div>
+                    function Header({ isActive }) {<br>
+                    &nbsp;&nbsp;const headerStyle = {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;background: isActive ? '#4caf50' : '#f44336',<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;color: 'white',<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;padding: '2rem',<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;textAlign: 'center', // camelCase!<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;borderRadius: '8px'<br>
+                    &nbsp;&nbsp;};<br><br>
+                    
+                    &nbsp;&nbsp;return &lt;div style={headerStyle}&gt;Dynamic Header&lt;/div&gt;;<br>
+                    }
+                </div>
+                
+                <div class="success">✅ Pros: Dynamic, component-scoped, no conflicts</div>
+                <div class="warning">⚠️ Cons: No pseudo-classes, limited features</div>
+            </div>
+            
+            <div class="css-method css-modules">
+                <h3>🏠 CSS Modules (Scoped Styles)</h3>
+                <p><strong>Best for:</strong> Component-specific styles with full CSS features</p>
+                
+                <div class="code-example">
+                    <div class="code-label">Header.module.css</div>
+                    .header {<br>
+                    &nbsp;&nbsp;background: linear-gradient(45deg, #667eea, #764ba2);<br>
+                    &nbsp;&nbsp;color: white;<br>
+                    &nbsp;&nbsp;padding: 2rem;<br>
+                    }<br><br>
+                    
+                    .header:hover {<br>
+                    &nbsp;&nbsp;transform: scale(1.05);<br>
+                    &nbsp;&nbsp;transition: transform 0.3s ease;<br>
+                    }
+                </div>
+                
+                <div class="code-example">
+                    <div class="code-label">Header.jsx</div>
+                    import styles from './Header.module.css';<br><br>
+                    
+                    function Header() {<br>
+                    &nbsp;&nbsp;return (<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;div className={styles.header}&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Scoped Header<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                    &nbsp;&nbsp;);<br>
+                    }
+                </div>
+                
+                <div class="success">✅ Pros: Scoped styles, full CSS features, no conflicts</div>
+                <div class="warning">⚠️ Cons: Extra setup, class name references</div>
+            </div>
+            
+            <div class="css-method styled-components">
+                <h3>💅 Styled Components (CSS-in-JS)</h3>
+                <p><strong>Best for:</strong> Dynamic, themed applications</p>
+                
+                <div class="code-example">
+                    <div class="code-label">Terminal</div>
+                    npm install styled-components
+                </div>
+                
+                <div class="code-example">
+                    <div class="code-label">Header.jsx</div>
+                    import styled from 'styled-components';<br><br>
+                    
+                    const StyledHeader = styled.div`<br>
+                    &nbsp;&nbsp;background: linear-gradient(45deg, #667eea, #764ba2);<br>
+                    &nbsp;&nbsp;color: white;<br>
+                    &nbsp;&nbsp;padding: 2rem;<br>
+                    &nbsp;&nbsp;text-align: center;<br>
+                    &nbsp;&nbsp;<br>
+                    &nbsp;&nbsp;&:hover {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;transform: scale(1.05);<br>
+                    &nbsp;&nbsp;}<br>
+                    `;<br><br>
+                    
+                    function Header() {<br>
+                    &nbsp;&nbsp;return &lt;StyledHeader&gt;Styled Header&lt;/StyledHeader&gt;;<br>
+                    }
+                </div>
+                
+                <div class="success">✅ Pros: Dynamic styling, theming, component-scoped</div>
+                <div class="warning">⚠️ Cons: Learning curve, bundle size</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Step 3: Component Breakdown Strategy 🧩</h2>
+        
+        <div class="analogy">
+            <div class="analogy-title">🍕 Componentization Analogy: Pizza Restaurant</div>
+            <p>
+                Think of your webpage like a pizza restaurant. Instead of making every pizza from scratch each time, you create reusable "recipes" (components):
+                <br>• <strong>Dough Component:</strong> Base that every pizza uses
+                <br>• <strong>Sauce Component:</strong> Can be tomato, white, or BBQ
+                <br>• <strong>Topping Component:</strong> Reusable pepperoni, cheese, vegetables
+                <br>• <strong>Pizza Component:</strong> Combines all ingredients based on order
+            </p>
+        </div>
+
+        <div class="component-tree">
+            <h3>🌳 Component Tree Structure</h3>
+            <div class="diagram">
+                <svg width="800" height="400">
+                    <!-- App Component -->
+                    <rect x="350" y="20" width="100" height="50" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="8"/>
+                    <text x="400" y="50" font-size="14" text-anchor="middle" fill="#1565c0" font-weight="bold">App</text>
+                    
+                    <!-- Header Component -->
+                    <rect x="100" y="120" width="100" height="50" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" rx="8"/>
+                    <text x="150" y="150" font-size="14" text-anchor="middle" fill="#2e7d32" font-weight="bold">Header</text>
+                    
+                    <!-- Main Component -->
+                    <rect x="350" y="120" width="100" height="50" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="8"/>
+                    <text x="400" y="150" font-size="14" text-anchor="middle" fill="#ef6c00" font-weight="bold">Main</text>
+                    
+                    <!-- Footer Component -->
+                    <rect x="600" y="120" width="100" height="50" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" rx="8"/>
+                    <text x="650" y="150" font-size="14" text-anchor="middle" fill="#7b1fa2" font-weight="bold">Footer</text>
+                    
+                    <!-- Child Components of Main -->
+                    <rect x="250" y="220" width="80" height="40" fill="#ffebee" stroke="#f44336" stroke-width="2" rx="6"/>
+                    <text x="290" y="245" font-size="12" text-anchor="middle" fill="#c62828">ProjectCard</text>
+                    
+                    <rect x="350" y="220" width="80" height="40" fill="#ffebee" stroke="#f44336" stroke-width="2" rx="6"/>
+                    <text x="390" y="245" font-size="12" text-anchor="middle" fill="#c62828">AboutMe</text>
+                    
+                    <rect x="450" y="220" width="80" height="40" fill="#ffebee" stroke="#f44336" stroke-width="2" rx="6"/>
+                    <text x="490" y="245" font-size="12" text-anchor="middle" fill="#c62828">Skills</text>
+                    
+                    <!-- Child Components of ProjectCard -->
+                    <rect x="200" y="320" width="70" height="35" fill="#fff9c4" stroke="#fbc02d" stroke-width="2" rx="6"/>
+                    <text x="235" y="342" font-size="11" text-anchor="middle" fill="#f57f17">Image</text>
+                    
+                    <rect x="280" y="320" width="70" height="35" fill="#fff9c4" stroke="#fbc02d" stroke-width="2" rx="6"/>
+                    <text x="315" y="342" font-size="11" text-anchor="middle" fill="#f57f17">Button</text>
+                    
+                    <!-- Connection Lines -->
+                    <path d="M 400 75 L 150 115" stroke="#666" stroke-width="2"/>
+                    <path d="M 400 75 L 400 115" stroke="#666" stroke-width="2"/>
+                    <path d="M 400 75 L 650 115" stroke="#666" stroke-width="2"/>
+                    
+                    <path d="M 400 175 L 290 215" stroke="#666" stroke-width="2"/>
+                    <path d="M 400 175 L 390 215" stroke="#666" stroke-width="2"/>
+                    <path d="M 400 175 L 490 215" stroke="#666" stroke-width="2"/>
+                    
+                    <path d="M 290 265 L 235 315" stroke="#666" stroke-width="2"/>
+                    <path d="M 290 265 L 315 315" stroke="#666" stroke-width="2"/>
+                    
+                    <!-- Labels -->
+                    <text x="400" y="15" font-size="16" text-anchor="middle" fill="#333" font-weight="bold">Component Hierarchy</text>
+                    <text x="50" y="395" font-size="12" fill="#666">💡 Tip: Break down UI into small, reusable pieces!</text>
+                </svg>
+            </div>
+        </div>
+
+        <h3>Breaking Down Our Portfolio Example</h3>
+        <div class="comparison">
+            <div class="comparison-box">
+                <h4>🎯 Step-by-Step Componentization</h4>
+                
+                <div class="code-example">
+                    <div class="code-label">1. Header Component</div>
+                    // components/Header.jsx<br>
+                    function Header({ name, role }) {<br>
+                    &nbsp;&nbsp;return (<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;header className="header"&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;{name}&lt;/h1&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;{role}&lt;/p&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/header&gt;<br>
+                    &nbsp;&nbsp;);<br>
+                    }<br><br>
+                    export default Header;
+                </div>
+                
+                <div class="code-example">
+                    <div class="code-label">2. Card Component</div>
+                    // components/Card.jsx<br>
+                    function Card({ title, content, onButtonClick }) {<br>
+                    &nbsp;&nbsp;return (<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="card"&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;{title}&lt;/h2&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;{content}&lt;/p&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={onButtonClick}&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Learn More<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                    &nbsp;&nbsp;);<br>
+                    }<br><br>
+                    export default Card;
+                </div>
+                
+                <div class="code-example">
+                    <div class="code-label">3. Main App Component</div>
+                    // App.jsx<br>
+                    import Header from './components/Header';<br>
+                    import Card from './components/Card';<br>
+                    import './App.css';<br><br>
+                    
+                    function App() {<br>
+                    &nbsp;&nbsp;const handleShowMore = () =&gt; {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;alert('More info coming soon!');<br>
+                    &nbsp;&nbsp;};<br><br>
+                    
+                    &nbsp;&nbsp;return (<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="App"&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Header name="John Doe" role="Web Developer" /&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Card <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title="About Me"<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content="I love coding!"<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onButtonClick={handleShowMore}<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                    &nbsp;&nbsp;);<br>
+                    }<br><br>
+                    
+                    export default App;
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Step 4: Module Import/Export System 📦</h2>
+        
+        <div class="module-flow">
+            <h3>Understanding ES6 Modules</h3>
+            <p>ES6 modules are like a library system - you can "check out" (import) code from other files and "lend" (export) your code to others!</p>
+            
+            <div class="diagram">
+                <svg width="800" height="300">
+                    <!-- File 1: Component with Export -->
+                    <rect x="50" y="50" width="200" height="120" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" rx="8"/>
+                    <text x="150" y="40" font-size="14" text-anchor="middle" fill="#2e7d32" font-weight="bold">Header.jsx</text>
+                    
+                    <text x="60" y="80" font-size="11" fill="#333">function Header() {</text>
+                    <text x="60" y="100" font-size="11" fill="#333">&nbsp;&nbsp;return &lt;h1&gt;Hello&lt;/h1&gt;;</text>
+                    <text x="60" y="120" font-size="11" fill="#333">}</text>
+                    <text x="60" y="150" font-size="11" fill="#2e7d32" font-weight="bold">export default Header;</text>
+                    
+                    <!-- File 2: App with Import -->
+                    <rect x="350" y="50" width="200" height="120" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="8"/>
+                    <text x="450" y="40" font-size="14" text-anchor="middle" fill="#1565c0" font-weight="bold">App.jsx</text>
+                    
+                    <text x="360" y="80" font-size="11" fill="#1565c0" font-weight="bold">import Header from './Header';</text>
+                    <text x="360" y="110" font-size="11" fill="#333">function App() {</text>
+                    <text x="360" y="130" font-size="11" fill="#333">&nbsp;&nbsp;return &lt;Header /&gt;;</text>
+                    <text x="360" y="150" font-size="11" fill="#333">}</text>
+                    
+                    <!-- Arrow -->
+                    <path d="M 255 110 L 345 110" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead5)"/>
+                    <text x="300" y="105" font-size="12" text-anchor="middle" fill="#ff5722" font-weight="bold">imports</text>
+                    
+                    <!-- Browser -->
+                    <rect x="600" y="50" width="150" height="120" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="8"/>
+                    <text x="675" y="40" font-size="14" text-anchor="middle" fill="#ef6c00" font-weight="bold">Browser</text>
+                    <text x="675" y="110" font-size="24" text-anchor="middle">🎉</text>
+                    <text x="675" y="130" font-size="12" text-anchor="middle" fill="#333">Rendered</text>
+                    <text x="675" y="150" font-size="12" text-anchor="middle" fill="#333">Component</text>
+                    
+                    <!-- Arrow 2 -->
+                    <path d="M 555 110 L 595 110" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead5)"/>
+                    
+                    <!-- Process explanation -->
+                    <text x="400" y="210" font-size="14" text-anchor="middle" fill="#333" font-weight="bold">Module System Flow</text>
+                    <text x="150" y="240" font-size="12" fill="#666">1. Export components from files</text>
+                    <text x="450" y="240" font-size="12" fill="#666">2. Import where needed</text>
+                    <text x="675" y="240" font-size="12" fill="#666">3. Use in JSX</text>
+                    
+                    <defs>
+                        <marker id="arrowhead5" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#ff5722"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+        
+        <h3>Export Methods 📤</h3>
+        <div class="comparison">
+            <div class="comparison-box">
+                <h4>Default Export (One per file)</h4>
+                <div class="code-example">
+                    <div class="code-label">Button.jsx</div>
+                    function Button({ text, onClick }) {<br>
+                    &nbsp;&nbsp;return (<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={onClick}&gt;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{text}<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+                    &nbsp;&nbsp;);<br>
+                    }<br><br>
+                    
+                    <span class="highlight">export default Button;</span>
+                </div>
+                
+                <div class="code-example">
+                    <div class="code-label">App.jsx</div>
+                    <span class="highlight">import Button from './Button';</span><br>
+                    // OR import MyButton from './Button'; (any name works)
+                </div>
+            </div>
+            
+            <div class="comparison-box">
+                <h4>Named Export (Multiple per file)</h4>
+                <div class="code-example">
+                    <div class="code-label">utils.js</div>
+                    <span class="highlight">export</span> const formatDate = (date) =&gt; {<br>
+                    &nbsp;&nbsp;return date.toLocaleDateString();<br>
+                    };<br><br>
+                    
+                    <span class="highlight">export</span> const capitalizeText = (text) =&gt; {<br>
+                    &nbsp;&nbsp;return text.charAt(0).toUpperCase() + text.slice(1);<br>
+                    };<br><br>
+                    
+                    const helper = () =&gt; console.log('helper');<br>
+                    <span class="highlight">export { helper };</span>
+                </div>
+                
+                <div class="code-example">
+                    <div class="code-label">App.jsx</div>
+                    <span class="highlight">import { formatDate, capitalizeText } from './utils';</span><br>
+                    // OR import * as utils from './utils';<br>
+                    // Then use: utils.formatDate()
+                </div>
+            </div>
+        </div>
+        
+        <h3>Real Project Structure 📁</h3>
+        <div class="code-example">
+            <div class="code-label">Project Structure</div>
+            my-react-app/<br>
+            ├── public/<br>
+            │&nbsp;&nbsp;&nbsp;└── index.html<br>
+            ├── src/<br>
+            │&nbsp;&nbsp;&nbsp;├── components/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── Header/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── Header.jsx<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── Header.module.css<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── index.js  <span class="highlight">// Re-export</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── Card/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── Card.jsx<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── Card.module.css<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── index.js<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── index.js  <span class="highlight">// Barrel export</span><br>
+            │&nbsp;&nbsp;&nbsp;├── utils/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── formatters.js<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── api.js<br>
+            │&nbsp;&nbsp;&nbsp;├── App.jsx<br>
+            │&nbsp;&nbsp;&nbsp;├── App.css<br>
+            │&nbsp;&nbsp;&nbsp;└── index.js  <span class="highlight">// Entry point</span><br>
+            └── package.json
+        </div>
+        
+        <div class="code-example">
+            <div class="code-label">components/index.js (Barrel Export)</div>
+            // This file makes importing easier!<br>
+            export { default as Header } from './Header';<br>
+            export { default as Card } from './Card';<br>
+            export { default as Button } from './Button';<br><br>
+            
+            // Now you can import multiple components in one line:<br>
+            // import { Header, Card, Button } from './components';
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Practical Exercise: Portfolio Conversion 💪</h2>
+        
+        <div class="analogy">
+            <div class="analogy-title">🎯 Challenge: Build a Complete Portfolio</div>
+            <p>Let's put everything together! We'll convert a complete HTML portfolio into a React application with proper components, styling, and module structure.</p>
+        </div>
+        
+        <div class="step">
+            <h4>Step 1: Create Project Structure</h4>
+            <div class="code-example">
+                <div class="code-label">Terminal</div>
+                npx create-vite@latest my-portfolio -- --template react<br>
+                cd my-portfolio<br>
+                npm install<br>
+                npm run dev
+            </div>
+        </div>
+        
+        <div class="step">
+            <h4>Step 2: Create Components</h4>
+            <div class="code-example">
+                <div class="code-label">src/components/Header/Header.jsx</div>
+                import styles from './Header.module.css';<br><br>
+                
+                function Header({ name, role, avatar }) {<br>
+                &nbsp;&nbsp;return (<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;header className={styles.header}&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;img src={avatar} alt={name} className={styles.avatar} /&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className={styles.info}&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1 className={styles.name}&gt;{name}&lt;/h1&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p className={styles.role}&gt;{role}&lt;/p&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;/header&gt;<br>
+                &nbsp;&nbsp;);<br>
+                }<br><br>
+                
+                export default Header;
+            </div>
+        </div>
+        
+        <div class="step">
+            <h4>Step 3: Add Styles</h4>
+            <div class="code-example">
+                <div class="code-label">src/components/Header/Header.module.css</div>
+                .header {<br>
+                &nbsp;&nbsp;display: flex;<br>
+                &nbsp;&nbsp;align-items: center;<br>
+                &nbsp;&nbsp;gap: 2rem;<br>
+                &nbsp;&nbsp;padding: 2rem;<br>
+                &nbsp;&nbsp;background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);<br>
+                &nbsp;&nbsp;color: white;<br>
+                &nbsp;&nbsp;border-radius: 12px;<br>
+                &nbsp;&nbsp;margin-bottom: 2rem;<br>
+                }<br><br>
+                
+                .avatar {<br>
+                &nbsp;&nbsp;width: 100px;<br>
+                &nbsp;&nbsp;height: 100px;<br>
+                &nbsp;&nbsp;border-radius: 50%;<br>
+                &nbsp;&nbsp;border: 4px solid rgba(255, 255, 255, 0.3);<br>
+                }<br><br>
+                
+                .name {<br>
+                &nbsp;&nbsp;margin: 0;<br>
+                &nbsp;&nbsp;font-size: 2.5rem;<br>
+                &nbsp;&nbsp;font-weight: 300;<br>
+                }<br><br>
+                
+                .role {<br>
+                &nbsp;&nbsp;margin: 0.5rem 0 0 0;<br>
+                &nbsp;&nbsp;font-size: 1.2rem;<br>
+                &nbsp;&nbsp;opacity: 0.9;<br>
+                }
+            </div>
+        </div>
+        
+        <div class="step">
+            <h4>Step 4: Use in Main App</h4>
+            <div class="code-example">
+                <div class="code-label">src/App.jsx</div>
+                import Header from './components/Header/Header';<br>
+                import ProjectCard from './components/ProjectCard/ProjectCard';<br>
+                import './App.css';<br><br>
+                
+                function App() {<br>
+                &nbsp;&nbsp;const projects = [<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;{ id: 1, title: 'Weather App', description: 'React weather application' },<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;{ id: 2, title: 'Todo List', description: 'Task management app' },<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;{ id: 3, title: 'Portfolio', description: 'Personal portfolio website' }<br>
+                &nbsp;&nbsp;];<br><br>
+                
+                &nbsp;&nbsp;return (<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="App"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Header <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name="John Doe"<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;role="Full Stack Developer"<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;avatar="/avatar.jpg"<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;main className="main-content"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;My Projects&lt;/h2&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="projects-grid"&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{projects.map(project =&gt; (<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ProjectCard <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;key={project.id}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title={project.title}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description={project.description}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+                &nbsp;&nbsp;);<br>
+                }<br><br>
+                
+                export default App;
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Summary: HTML to React Mastery! 🎉</h2>
+        
+        <div class="success">
+            <h3>🎯 What You've Learned</h3>
+            <ul>
+                <li><strong>HTML to JSX Conversion:</strong> class → className, event handlers, self-closing tags</li>
+                <li><strong>CSS Integration:</strong> Four powerful methods (CSS files, inline styles, CSS modules, styled-components)</li>
+                <li><strong>Componentization:</strong> Breaking UI into reusable, manageable pieces</li>
+                <li><strong>Module System:</strong> Default exports, named exports, and barrel exports</li>
+                <li><strong>Project Structure:</strong> Organizing files for scalability and maintainability</li>
+            </ul>
+        </div>
+        
+        <div class="analogy">
+            <div class="analogy-title">🏆 You're Now a Component Architect!</div>
+            <p>
+                Congratulations! You've learned to transform static HTML into dynamic, reusable React components. You're like an architect who can take a blueprint (HTML) 
+                and build a smart building (React app) with automated systems (components) that can adapt, communicate, and be reused for other projects!
+            </p>
+        </div>
+        
+        <div class="warning">
+            <h3>💡 Best Practices to Remember</h3>
+            <ul>
+                <li>Keep components small and focused (Single Responsibility Principle)</li>
+                <li>Use meaningful names for components and props</li>
+                <li>Organize files in folders by component</li>
+                <li>Choose the right CSS method for your project needs</li>
+                <li>Always export your components properly</li>
+                <li>Use props to make components reusable</li>
+            </ul>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-top: 20px; text-align: center;">
+            <h3>🚀 Ready for the Next Level?</h3>
+            <p>You've mastered the basics of JSX and components! Next up: State management, event handling, and making your components truly interactive. Keep building, keep learning! 💪</p>
+        </div>
+    </div>
+</body>
+</html>

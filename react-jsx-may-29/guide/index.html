@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React Tutorial Guide - Complete Learning Path</title>
+    <style>
+        body { 
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif; 
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .guide-card {
+            background: white;
+            color: #333;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+        .guide-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+        }
+        .guide-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .guide-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #1565c0;
+        }
+        .guide-description {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .guide-topics {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .guide-topics h4 {
+            margin: 0 0 0.5rem 0;
+            color: #495057;
+        }
+        .guide-topics ul {
+            margin: 0;
+            padding-left: 1.5rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .coming-soon {
+            opacity: 0.6;
+            position: relative;
+        }
+        .coming-soon::after {
+            content: "Coming Soon!";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #ff5722;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .footer {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>React Tutorial Guide 🚀</h1>
+        <p class="subtitle">Complete Learning Path from Beginner to Pro</p>
+        
+        <div class="guide-grid">
+            <a href="react.html" class="guide-card">
+                <div class="guide-icon">⚛️</div>
+                <div class="guide-title">React Fundamentals</div>
+                <div class="guide-description">
+                    Master the basics of React.js, understand components, Virtual DOM, and get started with your first React application.
+                </div>
+                <div class="guide-topics">
+                    <h4>Topics Covered:</h4>
+                    <ul>
+                        <li>What is React & why use it</li>
+                        <li>Virtual DOM explained</li>
+                        <li>Create React App vs Vite</li>
+                        <li>Project setup and structure</li>
+                        <li>Your first component</li>
+                    </ul>
+                </div>
+            </a>
+            
+            <a href="jsx-components.html" class="guide-card">
+                <div class="guide-icon">🧩</div>
+                <div class="guide-title">JSX & Components</div>
+                <div class="guide-description">
+                    Learn how to convert HTML to JSX, style your components, break down UI into reusable pieces, and master the module system.
+                </div>
+                <div class="guide-topics">
+                    <h4>Topics Covered:</h4>
+                    <ul>
+                        <li>HTML to JSX conversion</li>
+                        <li>CSS integration methods</li>
+                        <li>Component breakdown strategy</li>
+                        <li>Import/Export modules</li>
+                        <li>Project structure best practices</li>
+                    </ul>
+                </div>
+            </a>
+            
+            <div class="guide-card coming-soon">
+                <div class="guide-icon">🎮</div>
+                <div class="guide-title">State & Events</div>
+                <div class="guide-description">
+                    Master React state management, handle user interactions, and create dynamic, interactive components.
+                </div>
+                <div class="guide-topics">
+                    <h4>Topics to Cover:</h4>
+                    <ul>
+                        <li>useState Hook</li>
+                        <li>Event handling</li>
+                        <li>Controlled components</li>
+                        <li>State lifting</li>
+                        <li>Interactive forms</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="guide-card coming-soon">
+                <div class="guide-icon">🔄</div>
+                <div class="guide-title">Effects & Lifecycle</div>
+                <div class="guide-description">
+                    Understand component lifecycle, side effects, data fetching, and the useEffect hook.
+                </div>
+                <div class="guide-topics">
+                    <h4>Topics to Cover:</h4>
+                    <ul>
+                        <li>useEffect Hook</li>
+                        <li>Component lifecycle</li>
+                        <li>API data fetching</li>
+                        <li>Cleanup functions</li>
+                        <li>Dependency arrays</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="guide-card coming-soon">
+                <div class="guide-icon">🏗️</div>
+                <div class="guide-title">Advanced Patterns</div>
+                <div class="guide-description">
+                    Learn advanced React patterns, custom hooks, context API, and performance optimization techniques.
+                </div>
+                <div class="guide-topics">
+                    <h4>Topics to Cover:</h4>
+                    <ul>
+                        <li>Custom Hooks</li>
+                        <li>Context API</li>
+                        <li>Higher-Order Components</li>
+                        <li>Render Props</li>
+                        <li>Performance optimization</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="guide-card coming-soon">
+                <div class="guide-icon">🎯</div>
+                <div class="guide-title">Real-World Projects</div>
+                <div class="guide-description">
+                    Build complete applications, learn routing, state management libraries, and deployment strategies.
+                </div>
+                <div class="guide-topics">
+                    <h4>Projects to Build:</h4>
+                    <ul>
+                        <li>Todo Application</li>
+                        <li>Weather Dashboard</li>
+                        <li>E-commerce Cart</li>
+                        <li>Blog Platform</li>
+                        <li>Deployment guide</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <h3>🎓 Learning Path Recommendation</h3>
+            <p>
+                Start with <strong>React Fundamentals</strong> to understand the core concepts, then move to <strong>JSX & Components</strong> 
+                to learn practical development skills. Each guide builds upon the previous one, so follow the order for the best learning experience!
+            </p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.8;">
+                💡 Tip: Practice building small projects after each guide to reinforce your learning!
+            </p>
+        </div>
+    </div>
+</body>
+</html>
