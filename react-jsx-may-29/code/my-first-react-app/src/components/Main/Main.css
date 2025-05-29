@@ -1,0 +1,13 @@
+.card-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    max-width: 1200px;
+    flex-wrap: wrap;
+    margin: auto;
+}
+.main {
+    margin-top: 400px;
+}
