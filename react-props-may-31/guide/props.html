@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Props - Complete Guide</title>
+    
+    <!-- Prism.js CSS for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin: 30px 0 20px 0;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            margin: 20px 0 15px 0;
+            font-size: 1.3em;
+        }
+        
+        .analogy {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(116, 185, 255, 0.3);
+        }
+        
+        .analogy-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-example pre {
+            background: transparent !important;
+            margin: 0;
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .code-example code {
+            background: transparent !important;
+            color: inherit;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .code-label {
+            background: #4299e1;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-weight: bold;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .comparison-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .props-flow {
+            border-left: 5px solid #28a745;
+        }
+        
+        .no-props {
+            border-left: 5px solid #dc3545;
+        }
+        
+        .exercise-box {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #f39c12;
+        }
+        
+        .warning-box {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .tip-box {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #17a2b8;
+        }
+        
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        strong {
+            color: #2c3e50;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        /* Override Prism.js styles for better integration */
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: #999999;
+        }
+        
+        .token.punctuation {
+            color: #ccc;
+        }
+        
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol,
+        .token.deleted {
+            color: #e2777a;
+        }
+        
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin,
+        .token.inserted {
+            color: #7ec699;
+        }
+        
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .language-css .token.string,
+        .style .token.string {
+            color: #67cdcc;
+        }
+        
+        .token.atrule,
+        .token.attr-value,
+        .token.keyword {
+            color: #c792ea;
+        }
+        
+        .token.function,
+        .token.class-name {
+            color: #82aaff;
+        }
+        
+        .token.regex,
+        .token.important,
+        .token.variable {
+            color: #f07178;
+        }
+        
+        /* Line numbers styling */
+        .line-numbers .line-numbers-rows {
+            border-right: 1px solid #4a5568;
+        }
+        
+        .line-numbers-rows > span:before {
+            color: #718096;
+        }
+        
+        .final-section {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 React Props: Your Complete Guide to Component Communication</h1>
+        
+        <div class="analogy">
+            <div class="analogy-title">🎭 Think of Props Like a Theater Performance</div>
+            <p>
+                Imagine you're directing a play. Each actor (component) needs specific instructions about their role, 
+                costume, and lines. Props are like the director's notes - they tell each component exactly what to display, 
+                how to behave, and what data to work with. Just like actors can't change their script mid-performance, 
+                components can't modify their props - they're read-only instructions from the "director" (parent component)!
+            </p>
+        </div>
+        
+        <h2>🌟 What Are Props?</h2>
+        <p>
+            <strong>Props</strong> (short for "properties") are the way React components receive data from their parent components. 
+            They're like function parameters, but for components! Props make components reusable and dynamic.
+        </p>
+        
+        <div class="tip-box">
+            <h3>💡 Key Props Concepts:</h3>
+            <ul>
+                <li><strong>Read-only:</strong> Components cannot modify their props</li>
+                <li><strong>Data flow:</strong> Props flow down from parent to child (unidirectional)</li>
+                <li><strong>Any data type:</strong> Strings, numbers, objects, arrays, functions, even other components!</li>
+                <li><strong>Reusability:</strong> Same component, different props = different behavior</li>
+            </ul>
+        </div>
+        
+        <h2>🎯 Basic Props Example</h2>
+        
+        <div class="code-example">
+            <div class="code-label">Parent Component</div>
+            <pre class="line-numbers"><code class="language-jsx">function App() {
+  return (
+    &lt;div&gt;
+      &lt;Greeting name="Alice" age={25} /&gt;
+      &lt;Greeting name="Bob" age={30} /&gt;
+      &lt;Greeting name="Charlie" age={22} /&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+        </div>
+        
+        <div class="code-example">
+            <div class="code-label">Child Component</div>
+            <pre class="line-numbers"><code class="language-jsx">// Modern way with destructuring
+function Greeting({ name, age }) {
+    return (
+        &lt;div&gt;
+            &lt;h2&gt;Hello, {name}!&lt;/h2&gt;
+            &lt;p&gt;You are {age} years old.&lt;/p&gt;
+        &lt;/div&gt;
+    );
+}</code></pre>
+        </div>
+        
+        <div class="comparison">
+            <div class="comparison-box props-flow">
+                <h3>✅ With Props (Reusable)</h3>
+                <p>One component can display different data based on props passed from parent.</p>
+                <div class="code-example">
+                    <pre class="line-numbers"><code class="language-jsx">&lt;UserCard 
+  name="John" 
+  role="Developer" 
+  avatar="/john.jpg" 
+/&gt;
+&lt;UserCard 
+  name="Sarah" 
+  role="Designer" 
+  avatar="/sarah.jpg" 
+/&gt;</code></pre>
+                </div>
+                </div>
+            
+            <div class="comparison-box no-props">
+                <h3>❌ Without Props (Hard-coded)</h3>
+                <p>Each component would need to be separately created with fixed data.</p>
+                <div class="code-example">
+                    <pre><code class="language-jsx">function JohnCard() {
+  return <div>John - Developer</div>;
+}
+
+function SarahCard() {
+  return <div>Sarah - Designer</div>;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <h2>🎨 Different Types of Props</h2>
+        
+        <div class="code-example">
+            <div class="code-label">All Prop Types Example</div>
+            <pre class="line-numbers"><code class="language-jsx">function ProductCard({
+  // String props
+  title,
+  description,
+  
+  // Number props
+  price,
+  rating,
+  
+  // Boolean props
+  inStock,
+  onSale,
+  
+  // Array props
+  tags,
+  images,
+  
+  // Object props
+  seller,
+  specifications,
+  
+  // Function props
+  onAddToCart,
+  onToggleFavorite
+}) {
+  return (
+    <div className="product-card">
+      <h3>{title}</h3>
+      <p>{description}</p>
+      <div className="price">${price}</div>
+      <div className="rating">⭐ {rating}/5</div>
+      
+      {/* Boolean prop for conditional rendering */}
+      {inStock ? <span className="in-stock">✅ In Stock</span> 
+               : <span className="out-of-stock">❌ Out of Stock</span>}
+      
+      {/* Array prop rendering */}
+      <div className="tags">
+        {tags.map(tag => <span key={tag} className="tag">{tag}</span>)}
+      </div>
+      
+      {/* Object prop access */}
+      <div className="seller">Sold by: {seller.name}</div>
+      
+      {/* Function prop usage */}
+      <button onClick={() => onAddToCart(title)}>Add to Cart</button>
+      <button onClick={onToggleFavorite}>💖</button>
+    </div>
+  );
+}</code></pre>
+        </div>
+        
+        <div class="code-example">
+            <div class="code-label">Using the ProductCard</div>
+            <pre class="line-numbers"><code class="language-jsx">function App() {
+  const handleAddToCart = (productName) => {
+    alert(`${productName} added to cart!`);
+  };
+  
+  const handleToggleFavorite = () => {
+    console.log('Toggled favorite!');
+  };
+  
+  return (
+    <ProductCard 
+      title="Wireless Headphones"
+      description="High-quality sound with noise cancellation"
+      price={149.99}
+      rating={4.5}
+      inStock={true}
+      onSale={false}
+      tags={['electronics', 'audio', 'wireless']}
+      images={['/img1.jpg', '/img2.jpg']}
+      seller={{ name: 'TechStore', rating: 4.8 }}
+      specifications={{ 
+        battery: '30 hours', 
+        weight: '250g' 
+      }}
+      onAddToCart={handleAddToCart}
+      onToggleFavorite={handleToggleFavorite}
+    />
+  );
+}</code></pre>
+        </div>
+        
+        <h2>🔄 Conditional Rendering with Props</h2>
+        
+        <div class="code-example">
+            <div class="code-label">Conditional Rendering Patterns</div>
+            <pre class="line-numbers"><code class="language-jsx">function StatusMessage({ status, user, error }) {
+  // Early return pattern
+  if (status === 'loading') {
+    return <div className="loading">🔄 Loading...</div>;
+  }
+  
+  if (status === 'error') {
+    return <div className="error">❌ Error: {error}</div>;
+  }
+  
+  return (
+    <div>
+      {/* Ternary operator for if-else */}
+      {user ? (
+        <div>
+          <h2>Welcome back, {user.name}!</h2>
+          {user.isAdmin && <button>Admin Panel</button>}
+        </div>
+      ) : (
+        <div>
+          <h2>Please log in</h2>
+          <button>Login</button>
+        </div>
+      )}
+      
+      {/* Logical AND for show/hide */}
+      {user && user.notifications.length > 0 && (
+        <div className="notifications">
+          You have {user.notifications.length} new notifications
+        </div>
+      )}
+    </div>
+  );
+}</code></pre>
+        </div>
+        
+        <h2>⚙️ Default Props</h2>
+        
+        <div class="code-example">
+            <div class="code-label">Setting Default Values</div>
+            <pre class="line-numbers"><code class="language-jsx">// Method 1: ES6 Default Parameters (Recommended)
+function Button({ 
+  text = 'Click me', 
+  type = 'primary', 
+  size = 'medium',
+  disabled = false,
+  onClick = () => {} 
+}) {
+  return (
+    <button 
+      className={`btn btn-${type} btn-${size}`}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {text}
+    </button>
+  );
+}
+
+// Method 2: defaultProps (Class components or legacy)
+Button.defaultProps = {
+  text: 'Click me',
+  type: 'primary',
+  size: 'medium',
+  disabled: false,
+  onClick: () => {}
+};</code></pre>
+        </div>
+        
+        <div class="code-example">
+            <div class="code-label">Using Default Props</div>
+            <pre class="line-numbers"><code class="language-jsx">function App() {
+  return (
+    <div>
+      {/* Uses all defaults */}
+      <Button />
+      
+      {/* Override some props */}
+      <Button text="Save" type="success" />
+      
+      {/* Override more props */}
+      <Button 
+        text="Delete" 
+        type="danger" 
+        size="large"
+        onClick={() => console.log('Deleted!')}
+      />
+    </div>
+  );
+}</code></pre>
+        </div>
+        
+        <h2>🛡️ PropTypes Validation</h2>
+        
+        <div class="code-example">
+            <div class="code-label">Installing and Using PropTypes</div>
+            <pre class="line-numbers"><code class="language-bash"># Install PropTypes
+npm install prop-types</code></pre>
+            <pre class="line-numbers"><code class="language-jsx">import PropTypes from 'prop-types';
+
+function UserProfile({ 
+  name, 
+  age, 
+  email, 
+  isActive, 
+  hobbies, 
+  address, 
+  onEdit 
+}) {
+  return (
+    <div className="user-profile">
+      <h2>{name}</h2>
+      <p>Age: {age}</p>
+      <p>Email: {email}</p>
+      <p>Status: {isActive ? 'Active' : 'Inactive'}</p>
+      <div>
+        <h3>Hobbies:</h3>
+        <ul>
+          {hobbies.map(hobby => <li key={hobby}>{hobby}</li>)}
+        </ul>
+      </div>
+      <p>Lives in: {address.city}, {address.country}</p>
+      <button onClick={onEdit}>Edit Profile</button>
+    </div>
+  );
+}
+
+// PropTypes validation
+UserProfile.propTypes = {
+  name: PropTypes.string.isRequired,
+  age: PropTypes.number.isRequired,
+  email: PropTypes.string.isRequired,
+  isActive: PropTypes.bool,
+  hobbies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  address: PropTypes.shape({
+    city: PropTypes.string.isRequired,
+    country: PropTypes.string.isRequired,
+    zipCode: PropTypes.string
+  }).isRequired,
+  onEdit: PropTypes.func.isRequired
+};</code></pre>
+        </div>
+        
+        <h2>🚀 Advanced Props Patterns</h2>
+        
+        <div class="code-example">
+            <div class="code-label">Spread Operator with Props</div>
+            <pre class="line-numbers"><code class="language-jsx">function Card({ title, children, ...otherProps }) {
+  return (
+    <div className="card" {...otherProps}>
+      <h3>{title}</h3>
+      {children}
+    </div>
+  );
+}
+
+function App() {
+  const cardProps = {
+    title: 'My Card',
+    className: 'special-card',
+    'data-testid': 'card-component',
+    onClick: () => console.log('Card clicked!')
+  };
+  
+  return (
+    <Card {...cardProps}>
+      <p>This is the card content</p>
+    </Card>
+  );
+}</code></pre>
+        </div>
+        
+        <div class="code-example">
+            <div class="code-label">Children Prop (Special Prop)</div>
+            <pre class="line-numbers"><code class="language-jsx">import React, { useState } from 'react';
+
+function Modal({ isOpen, title, onClose, children }) {
+  if (!isOpen) return null;
+  
+  return (
+    <div className="modal-overlay">
+      <div className="modal">
+        <div className="modal-header">
+          <h2>{title}</h2>
+          <button onClick={onClose}>×</button>
+        </div>
+        <div className="modal-body">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  return (
+    <div>
+      <button onClick={() => setIsModalOpen(true)}>
+        Open Modal
+      </button>
+      
+      <Modal 
+        isOpen={isModalOpen} 
+        title="Confirmation"
+        onClose={() => setIsModalOpen(false)}
+      >
+        <p>Are you sure you want to delete this item?</p>
+        <div>
+          <button>Yes, Delete</button>
+          <button>Cancel</button>
+        </div>
+      </Modal>
+    </div>
+  );
+}</code></pre>
+        </div>
+        
+        <h2>🎯 Real-World Example: Todo App</h2>
+        
+        <div class="code-example">
+            <div class="code-label">Complete Todo Application</div>
+            <pre class="line-numbers"><code class="language-jsx">// TodoItem Component
+function TodoItem({ 
+  id, 
+  text, 
+  completed, 
+  priority, 
+  dueDate, 
+  onToggle, 
+  onDelete, 
+  onEdit 
+}) {
+  const priorityColors = {
+    high: '#ff4757',
+    medium: '#ffa502',
+    low: '#2ed573'
+  };
+  
+  return (
+    <div 
+      className={`todo-item ${completed ? 'completed' : ''}`}
+      style={{ borderLeft: `4px solid ${priorityColors[priority]}` }}
+    >
+      <input 
+        type="checkbox" 
+        checked={completed}
+        onChange={() => onToggle(id)}
+      />
+      
+      <div className="todo-content">
+        <span className={completed ? 'strikethrough' : ''}>
+          {text}
+        </span>
+        {dueDate && (
+          <small className="due-date">
+            Due: {new Date(dueDate).toLocaleDateString()}
+          </small>
+        )}
+      </div>
+      
+      <div className="todo-actions">
+        <button onClick={() => onEdit(id)}>✏️</button>
+        <button onClick={() => onDelete(id)}>🗑️</button>
+      </div>
+    </div>
+  );
+}
+
+// TodoList Component
+function TodoList({ todos, onToggle, onDelete, onEdit }) {
+  if (todos.length === 0) {
+    return (
+      <div className="empty-state">
+        📝 No todos yet. Add one above!
+      </div>
+    );
+  }
+  
+  return (
+    <div className="todo-list">
+      {todos.map(todo => (
+        <TodoItem
+          key={todo.id}
+          id={todo.id}
+          text={todo.text}
+          completed={todo.completed}
+          priority={todo.priority}
+          dueDate={todo.dueDate}
+          onToggle={onToggle}
+          onDelete={onDelete}
+          onEdit={onEdit}
+        />
+      ))}
+    </div>
+  );
+}
+
+// TodoStats Component
+function TodoStats({ todos }) {
+  const total = todos.length;
+  const completed = todos.filter(todo => todo.completed).length;
+  const pending = total - completed;
+  
+  return (
+    <div className="todo-stats">
+      <div className="stat">
+        <span className="stat-number">{total}</span>
+        <span className="stat-label">Total</span>
+      </div>
+      <div className="stat">
+        <span className="stat-number">{pending}</span>
+        <span className="stat-label">Pending</span>
+      </div>
+      <div className="stat">
+        <span className="stat-number">{completed}</span>
+        <span className="stat-label">Completed</span>
+      </div>
+    </div>
+  );
+}</code></pre>
+        </div>
+        
+        <div class="comparison">
+            <div class="comparison-box props-flow">
+                <h3>Props Cheat Sheet</h3>
+                <div class="code-example">
+                    <div class="code-label">Quick Reference</div>
+                    <pre><code class="language-jsx">// ✅ Passing props
+<Component 
+  stringProp="hello"
+  numberProp={42}
+  booleanProp={true}
+  booleanShorthand  // same as ={true}
+  arrayProp={[1, 2, 3]}
+  objectProp={{ key: 'value' }}
+  functionProp={handleClick}
+/>
+
+// ✅ Receiving props
+function Component({ 
+  stringProp, 
+  numberProp = 0,  // default value
+  booleanProp,
+  arrayProp = [],
+  objectProp,
+  functionProp
+}) {
+  return <div>{stringProp}</div>;
+}</code></pre>
+                </div>
+            </div>
+            
+            <div class="comparison-box no-props">
+                <h3>Conditional Rendering Cheat Sheet</h3>
+                <div class="code-example">
+                    <div class="code-label">Quick Reference</div>
+                    <pre><code class="language-jsx">// ✅ Ternary (if-else)
+{condition ? <Yes /> : <No />}
+
+// ✅ Logical AND (show/hide)
+{condition && <Show />}
+
+// ✅ Early return
+if (loading) return <Spinner />;
+
+// ✅ Multiple conditions
+const getContent = () => {
+  switch (status) {
+    case 'loading': return <Spinner />;
+    case 'error': return <Error />;
+    default: return <Content />;
+  }
+};</code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="final-section">
+            <h3>🎉 Ready for Interactive Components?</h3>
+            <p>
+                You've mastered props and conditional rendering! Next up: State management and event handling to make your components 
+                truly interactive and dynamic. You're well on your way to becoming a React expert! 💪
+            </p>
+        </div>
+    </div>
+
+    <!-- Prism.js JavaScript for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    
+    <script>
+        // Initialize Prism.js
+        Prism.highlightAll();
+    </script>
+</body>
+</html>
