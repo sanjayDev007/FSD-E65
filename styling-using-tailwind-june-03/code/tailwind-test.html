@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --color-clifford: #da373d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex justify-evenly items-start gap-4 flex-wrap h-screen mt-10">
+        <div class="card h-64 w-64 rounded-lg bg-white-600 shadow-xl">
+            <div class="flex h-full w-full items-start justify-center">
+                <div class="text-xl font-bold text-black mt-4">
+                    <h2>This is a Card</h2>
+                    <p>Hey Welcome to card</p>
+                </div>
+            </div>
+        </div>
+        <div class="card h-64 w-64 rounded-lg bg-white-600 shadow-xl">
+            <div class="flex h-full w-full items-start justify-center">
+                <div class="text-xl font-bold text-black mt-4">
+                    <h2>This is a Card</h2>
+                    <p>Hey Welcome to card</p>
+                </div>
+            </div>
+        </div>
+        <div class="card h-64 w-64 rounded-lg bg-white-600 shadow-xl">
+            <div class="flex h-full w-full items-start justify-center">
+                <div class="text-xl font-bold text-black mt-4">
+                    <h2>This is a Card</h2>
+                    <p>Hey Welcome to card</p>
+                </div>
+            </div>
+        </div>
+        <div class="card h-64 w-64 rounded-lg bg-white-600 shadow-xl">
+            <div class="flex h-full w-full items-start justify-center">
+                <div class="text-xl font-bold text-black mt-4">
+                    <h2>This is a Card</h2>
+                    <p>Hey Welcome to card</p>
+                </div>
+            </div>
+        </div>
+        <div class="card h-64 w-64 rounded-lg bg-white-600 shadow-xl">
+            <div class="flex h-full w-full items-start justify-center">
+                <div class="text-xl font-bold text-black mt-4">
+                    <h2>This is a Card</h2>
+                    <p>Hey Welcome to card</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <script>
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Utility Functions
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+            }
+        }
+
+        function formatCurrency(amount, currency = 'USD') {
+            return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: currency
+            }).format(amount);
+        }
+
+        function getRandomColor() {
+            const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'pink', 'indigo'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+    </script>
+  </body>
+</html>
