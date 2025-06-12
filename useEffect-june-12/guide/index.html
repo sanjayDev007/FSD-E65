@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React Hooks - useState & useEffect Complete Guide</title>
+    <style>
+        body { 
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif; 
+            margin: 30px;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        h1, h2, h3 { 
+            color: #1565c0; 
+            border-bottom: 2px solid #42a5f5;
+            padding-bottom: 5px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .diagram { 
+            margin: 30px 0; 
+            text-align: center;
+        }
+        .diagram svg { 
+            background: #f8fbff; 
+            border-radius: 10px;
+            border: 1px solid #ccc; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .code-example {
+            background: #f5f5f5;
+            border-left: 4px solid #42a5f5;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+        }
+        .analogy {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #0d47a1;
+            margin-bottom: 5px;
+        }
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .comparison-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px;
+            min-width: 280px;
+        }
+        .good-practice {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+        }
+        .bad-practice {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+        }
+        .warning {
+            background: #fff3e0;
+            border: 1px solid #ffcc02;
+        }
+        .highlight {
+            background: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .hook-types {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #9c27b0;
+        }
+        .interactive-demo {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #ffc107;
+        }
+        .key-concept {
+            background: #e8eaf6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #3f51b5;
+        }
+        .step-by-step {
+            counter-reset: step-counter;
+        }
+        .step {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+            position: relative;
+        }
+        .step::before {
+            content: "Step " counter(step-counter);
+            font-weight: bold;
+            color: #17a2b8;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .pro-tip {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .pro-tip::before {
+            content: "💡 Pro Tip: ";
+            font-weight: bold;
+            color: #0c5460;
+        }
+        .lifecycle-phase {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #4caf50;
+        }
+        .hook-rule {
+            background: #ffebee;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>React Hooks - useState & useEffect Complete Guide 🪝</h1>
+        <p>
+            Welcome to the magical world of React Hooks! 🚀 Hooks are special functions that let you "hook into" React features from functional components. 
+            Today we'll master the two most important hooks: <strong>useState</strong> for managing state and <strong>useEffect</strong> for side effects!
+        </p>
+
+        <div class="analogy">
+            <div class="analogy-title">🎣 Real-life Analogy: Fishing with Hooks</div>
+            <p>
+                Think of React Hooks like fishing hooks:
+                <br>• <strong>useState</strong> is like a tackle box - it holds your bait (data) and lets you change it
+                <br>• <strong>useEffect</strong> is like a fishing line - it connects your component to the outside world (APIs, timers, etc.)
+                <br>• Just like fishing hooks, React Hooks let you "catch" and manage different aspects of your component!
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Part 1: Understanding useState Hook 📦</h2>
+        
+        <div class="key-concept">
+            <h3>What is useState? 🤔</h3>
+            <p>useState is a Hook that allows you to add state to functional components. Before hooks, only class components could have state. Now, functional components can remember values between renders!</p>
+        </div>
+
+        <div class="comparison">
+            <div class="comparison-box bad-practice">
+                <h3>❌ Before Hooks (Class Components)</h3>
+                <div class="code-example">
+class Counter extends React.Component {<br>
+&nbsp;&nbsp;constructor(props) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;super(props);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.state = { count: 0 };<br>
+&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;increment = () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.setState({ count: this.state.count + 1 });<br>
+&nbsp;&nbsp;}<br><br>
+
+&nbsp;&nbsp;render() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Count: {this.state.count}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={this.increment}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+&nbsp;&nbsp;}<br>
+}
+                </div>
+                <p><strong>Problems:</strong></p>
+                <ul>
+                    <li>Lots of boilerplate code</li>
+                    <li>Confusing 'this' binding</li>
+                    <li>Constructor setup required</li>
+                    <li>Harder to test and reuse logic</li>
+                </ul>
+            </div>
+            
+            <div class="comparison-box good-practice">
+                <h3>✅ With useState Hook</h3>
+                <div class="code-example">
+import React, { useState } from 'react';<br><br>
+
+function Counter() {<br>
+&nbsp;&nbsp;const [count, setCount] = useState(0);<br><br>
+
+&nbsp;&nbsp;const increment = () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;setCount(count + 1);<br>
+&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Count: {count}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={increment}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+1<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+}
+                </div>
+                <p><strong>Benefits:</strong></p>
+                <ul>
+                    <li>Much cleaner and shorter</li>
+                    <li>No 'this' confusion</li>
+                    <li>Easy to understand</li>
+                    <li>Reusable and testable</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="diagram">
+            <svg width="800" height="400">
+                <!-- Title -->
+                <text x="400" y="30" font-size="18" text-anchor="middle" fill="#1565c0" font-weight="bold">How useState Works - State Management Cycle</text>
+                
+                <!-- Initial State -->
+                <rect x="50" y="70" width="150" height="100" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" rx="10"/>
+                <text x="125" y="60" font-size="14" text-anchor="middle" fill="#2e7d32" font-weight="bold">1. Initial State</text>
+                <text x="125" y="100" font-size="12" text-anchor="middle">useState(0)</text>
+                <text x="125" y="120" font-size="12" text-anchor="middle">creates state</text>
+                <text x="125" y="140" font-size="12" text-anchor="middle">count = 0</text>
+                <text x="125" y="160" font-size="11" text-anchor="middle" fill="#666">First render</text>
+                
+                <!-- Component Renders -->
+                <rect x="250" y="70" width="150" height="100" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="10"/>
+                <text x="325" y="60" font-size="14" text-anchor="middle" fill="#1565c0" font-weight="bold">2. Component Renders</text>
+                <text x="325" y="100" font-size="12" text-anchor="middle">JSX displays</text>
+                <text x="325" y="120" font-size="12" text-anchor="middle">Count: 0</text>
+                <text x="325" y="140" font-size="12" text-anchor="middle">Button appears</text>
+                <text x="325" y="160" font-size="11" text-anchor="middle" fill="#666">User sees UI</text>
+                
+                <!-- User Interaction -->
+                <rect x="450" y="70" width="150" height="100" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="10"/>
+                <text x="525" y="60" font-size="14" text-anchor="middle" fill="#ef6c00" font-weight="bold">3. User Clicks</text>
+                <text x="525" y="100" font-size="12" text-anchor="middle">Button clicked</text>
+                <text x="525" y="120" font-size="12" text-anchor="middle">setCount(1) called</text>
+                <text x="525" y="140" font-size="12" text-anchor="middle">State update queued</text>
+                <text x="525" y="160" font-size="11" text-anchor="middle" fill="#666">React schedules update</text>
+                
+                <!-- Re-render -->
+                <rect x="650" y="70" width="120" height="100" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" rx="10"/>
+                <text x="710" y="60" font-size="14" text-anchor="middle" fill="#7b1fa2" font-weight="bold">4. Re-render</text>
+                <text x="710" y="100" font-size="12" text-anchor="middle">count = 1</text>
+                <text x="710" y="120" font-size="12" text-anchor="middle">UI updates</text>
+                <text x="710" y="140" font-size="12" text-anchor="middle">Count: 1</text>
+                <text x="710" y="160" font-size="11" text-anchor="middle" fill="#666">Cycle repeats</text>
+                
+                <!-- Arrows -->
+                <path d="M 205 120 L 245 120" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                <path d="M 405 120 L 445 120" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                <path d="M 605 120 L 645 120" stroke="#333" stroke-width="3" marker-end="url(#arrowhead)"/>
+                
+                <!-- Return arrow -->
+                <path d="M 710 175 Q 400 220 125 175" stroke="#9c27b0" stroke-width="2" fill="none" stroke-dasharray="5,5" marker-end="url(#arrowhead-purple)"/>
+                <text x="400" y="235" font-size="11" text-anchor="middle" fill="#9c27b0">State persists, ready for next interaction</text>
+                
+                <!-- Key Concepts Box -->
+                <rect x="100" y="270" width="600" height="100" fill="#fff9c4" stroke="#fbc02d" stroke-width="2" rx="10"/>
+                <text x="400" y="260" font-size="16" text-anchor="middle" fill="#f57f17" font-weight="bold">🔑 Key useState Concepts</text>
+                <text x="120" y="295" font-size="13" fill="#333">• useState returns an array: [stateValue, setterFunction]</text>
+                <text x="120" y="315" font-size="13" fill="#333">• State updates trigger re-renders automatically</text>
+                <text x="120" y="335" font-size="13" fill="#333">• State persists between renders (React remembers it)</text>
+                <text x="120" y="355" font-size="13" fill="#333">• Each component instance has its own state</text>
+                
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                    </marker>
+                    <marker id="arrowhead-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#9c27b0"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+
+        <div class="analogy">
+            <div class="analogy-title">🏠 useState Like a Smart Home System</div>
+            <p>
+                Think of useState like a smart home system:
+                <br>• <strong>State variable</strong> (count) = current temperature display
+                <br>• <strong>Setter function</strong> (setCount) = thermostat control
+                <br>• <strong>Re-render</strong> = display updates when temperature changes
+                <br>• Just like a thermostat remembers and displays the current temperature, useState remembers and displays your data!
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>useState Deep Dive - Advanced Patterns 🔍</h2>
+        
+        <div class="step-by-step">
+            <div class="step">
+                <h3>Different Types of State</h3>
+                <p>useState can handle any type of data - strings, numbers, booleans, objects, arrays, and more!</p>
+                <div class="code-example">
+import React, { useState } from 'react';<br><br>
+
+function StateExamples() {<br>
+&nbsp;&nbsp;// Primitive values<br>
+&nbsp;&nbsp;const [name, setName] = useState('John');<br>
+&nbsp;&nbsp;const [age, setAge] = useState(25);<br>
+&nbsp;&nbsp;const [isVisible, setIsVisible] = useState(true);<br><br>
+
+&nbsp;&nbsp;// Objects<br>
+&nbsp;&nbsp;const [user, setUser] = useState({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name: 'Alice',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;email: 'alice@example.com',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;role: 'admin'<br>
+&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;// Arrays<br>
+&nbsp;&nbsp;const [todos, setTodos] = useState([<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{ id: 1, text: 'Learn React', done: false },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{ id: 2, text: 'Build an app', done: false }<br>
+&nbsp;&nbsp;]);<br><br>
+
+&nbsp;&nbsp;return (&lt;div&gt;{/* Your JSX here */}&lt;/div&gt;);<br>
+}
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>Updating State Correctly</h3>
+                <p>State updates can be tricky! Here's how to update different types of state safely.</p>
+                <div class="code-example">
+// ✅ Updating primitives<br>
+const [count, setCount] = useState(0);<br>
+const increment = () => setCount(count + 1);<br><br>
+
+// ✅ Updating objects (must spread existing properties)<br>
+const [user, setUser] = useState({ name: 'John', age: 30 });<br>
+const updateUserName = (newName) => {<br>
+&nbsp;&nbsp;setUser({ ...user, name: newName });<br>
+};<br><br>
+
+// ✅ Updating arrays<br>
+const [items, setItems] = useState(['apple', 'banana']);<br><br>
+
+// Add item<br>
+const addItem = (newItem) => {<br>
+&nbsp;&nbsp;setItems([...items, newItem]);<br>
+};<br><br>
+
+// Remove item<br>
+const removeItem = (index) => {<br>
+&nbsp;&nbsp;setItems(items.filter((_, i) => i !== index));<br>
+};
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>Functional Updates</h3>
+                <p>When your new state depends on the previous state, use functional updates for reliability!</p>
+                <div class="code-example">
+const [count, setCount] = useState(0);<br><br>
+
+// ❌ Problem: May not work correctly with rapid clicks<br>
+const badIncrement = () => {<br>
+&nbsp;&nbsp;setCount(count + 1);<br>
+&nbsp;&nbsp;setCount(count + 1); // Still uses old count value!<br>
+};<br><br>
+
+// ✅ Solution: Use functional update<br>
+const goodIncrement = () => {<br>
+&nbsp;&nbsp;setCount(prevCount => prevCount + 1);<br>
+&nbsp;&nbsp;setCount(prevCount => prevCount + 1); // Uses latest value!<br>
+};<br><br>
+
+// Real-world example: Toggle functionality<br>
+const [isOpen, setIsOpen] = useState(false);<br>
+const toggle = () => setIsOpen(prev => !prev);
+                </div>
+            </div>
+        </div>
+
+        <div class="pro-tip">
+            Always treat state as immutable! Instead of modifying existing objects/arrays, create new ones with your changes. This helps React detect changes and update the UI correctly.
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Part 2: Understanding useEffect Hook 🌊</h2>
+        
+        <div class="key-concept">
+            <h3>What is useEffect? 🤔</h3>
+            <p>useEffect is a Hook that lets you perform side effects in functional components. Side effects are operations that affect something outside the component - like API calls, timers, subscriptions, or manually changing the DOM.</p>
+        </div>
+
+        <div class="diagram">
+            <svg width="850" height="450">
+                <!-- Title -->
+                <text x="425" y="30" font-size="18" text-anchor="middle" fill="#1565c0" font-weight="bold">Component Lifecycle with useEffect</text>
+                
+                <!-- Component Mount -->
+                <rect x="50" y="70" width="150" height="120" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" rx="10"/>
+                <text x="125" y="60" font-size="14" text-anchor="middle" fill="#2e7d32" font-weight="bold">Mount</text>
+                <text x="125" y="100" font-size="12" text-anchor="middle">Component created</text>
+                <text x="125" y="120" font-size="12" text-anchor="middle">First render</text>
+                <text x="125" y="140" font-size="12" text-anchor="middle">useEffect runs</text>
+                <text x="125" y="160" font-size="11" text-anchor="middle" fill="#666">Setup side effects</text>
+                <text x="125" y="180" font-size="11" text-anchor="middle" fill="#666">(API calls, subscriptions)</text>
+                
+                <!-- Component Update -->
+                <rect x="250" y="70" width="150" height="120" fill="#e3f2fd" stroke="#2196f3" stroke-width="2" rx="10"/>
+                <text x="325" y="60" font-size="14" text-anchor="middle" fill="#1565c0" font-weight="bold">Update</text>
+                <text x="325" y="100" font-size="12" text-anchor="middle">Props/state change</text>
+                <text x="325" y="120" font-size="12" text-anchor="middle">Re-render</text>
+                <text x="325" y="140" font-size="12" text-anchor="middle">useEffect runs</text>
+                <text x="325" y="160" font-size="11" text-anchor="middle" fill="#666">(if dependencies changed)</text>
+                <text x="325" y="180" font-size="11" text-anchor="middle" fill="#666">Update side effects</text>
+                
+                <!-- Component Unmount -->
+                <rect x="450" y="70" width="150" height="120" fill="#fff3e0" stroke="#ff9800" stroke-width="2" rx="10"/>
+                <text x="525" y="60" font-size="14" text-anchor="middle" fill="#ef6c00" font-weight="bold">Unmount</text>
+                <text x="525" y="100" font-size="12" text-anchor="middle">Component removed</text>
+                <text x="525" y="120" font-size="12" text-anchor="middle">Cleanup function</text>
+                <text x="525" y="140" font-size="12" text-anchor="middle">runs</text>
+                <text x="525" y="160" font-size="11" text-anchor="middle" fill="#666">Clear timers</text>
+                <text x="525" y="180" font-size="11" text-anchor="middle" fill="#666">Cancel subscriptions</text>
+                
+                <!-- useEffect Patterns -->
+                <rect x="650" y="70" width="150" height="120" fill="#f3e5f5" stroke="#9c27b0" stroke-width="2" rx="10"/>
+                <text x="725" y="60" font-size="14" text-anchor="middle" fill="#7b1fa2" font-weight="bold">useEffect Types</text>
+                <text x="725" y="100" font-size="11" text-anchor="middle">No dependencies: []</text>
+                <text x="725" y="115" font-size="11" text-anchor="middle">(runs once)</text>
+                <text x="725" y="135" font-size="11" text-anchor="middle">With dependencies:</text>
+                <text x="725" y="150" font-size="11" text-anchor="middle">[count, name]</text>
+                <text x="725" y="165" font-size="11" text-anchor="middle">No array:</text>
+                <text x="725" y="180" font-size="11" text-anchor="middle">(runs every render)</text>
+                
+                <!-- Arrows -->
+                <path d="M 205 130 L 245 130" stroke="#333" stroke-width="3" marker-end="url(#arrowhead2)"/>
+                <path d="M 405 130 L 445 130" stroke="#333" stroke-width="3" marker-end="url(#arrowhead2)"/>
+                <path d="M 605 130 L 645 130" stroke="#333" stroke-width="3" marker-end="url(#arrowhead2)"/>
+                
+                <!-- Code Examples Section -->
+                <rect x="50" y="250" width="750" height="170" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2" rx="10"/>
+                <text x="425" y="240" font-size="16" text-anchor="middle" fill="#495057" font-weight="bold">useEffect Syntax Examples</text>
+                
+                <text x="70" y="280" font-size="13" font-family="Consolas, monospace">// 1. Run after every render</text>
+                <text x="70" y="300" font-size="13" font-family="Consolas, monospace">useEffect(() => {</text>
+                <text x="90" y="320" font-size="13" font-family="Consolas, monospace">console.log('Component rendered');</text>
+                <text x="70" y="340" font-size="13" font-family="Consolas, monospace">}); // No dependency array</text>
+                
+                <text x="450" y="280" font-size="13" font-family="Consolas, monospace">// 2. Run once on mount</text>
+                <text x="450" y="300" font-size="13" font-family="Consolas, monospace">useEffect(() => {</text>
+                <text x="470" y="320" font-size="13" font-family="Consolas, monospace">fetchData();</text>
+                <text x="450" y="340" font-size="13" font-family="Consolas, monospace">}, []); // Empty dependency array</text>
+                
+                <text x="70" y="370" font-size="13" font-family="Consolas, monospace">// 3. Run when dependencies change</text>
+                <text x="70" y="390" font-size="13" font-family="Consolas, monospace">useEffect(() => {</text>
+                <text x="90" y="410" font-size="13" font-family="Consolas, monospace">updateTitle(count);</text>
+                <text x="70" y="430" font-size="13" font-family="Consolas, monospace">}, [count]); // Runs when count changes</text>
+                
+                <defs>
+                    <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+
+        <div class="lifecycle-phase">
+            <h3>🔄 Three Main useEffect Patterns</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>1. Run Once (Component Mount)</h4>
+                    <div class="code-example">
+useEffect(() => {<br>
+&nbsp;&nbsp;// Runs once when component mounts<br>
+&nbsp;&nbsp;fetchUserData();<br>
+&nbsp;&nbsp;setupEventListeners();<br>
+}, []); // Empty dependency array
+                    </div>
+                    <p><strong>Use for:</strong> API calls, setting up subscriptions, initializing libraries</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>2. Run on Specific Changes</h4>
+                    <div class="code-example">
+useEffect(() => {<br>
+&nbsp;&nbsp;// Runs when count changes<br>
+&nbsp;&nbsp;document.title = `Count: ${count}`;<br>
+&nbsp;&nbsp;saveToLocalStorage(count);<br>
+}, [count]); // Dependency array with count
+                    </div>
+                    <p><strong>Use for:</strong> Responding to specific state/prop changes, syncing with external systems</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h4>3. Run Every Render</h4>
+                    <div class="code-example">
+useEffect(() => {<br>
+&nbsp;&nbsp;// Runs after every render<br>
+&nbsp;&nbsp;console.log('Component updated');<br>
+&nbsp;&nbsp;measureElement();<br>
+}); // No dependency array
+                    </div>
+                    <p><strong>Use for:</strong> DOM measurements, logging (be careful with performance!)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="analogy">
+            <div class="analogy-title">🏠 useEffect Like a Smart Home Automation</div>
+            <p>
+                Think of useEffect like programming a smart home:
+                <br>• <strong>Empty dependencies []</strong> = "When I move in, turn on the lights" (runs once)
+                <br>• <strong>With dependencies [temperature]</strong> = "When temperature changes, adjust thermostat"
+                <br>• <strong>Cleanup function</strong> = "When I move out, turn off all systems"
+                <br>• <strong>No dependencies</strong> = "Check everything every time I enter a room" (usually too much!)
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>useEffect Deep Dive - Advanced Patterns 🚀</h2>
+        
+        <div class="step-by-step">
+            <div class="step">
+                <h3>Cleanup Functions - Preventing Memory Leaks</h3>
+                <p>Always clean up your side effects to prevent memory leaks and unexpected behavior!</p>
+                <div class="code-example">
+import React, { useState, useEffect } from 'react';<br><br>
+
+function Timer() {<br>
+&nbsp;&nbsp;const [seconds, setSeconds] = useState(0);<br><br>
+
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log('Setting up timer');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Setup: Create the timer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const intervalId = setInterval(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setSeconds(prev => prev + 1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}, 1000);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// Cleanup: Clear the timer when component unmounts<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log('Cleaning up timer');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clearInterval(intervalId);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;}, []); // Empty dependency - runs once<br><br>
+
+&nbsp;&nbsp;return &lt;div&gt;Timer: {seconds} seconds&lt;/div&gt;;<br>
+}
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>Dependency Array Rules</h3>
+                <p>Understanding dependencies is crucial for useEffect to work correctly!</p>
+                <div class="code-example">
+function UserProfile({ userId }) {<br>
+&nbsp;&nbsp;const [user, setUser] = useState(null);<br><br>
+
+&nbsp;&nbsp;// ✅ Correct: Include all dependencies<br>
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fetchUser(userId).then(setUser);<br>
+&nbsp;&nbsp;}, [userId]); // userId is from props, must be in dependencies<br><br>
+
+&nbsp;&nbsp;// ❌ Wrong: Missing dependencies<br>
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fetchUser(userId).then(setUser); // Uses userId but not in deps<br>
+&nbsp;&nbsp;}, []); // This will use stale userId!<br><br>
+
+&nbsp;&nbsp;// ✅ Correct: Using functional updates to avoid dependencies<br>
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const timer = setInterval(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setUser(prevUser => ({ ...prevUser, lastSeen: Date.now() }));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}, 5000);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return () => clearInterval(timer);<br>
+&nbsp;&nbsp;}, []); // No dependencies needed with functional update<br><br>
+
+&nbsp;&nbsp;return (&lt;div&gt;{/* Your JSX */}&lt;/div&gt;);<br>
+}
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>Custom Hooks - Reusing Logic</h3>
+                <p>Extract common useEffect patterns into custom hooks for reusability!</p>
+                <div class="code-example">
+// Custom hook for API calls<br>
+function useApi(url) {<br>
+&nbsp;&nbsp;const [data, setData] = useState(null);<br>
+&nbsp;&nbsp;const [loading, setLoading] = useState(true);<br>
+&nbsp;&nbsp;const [error, setError] = useState(null);<br><br>
+
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;let cancelled = false;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;setLoading(true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fetch(url)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.then(response => response.json())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.then(data => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (!cancelled) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setData(data);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setLoading(false);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.catch(error => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (!cancelled) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setError(error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setLoading(false);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;return () => { cancelled = true; }; // Cleanup<br>
+&nbsp;&nbsp;}, [url]);<br><br>
+
+&nbsp;&nbsp;return { data, loading, error };<br>
+}<br><br>
+
+// Using custom hooks<br>
+function UserDashboard() {<br>
+&nbsp;&nbsp;const { data: users, loading } = useApi('/api/users');<br><br>
+
+&nbsp;&nbsp;if (loading) return &lt;div&gt;Loading...&lt;/div&gt;;<br><br>
+
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{users.map(user => &lt;div key={user.id}&gt;{user.name}&lt;/div&gt;)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+}
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <div class="comparison-box bad-practice">
+                <h3>❌ Common useEffect Mistakes</h3>
+                <div class="code-example">
+// Missing dependencies<br>
+useEffect(() => {<br>
+&nbsp;&nbsp;fetchData(userId); // userId not in dependencies<br>
+}, []); // ❌ Will use stale userId<br><br>
+
+// Infinite loop<br>
+useEffect(() => {<br>
+&nbsp;&nbsp;setData(someObject); // someObject recreated every render<br>
+}, [someObject]); // ❌ Runs infinitely<br><br>
+
+// No cleanup<br>
+useEffect(() => {<br>
+&nbsp;&nbsp;const timer = setInterval(tick, 1000);<br>
+&nbsp;&nbsp;// ❌ Timer never cleared - memory leak!<br>
+}, []);
+                </div>
+            </div>
+            
+            <div class="comparison-box good-practice">
+                <h3>✅ Correct useEffect Patterns</h3>
+                <div class="code-example">
+// All dependencies included<br>
+useEffect(() => {<br>
+&nbsp;&nbsp;fetchData(userId);<br>
+}, [userId]); // ✅ Runs when userId changes<br><br>
+
+// Stable object with useMemo<br>
+const memoizedObject = useMemo(() => ({ key: value }), [value]);<br>
+useEffect(() => {<br>
+&nbsp;&nbsp;setData(memoizedObject);<br>
+}, [memoizedObject]); // ✅ Only runs when value changes<br><br>
+
+// Proper cleanup<br>
+useEffect(() => {<br>
+&nbsp;&nbsp;const timer = setInterval(tick, 1000);<br>
+&nbsp;&nbsp;return () => clearInterval(timer); // ✅ Cleanup<br>
+}, []);
+                </div>
+            </div>
+        </div>
+
+        <div class="hook-rule">
+            <h3>⚡ Rules of Hooks (VERY IMPORTANT!)</h3>
+            <ul>
+                <li><strong>Only call Hooks at the top level</strong> - Never inside loops, conditions, or nested functions</li>
+                <li><strong>Only call Hooks from React functions</strong> - Components or custom hooks</li>
+                <li><strong>Use ESLint plugin</strong> - Install <code>eslint-plugin-react-hooks</code> to catch violations</li>
+            </ul>
+            <div class="code-example">
+// ❌ Wrong: Hook inside condition<br>
+if (someCondition) {<br>
+&nbsp;&nbsp;const [state, setState] = useState(0); // DON'T DO THIS!<br>
+}<br><br>
+
+// ✅ Correct: Condition inside hook<br>
+const [state, setState] = useState(0);<br>
+if (someCondition) {<br>
+&nbsp;&nbsp;setState(newValue); // This is fine<br>
+}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Putting It All Together - Complete Example! 🎯</h2>
+        
+        <div class="interactive-demo">
+            <h3>🎯 Real-World Example: User Dashboard with Hooks</h3>
+            <p>Let's build a complete user dashboard that demonstrates useState and useEffect working together!</p>
+            
+            <div class="code-example">
+import React, { useState, useEffect } from 'react';<br><br>
+
+function UserDashboard() {<br>
+&nbsp;&nbsp;// useState for different types of data<br>
+&nbsp;&nbsp;const [users, setUsers] = useState([]);<br>
+&nbsp;&nbsp;const [loading, setLoading] = useState(true);<br>
+&nbsp;&nbsp;const [error, setError] = useState(null);<br>
+&nbsp;&nbsp;const [searchTerm, setSearchTerm] = useState('');<br>
+&nbsp;&nbsp;const [selectedUser, setSelectedUser] = useState(null);<br>
+&nbsp;&nbsp;const [theme, setTheme] = useState('light');<br><br>
+
+&nbsp;&nbsp;// useEffect for initial data loading<br>
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;console.log('Component mounted - fetching users');<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;const fetchUsers = async () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setLoading(true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch('https://jsonplaceholder.typicode.com/users');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const userData = await response.json();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setUsers(userData);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setError(null);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} catch (err) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setError('Failed to fetch users');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} finally {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setLoading(false);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;fetchUsers();<br>
+&nbsp;&nbsp;}, []); // Empty dependency - runs once on mount<br><br>
+
+&nbsp;&nbsp;// useEffect for document title updates<br>
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;document.title = selectedUser <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? `User: ${selectedUser.name}` <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 'User Dashboard';<br>
+&nbsp;&nbsp;}, [selectedUser]); // Runs when selectedUser changes<br><br>
+
+&nbsp;&nbsp;// useEffect for cleanup example<br>
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const handleKeyPress = (event) => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (event.key === 'Escape') {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setSelectedUser(null);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;document.addEventListener('keydown', handleKeyPress);<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;// Cleanup function<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.removeEventListener('keydown', handleKeyPress);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+&nbsp;&nbsp;}, []); // Empty dependency - setup once, cleanup on unmount<br><br>
+
+&nbsp;&nbsp;// Event handlers<br>
+&nbsp;&nbsp;const handleSearchChange = (event) => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;setSearchTerm(event.target.value);<br>
+&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;const handleUserSelect = (user) => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;setSelectedUser(user);<br>
+&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;const toggleTheme = () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');<br>
+&nbsp;&nbsp;};<br><br>
+
+&nbsp;&nbsp;// Filtered users based on search<br>
+&nbsp;&nbsp;const filteredUsers = users.filter(user =><br>
+&nbsp;&nbsp;&nbsp;&nbsp;user.name.toLowerCase().includes(searchTerm.toLowerCase())<br>
+&nbsp;&nbsp;);<br><br>
+
+&nbsp;&nbsp;// Render logic<br>
+&nbsp;&nbsp;if (loading) return &lt;div&gt;Loading users...&lt;/div&gt;;<br>
+&nbsp;&nbsp;if (error) return &lt;div&gt;Error: {error}&lt;/div&gt;;<br><br>
+
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className={`dashboard ${theme}`}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;header&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;User Dashboard&lt;/h1&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={toggleTheme}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Switch to {theme === 'light' ? 'Dark' : 'Light'} Theme<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/header&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="search-section"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;input<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type="text"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;placeholder="Search users..."<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value={searchTerm}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onChange={handleSearchChange}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;Found {filteredUsers.length} users&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="users-list"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{filteredUsers.map(user => (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;key={user.id} <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;className={`user-card ${selectedUser?.id === user.id ? 'selected' : ''}`}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onClick={() => handleUserSelect(user)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h3&gt;{user.name}&lt;/h3&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;{user.email}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;{user.company.name}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;))}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{selectedUser && (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div className="user-details"&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h2&gt;Selected User Details&lt;/h2&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;&lt;strong&gt;Name:&lt;/strong&gt; {selectedUser.name}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;&lt;strong&gt;Email:&lt;/strong&gt; {selectedUser.email}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;&lt;strong&gt;Phone:&lt;/strong&gt; {selectedUser.phone}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;&lt;strong&gt;Website:&lt;/strong&gt; {selectedUser.website}&lt;/p&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={() => setSelectedUser(null)}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Close Details<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+}<br><br>
+
+export default UserDashboard;
+            </div>
+        </div>
+
+        <div class="key-concept">
+            <h3>🔍 What's Happening in This Example?</h3>
+            <ul>
+                <li><strong>useState:</strong> Managing multiple pieces of state (users, loading, error, search, selection, theme)</li>
+                <li><strong>useEffect:</strong> Fetching data on mount, updating document title, setting up event listeners</li>
+                <li><strong>Cleanup:</strong> Removing event listeners when component unmounts</li>
+                <li><strong>Dependencies:</strong> Proper dependency arrays for optimal performance</li>
+                <li><strong>Event Handlers:</strong> Responding to user interactions</li>
+                <li><strong>Conditional Rendering:</strong> Showing different UI based on state</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Quick Reference & Cheat Sheet 📚</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>📦 useState Essentials</h4>
+                <div class="code-example">
+// Basic usage<br>
+const [state, setState] = useState(initialValue);<br><br>
+
+// Functional update<br>
+setState(prevState => newState);<br><br>
+
+// Object updates<br>
+setUser({...user, name: 'New Name'});<br><br>
+
+// Array updates<br>
+setItems([...items, newItem]);<br>
+setItems(items.filter(item => item.id !== id));
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>🌊 useEffect Patterns</h4>
+                <div class="code-example">
+// Run once on mount<br>
+useEffect(() => {<br>
+&nbsp;&nbsp;fetchData();<br>
+}, []);<br><br>
+
+// Run when dependencies change<br>
+useEffect(() => {<br>
+&nbsp;&nbsp;updateTitle(count);<br>
+}, [count]);<br><br>
+
+// With cleanup<br>
+useEffect(() => {<br>
+&nbsp;&nbsp;const timer = setInterval(tick, 1000);<br>
+&nbsp;&nbsp;return () => clearInterval(timer);<br>
+}, []);
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>🔧 Custom Hooks</h4>
+                <div class="code-example">
+function useCounter(initialValue = 0) {<br>
+&nbsp;&nbsp;const [count, setCount] = useState(initialValue);<br><br>
+
+&nbsp;&nbsp;const increment = () => setCount(c => c + 1);<br>
+&nbsp;&nbsp;const decrement = () => setCount(c => c - 1);<br>
+&nbsp;&nbsp;const reset = () => setCount(initialValue);<br><br>
+
+&nbsp;&nbsp;return { count, increment, decrement, reset };<br>
+}<br><br>
+
+// Usage<br>
+const { count, increment } = useCounter(10);
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h4>⚡ Performance Tips</h4>
+                <ul>
+                    <li>Use functional updates when state depends on previous state</li>
+                    <li>Always include dependencies in useEffect</li>
+                    <li>Use cleanup functions to prevent memory leaks</li>
+                    <li>Consider useMemo and useCallback for expensive operations</li>
+                    <li>Follow the Rules of Hooks religiously</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Summary: You've Mastered React Hooks! 🎉</h2>
+        
+        <div class="key-concept">
+            <h3>🎯 Key Takeaways</h3>
+            <ul>
+                <li><strong>useState:</strong> Add state to functional components with simple, clean syntax</li>
+                <li><strong>useEffect:</strong> Handle side effects and lifecycle events in functional components</li>
+                <li><strong>Dependencies:</strong> Control when effects run by properly managing dependency arrays</li>
+                <li><strong>Cleanup:</strong> Always clean up side effects to prevent memory leaks</li>
+                <li><strong>Custom Hooks:</strong> Extract and reuse stateful logic across components</li>
+                <li><strong>Rules of Hooks:</strong> Only call hooks at the top level and from React functions</li>
+            </ul>
+        </div>
+
+        <div class="analogy">
+            <div class="analogy-title">🎭 Final Analogy: You're Now a React Hooks Master!</div>
+            <p>
+                Think of yourself as a master puppeteer controlling a marionette show:
+                <br>• <strong>useState</strong> are like the strings that control the puppet's position and appearance
+                <br>• <strong>useEffect</strong> are like the stage lighting and sound effects that respond to the puppet's movements
+                <br>• <strong>Custom Hooks</strong> are like pre-choreographed dance moves you can reuse
+                <br>• <strong>Cleanup functions</strong> are like properly storing your equipment after the show
+                <br><br>Together, they let you create smooth, responsive, and professional React applications! 🎪
+            </p>
+        </div>
+        
+        <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-top: 20px; text-align: center;">
+            <h3>🚀 Ready to Hook into React Success?</h3>
+            <p>You now have the power to create stateful, interactive React applications using hooks! You understand how to manage state with useState, handle side effects with useEffect, and create reusable logic with custom hooks. The world of modern React development is at your fingertips. Go forth and build amazing, hook-powered applications! 💪⚡</p>
+        </div>
+    </div>
+</body>
+</html>

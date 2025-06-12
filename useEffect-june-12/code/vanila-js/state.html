@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Count : </h1>
+
+    <button id="increment">Increment</button>
+    <button id="decrement">Decrement</button>
+    <button id="reset">Reset</button>
+
+
+    <script>
+        let count = 0;
+
+        const incrementButton = document.getElementById('increment');
+        const decrementButton = document.getElementById('decrement');
+        const resetButton = document.getElementById('reset');
+        const countDisplay = document.querySelector('h1');
+
+        function updateDisplay() {
+            countDisplay.textContent = `Count: ${count}`;
+        }
+
+        incrementButton.addEventListener('click', () => {
+            count++;
+            updateDisplay();
+        });
+
+        decrementButton.addEventListener('click', () => {
+            count--;
+            updateDisplay();
+        });
+
+        resetButton.addEventListener('click', () => {
+            count = 0;
+            updateDisplay();
+        });
+
+        // Initial display
+        updateDisplay();
+    </script>
+</body>
+</html>
