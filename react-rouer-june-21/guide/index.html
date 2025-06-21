@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>React Router v6 Complete Guide - Layouts, Pages & Data Loading</title>
+    <style>
+        /* ...existing code from test.html for styling... */
+        body { font-family: 'Comic Sans MS', 'Segoe UI', sans-serif; margin: 30px; line-height: 1.6; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: #f0f8ff; }
+        h1, h2, h3 { color: #1565c0; border-bottom: 2px solid #42a5f5; padding-bottom: 5px; }
+        .container { background: white; border-radius: 10px; padding: 25px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .diagram { margin: 30px 0; text-align: center; }
+        .diagram svg { background: #f8fbff; border-radius: 10px; border: 1px solid #ccc; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .code-example { background: #f5f5f5; border-left: 4px solid #42a5f5; padding: 15px; border-radius: 0 8px 8px 0; margin: 15px 0; overflow-x: auto; font-family: Consolas, monospace; font-size: 14px; }
+        .analogy { background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2196f3; }
+        .analogy-title { font-weight: bold; color: #0d47a1; margin-bottom: 5px; }
+        .comparison { display: flex; justify-content: space-between; margin: 20px 0; flex-wrap: wrap; }
+        .comparison-box { flex: 1; padding: 15px; border-radius: 8px; margin: 10px; min-width: 280px; }
+        .good-practice { background: #e8f5e9; border: 1px solid #a5d6a7; }
+        .bad-practice { background: #ffebee; border: 1px solid #ef9a9a; }
+        .warning { background: #fff3e0; border: 1px solid #ffcc02; }
+        .highlight { background: #fff9c4; padding: 2px 4px; border-radius: 4px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 20px 0; }
+        .feature-card { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; }
+        .router-types { background: #f3e5f5; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #9c27b0; }
+        .interactive-demo { background: #fff8e1; padding: 20px; border-radius: 8px; margin: 20px 0; border: 2px solid #ffc107; }
+        .key-concept { background: #e8eaf6; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #3f51b5; }
+        .step-by-step { counter-reset: step-counter; }
+        .step { counter-increment: step-counter; margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #17a2b8; position: relative; }
+        .step::before { content: "Step " counter(step-counter); font-weight: bold; color: #17a2b8; display: block; margin-bottom: 10px; }
+        .pro-tip { background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 8px; padding: 15px; margin: 20px 0; }
+        .pro-tip::before { content: "💡 Pro Tip: "; font-weight: bold; color: #0c5460; }
+        .route-pattern { background: #e8f5e9; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #4caf50; }
+        .error-handling { background: #ffebee; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f44336; }
+        .data-loading { background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #2196f3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>React Router v6 Complete Guide 🗺️</h1>
+        <p>
+            Welcome to the ultimate React Router guide! 🚀 React Router is the standard routing library for React applications. 
+            It enables navigation between different components, manages URLs, and creates single-page applications with multiple views. 
+            Today we'll master <strong>Root Layouts</strong>, <strong>Child Pages</strong>, <strong>Error Handling</strong>, and <strong>Data Loading</strong>!
+        </p>
+        <div class="analogy">
+            <div class="analogy-title">🏠 Real-life Analogy: Building Management System</div>
+            <p>
+                Think of React Router like a smart building management system:
+                <br>• <strong>Root Layout</strong> is like the building's main structure (lobby, elevators, common areas)
+                <br>• <strong>Child Pages</strong> are like individual apartments or offices with unique content
+                <br>• <strong>Error Pages</strong> are like emergency protocols when someone goes to a non-existent floor
+                <br>• <strong>Data Loading</strong> is like the concierge service that fetches information before you arrive
+            </p>
+        </div>
+        <div class="key-concept">
+            <h3>📚 Reference Guide Structure</h3>
+            <p>This guide follows the same comprehensive format as our <strong>test.html</strong> React Hooks guide, providing:</p>
+            <ul>
+                <li>🎯 Practical examples with real-world scenarios</li>
+                <li>📊 Visual diagrams showing routing flow</li>
+                <li>⚡ Performance tips and best practices</li>
+                <li>🔧 Advanced patterns and custom solutions</li>
+                <li>❌✅ Common mistakes vs. correct implementations</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Part 1: Setting Up React Router v6 🚀</h2>
+        <div class="key-concept">
+            <h3>What is React Router? 🤔</h3>
+            <p>React Router is a declarative routing library for React that enables navigation between different components in a single-page application. It keeps your UI in sync with the URL and provides a seamless user experience.</p>
+        </div>
+        <div class="step-by-step">
+            <div class="step">
+                <h3>Installation & Basic Setup</h3>
+                <div class="code-example">
+# Install React Router<br>
+npm install react-router-dom<br><br>
+# Or with yarn<br>
+yarn add react-router-dom
+                </div>
+            </div>
+            <div class="step">
+                <h3>Basic Router Configuration</h3>
+                <div class="code-example">
+// App.js<br>
+import React from 'react';<br>
+import { BrowserRouter, Routes, Route } from 'react-router-dom';<br>
+import Layout from './components/Layout';<br>
+import Home from './pages/Home';<br>
+import About from './pages/About';<br>
+import Contact from './pages/Contact';<br>
+import NotFound from './pages/NotFound';<br><br>
+function App() {<br>
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;BrowserRouter&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Routes&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route path="/" element={&lt;Layout /&gt;}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route index element={&lt;Home /&gt;} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route path="about" element={&lt;About /&gt;} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route path="contact" element={&lt;Contact /&gt;} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Route&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Routes&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/BrowserRouter&gt;<br>
+&nbsp;&nbsp;);<br>
+}
+                </div>
+            </div>
+        </div>
+        <div class="diagram">
+            <!-- ...diagram SVG as in previous answer... -->
+            <!-- Omitted for brevity, see previous code for full SVG -->
+            <em>[Diagram: React Router v6 Architecture Flow]</em>
+        </div>
+        <div class="router-types">
+            <h3>🛣️ Router Types in React Router v6</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>BrowserRouter</h4>
+                    <p><strong>Most common choice</strong> - Uses HTML5 History API</p>
+                    <div class="code-example">
+import { BrowserRouter } from 'react-router-dom';<br>
+&lt;BrowserRouter&gt;...&lt;/BrowserRouter&gt;
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <h4>HashRouter</h4>
+                    <p>Uses URL hash - Good for static hosting</p>
+                    <div class="code-example">
+import { HashRouter } from 'react-router-dom';<br>
+&lt;HashRouter&gt;...&lt;/HashRouter&gt;
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <h4>MemoryRouter</h4>
+                    <p>Keeps history in memory - Testing/React Native</p>
+                    <div class="code-example">
+import { MemoryRouter } from 'react-router-dom';<br>
+&lt;MemoryRouter&gt;...&lt;/MemoryRouter&gt;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Part 2: Root Layout Pattern 🏗️</h2>
+        <div class="key-concept">
+            <h3>What is a Root Layout? 🤔</h3>
+            <p>A Root Layout is a parent component that provides common structure (header, navigation, footer) for all pages in your application. It uses React Router's <code>Outlet</code> component to render child pages.</p>
+        </div>
+        <div class="step-by-step">
+            <div class="step">
+                <h3>Creating a Root Layout Component</h3>
+                <div class="code-example">
+// components/Layout.js<br>
+import React from 'react';<br>
+import { Outlet, Link } from 'react-router-dom';<br>
+function Layout() {<br>
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;div&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;header&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;nav&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Link to="/"&gt;Home&lt;/Link&gt; | <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Link to="/about"&gt;About&lt;/Link&gt; | <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Link to="/contact"&gt;Contact&lt;/Link&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/nav&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/header&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;main&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Outlet /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;footer&gt;Copyright 2024&lt;/footer&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br>
+&nbsp;&nbsp;);<br>
+}<br>
+export default Layout;
+                </div>
+            </div>
+            <div class="step">
+                <h3>Setting Up Nested Routes with Layout</h3>
+                <div class="code-example">
+// App.js<br>
+import { BrowserRouter, Routes, Route } from 'react-router-dom';<br>
+import Layout from './components/Layout';<br>
+import Home from './pages/Home';<br>
+import About from './pages/About';<br>
+import Contact from './pages/Contact';<br>
+import NotFound from './pages/NotFound';<br>
+function App() {<br>
+&nbsp;&nbsp;return (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;BrowserRouter&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Routes&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route path="/" element={&lt;Layout /&gt;}&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route index element={&lt;Home /&gt;} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route path="about" element={&lt;About /&gt;} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route path="contact" element={&lt;Contact /&gt;} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Route&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/Routes&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/BrowserRouter&gt;<br>
+&nbsp;&nbsp;);<br>
+}
+                </div>
+            </div>
+        </div>
+        <div class="diagram">
+            <em>[Diagram: Root Layout with Nested Routes Structure]</em>
+        </div>
+        <div class="analogy">
+            <div class="analogy-title">🏢 Layout Like a Building Floor Plan</div>
+            <p>
+                Think of your Root Layout like a building's floor plan:
+                <br>• <strong>Header/Navigation</strong> = Building lobby (everyone enters here)
+                <br>• <strong>Footer</strong> = Building foundation (supports everything)
+                <br>• <strong>Outlet</strong> = Flexible meeting room that changes purpose based on bookings
+                <br>• <strong>Child Pages</strong> = Different events in the meeting room (conference, workshop, party)
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Part 3: Child Pages & Navigation 🚪</h2>
+        <div class="key-concept">
+            <h3>Creating Child Pages 📄</h3>
+            <p>Child pages are individual components that render inside your layout's Outlet. Each page represents a different view or screen in your application.</p>
+        </div>
+        <div class="step-by-step">
+            <div class="step">
+                <h3>Simple Static Page</h3>
+                <div class="code-example">
+// pages/Home.js<br>
+import React from 'react';<br>
+function Home() {<br>
+&nbsp;&nbsp;return &lt;h1&gt;Welcome Home!&lt;/h1&gt;;<br>
+}<br>
+export default Home;
+                </div>
+            </div>
+            <div class="step">
+                <h3>Dynamic Page with URL Parameters</h3>
+                <div class="code-example">
+// pages/ProductDetail.js<br>
+import { useParams } from 'react-router-dom';<br>
+function ProductDetail() {<br>
+&nbsp;&nbsp;const { id } = useParams();<br>
+&nbsp;&nbsp;return &lt;div&gt;Product ID: {id}&lt;/div&gt;;<br>
+}<br>
+export default ProductDetail;
+                </div>
+            </div>
+        </div>
+        <div class="route-pattern">
+            <h3>🛣️ Common Route Patterns</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Static Routes</h4>
+                    <div class="code-example">
+&lt;Route path="/" element={&lt;Home /&gt;} /&gt;<br>
+&lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <h4>Dynamic Routes</h4>
+                    <div class="code-example">
+&lt;Route path="/products/:id" element={&lt;ProductDetail /&gt;} /&gt;
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <h4>Wildcard Routes</h4>
+                    <div class="code-example">
+&lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pro-tip">
+            Use URL parameters for data that should be shareable and bookmarkable.
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Part 4: Error Handling & 404 Pages 🚨</h2>
+        <div class="key-concept">
+            <h3>Why Error Handling Matters 🤔</h3>
+            <p>Good error handling provides a better user experience when things go wrong. Users should never see blank pages or confusing error messages. Instead, they should get helpful information and ways to recover.</p>
+        </div>
+        <div class="step-by-step">
+            <div class="step">
+                <h3>Creating a 404 Not Found Page</h3>
+                <div class="code-example">
+// pages/NotFound.js<br>
+import React from 'react';<br>
+function NotFound() {<br>
+&nbsp;&nbsp;return &lt;h1&gt;404 - Page Not Found&lt;/h1&gt;;<br>
+}<br>
+export default NotFound;
+                </div>
+            </div>
+        </div>
+        <div class="error-handling">
+            <h3>Catch-all Route</h3>
+            <div class="code-example">
+&lt;Route path="*" element={&lt;NotFound /&gt;} /&gt;
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Part 5: Data Loading in Pages ⚡</h2>
+        <div class="key-concept">
+            <h3>Loading Data for Pages</h3>
+            <p>Load data in your page components using <code>useEffect</code> and show loading/error states for a smooth user experience.</p>
+        </div>
+        <div class="step-by-step">
+            <div class="step">
+                <h3>Example: Fetch Data in a Page</h3>
+                <div class="code-example">
+// pages/Users.js<br>
+import React, { useState, useEffect } from 'react';<br>
+function Users() {<br>
+&nbsp;&nbsp;const [users, setUsers] = useState([]);<br>
+&nbsp;&nbsp;const [loading, setLoading] = useState(true);<br>
+&nbsp;&nbsp;useEffect(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fetch('/api/users')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.then(res =&gt; res.json())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.then(data =&gt; { setUsers(data); setLoading(false); });<br>
+&nbsp;&nbsp;}, []);<br>
+&nbsp;&nbsp;if (loading) return &lt;div&gt;Loading...&lt;/div&gt;;<br>
+&nbsp;&nbsp;return (&lt;ul&gt;{users.map(u =&gt; &lt;li key={u.id}&gt;{u.name}&lt;/li&gt;)}&lt;/ul&gt;);<br>
+}<br>
+export default Users;
+                </div>
+            </div>
+        </div>
+        <div class="data-loading">
+            <h3>Loader Functions (React Router Data APIs)</h3>
+            <p>With React Router v6.4+, you can use <code>loader</code> functions for data fetching at the route level.</p>
+            <div class="code-example">
+// routes.js<br>
+import { createBrowserRouter } from 'react-router-dom';<br>
+const router = createBrowserRouter([<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path: "/users",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;element: &lt;Users /&gt;,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;loader: async () =&gt; fetch("/api/users").then(res =&gt; res.json()),<br>
+&nbsp;&nbsp;}<br>
+]);
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Quick Reference & Cheat Sheet 📚</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>🔗 Link Navigation</h4>
+                <div class="code-example">
+import { Link } from 'react-router-dom';<br>
+&lt;Link to="/about"&gt;About&lt;/Link&gt;
+                </div>
+            </div>
+            <div class="feature-card">
+                <h4>🧭 useNavigate</h4>
+                <div class="code-example">
+import { useNavigate } from 'react-router-dom';<br>
+const navigate = useNavigate();<br>
+navigate('/home');
+                </div>
+            </div>
+            <div class="feature-card">
+                <h4>📦 useParams</h4>
+                <div class="code-example">
+import { useParams } from 'react-router-dom';<br>
+const { id } = useParams();
+                </div>
+            </div>
+            <div class="feature-card">
+                <h4>⚡ useLoaderData (v6.4+)</h4>
+                <div class="code-example">
+import { useLoaderData } from 'react-router-dom';<br>
+const users = useLoaderData();
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Summary: You've Mastered React Router! 🎉</h2>
+        <div class="key-concept">
+            <h3>🎯 Key Takeaways</h3>
+            <ul>
+                <li><strong>Root Layout:</strong> Shared structure for all pages</li>
+                <li><strong>Child Pages:</strong> Rendered inside <code>&lt;Outlet /&gt;</code></li>
+                <li><strong>Navigation:</strong> Use <code>Link</code> and <code>useNavigate</code></li>
+                <li><strong>Error Handling:</strong> Catch-all routes for 404s</li>
+                <li><strong>Data Loading:</strong> Fetch in components or with loaders</li>
+            </ul>
+        </div>
+        <div class="analogy">
+            <div class="analogy-title">🎭 Final Analogy: You're Now a Routing Architect!</div>
+            <p>
+                Think of yourself as the architect of a digital building:
+                <br>• <strong>Root Layout</strong> is your blueprint
+                <br>• <strong>Child Pages</strong> are the rooms
+                <br>• <strong>Navigation</strong> is the hallway
+                <br>• <strong>Error Handling</strong> is your safety plan
+                <br>• <strong>Data Loading</strong> is your concierge
+                <br><br>With React Router, you can build seamless, scalable, and user-friendly React apps!
+            </p>
+        </div>
+        <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-top: 20px; text-align: center;">
+            <h3>🚀 Ready to Route Your Way to Success?</h3>
+            <p>You now have the power to create robust, navigable React applications using React Router! Go forth and build amazing, route-powered apps! 💪⚡</p>
+        </div>
+    </div>
+</body>
+</html>

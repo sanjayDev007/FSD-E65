@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <nav id="navigation"></nav>
+        <a href="/" data-route="/">Home</a>
+        <a href="/about" data-route="/about">About</a>
+        <a href="/contact" data-route="/contact">Contact</a>
+    </nav>
+
+    <div id="root">
+        <h1>Welcome</h1>
+    </div>
+
+    <script>
+        function renderNav() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('nav a');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('data-route') === currentPath) {
+                    link.style.fontWeight = 'bold';
+                    link.style.color = '#007bff';
+                } else {
+                    link.style.fontWeight = 'normal';
+                    link.style.color = '#000';
+                }
+            });
+        }
+
+        function navigate(path) {
+            window.history.pushState({}, '', path);
+            renderNav();
+            updateContent(path);
+        }
+
+        function updateContent(path) {
+            const content = document.getElementById('root');
+            if (path === '/about') {
+                content.innerHTML = '<h1>About Us</h1>';
+            } else if (path === '/contact') {
+                content.innerHTML = '<h1>Contact</h1>';
+            } else {
+                content.innerHTML = '<h1>Welcome</h1>';
+            }
+        }
+
+        // Handle navigation clicks
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' && e.target.hasAttribute('data-route')) {
+                e.preventDefault();
+                navigate(e.target.getAttribute('data-route'));
+            }
+        });
+
+        // Handle browser back/forward buttons and direct URL access
+        window.addEventListener('popstate', () => {
+            renderNav();
+            updateContent(window.location.pathname);
+        });
+
+        // Initial render - handle direct URL access
+        renderNav();
+        updateContent(window.location.pathname);
+    </script>
+</body>
+</html>
