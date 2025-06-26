@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1>Counter: <span id="counter">0</span></h1>
+        <button id="increment">Increment</button>
+        <button id="decrement">Decrement</button>
+    </div>
+    <script type="module">
+        import { createStore } from 'https://cdn.jsdelivr.net/npm/redux@5.0.1/dist/redux.legacy-esm.min.js'; 
+        let initialValue = {
+            count: 0
+        }
+        function countReducer(prevState = initialValue, action) {
+            switch (action.type) {
+                case 'INCREMENT':
+                    return { ...prevState, count: prevState.count + 1 };
+                case 'DECREMENT':
+                    return { ...prevState, count: prevState.count - 1 };
+                default:
+                    console.log("No action matched, returning previous state");
+            }
+            return prevState;
+        }
+
+        let store = createStore(countReducer);
+        store.subscribe(() => {
+            let state = store.getState();
+            document.querySelector('#counter').innerText = state.count;
+        });
+
+        document.querySelector('#increment').addEventListener('click', () => {
+            store.dispatch({ type: 'INCREMENT' });
+        });
+        document.querySelector('#decrement').addEventListener('click', () => {
+            store.dispatch({ type: 'DECREMENT' });
+        });
+    </script>
+</body>
+</html>
