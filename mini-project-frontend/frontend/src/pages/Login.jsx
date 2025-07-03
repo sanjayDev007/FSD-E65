@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import apiUrl from '../api/apiUrl'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import UseProtected from '../api/UseProtected';
 
 function Login() {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const navigate = useNavigate();
-    let users = {
-        email: 'admin@gmail.com',
-        password: '123456'
-    }
+    useEffect(()=>{
+        async function checkProtected() {
+            let isProtected = await UseProtected();
+            if (isProtected) {
+                navigate("/");
+            }
+        }
+        checkProtected();
+    },[]);
     async function handleSubmit(e) {
         e?.preventDefault();
         if (!email || !password) {
@@ -18,12 +24,17 @@ function Login() {
             return;
         }
         try {
-           if (email === users.email && password === users.password) {
-                localStorage.setItem('token', true);
-           }
+            let response = await axios.post(`${apiUrl}/auth/login`, { email, password, role: 'User' });
+            if (response.status === 200) {
+                localStorage.setItem('token', response.data.token);
+                alert('Login successful');
+                navigate('/');
+            } else {
+                alert('Login failed: ' + response.data.message);
+            }
             
         } catch (error) {
-            console.error('Error during login:', error);
+            console.error('Error during registration:', error);
             alert(error.response?.data?.message || 'Login failed. Please try again later.');
         }
     }

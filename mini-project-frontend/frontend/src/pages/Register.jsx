@@ -1,13 +1,23 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import apiUrl from "../api/apiUrl";
 import { useNavigate } from "react-router-dom";
+import UseProtected from "../api/UseProtected";
 
 function Register() {
     const [name, setName] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const navigate = useNavigate();
+    useEffect(()=>{
+      async function checkProtected() {
+          let isProtected = await UseProtected();
+          if (isProtected) {
+              navigate("/");
+          }
+      }
+      checkProtected();
+  },[]);
     async function  handleSubmit(e) {
     e?.preventDefault();
     if (!name || !email || !password) {
