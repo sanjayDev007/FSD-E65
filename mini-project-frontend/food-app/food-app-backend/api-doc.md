@@ -1,11 +1,11 @@
-Of course. Here is the API documentation in a copy-pasteable Markdown format.
+Of course. Here is the API documentation in Markdown format.
 
 ````markdown
-# API Documentation: Food Listing App
+# API Documentation: Food Listing App (JWT)
 
-### **Version 1.1**
+### **Version 2.0**
 
-This document provides documentation for the Food Listing App's backend API. The API uses session-based cookie authentication for admin routes.
+This document provides documentation for the Food Listing App's backend API. The API uses stateless **JSON Web Tokens (JWT)** for authenticating admin routes.
 
 ---
 
@@ -16,27 +16,33 @@ The base URL for all endpoints is:
 
 ---
 
-## **Authentication**
+## **Authentication Flow (JWT)**
 
-Admin-only endpoints are protected by a session cookie. To access them, the admin must first log in via the `/api/admin/login` endpoint. Subsequent requests from the client will automatically include the `connect.sid` cookie, granting access to protected routes.
+Authentication is handled via Bearer Tokens.
+
+1.  **Login**: Send admin credentials to the `POST /api/admin/login` endpoint.
+2.  **Receive Token**: On success, the API will return a JSON object containing a JWT.
+3.  **Store Token**: The client application (e.g., your frontend) must securely store this token.
+4.  **Authorize Requests**: For all protected admin routes, include the token in the `Authorization` header with the `Bearer` scheme.
+
+**Example Header:**
+`Authorization: Bearer <your_jwt_here>`
 
 ---
 
 ## **Admin Endpoints**
 
-These endpoints require an active admin session.
-
 ### **Admin Login**
 
 `POST /api/admin/login`
 
-Authenticates an administrator and creates a session cookie.
+Authenticates an administrator and returns a JWT.
 
 **Request Body:** (`application/json`)
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `username` | String | The admin's username. |
-| `password` | String | The admin's password. |
+| Field      | Type   | Description             |
+| :--------- | :----- | :---------------------- |
+| `username` | String | The admin's username.   |
+| `password` | String | The admin's password.   |
 
 **Example Request:**
 ```json
@@ -46,46 +52,18 @@ Authenticates an administrator and creates a session cookie.
 }
 ````
 
-**Responses:**
+**Success Response (200 OK):**
+Returns the JWT.
 
-  * **200 OK:** `Admin login successful`
-  * **401 Unauthorized:** `Invalid admin credentials`
+```json
+{
+    "message": "Admin login successful",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzUyNTMxMjAwLCJleHAiOjE3NTI2MTc2MDB9.some_signature_here"
+}
+```
 
------
-
-### **Admin Logout**
-
-`POST /api/admin/logout`
-
-Destroys the current admin session and clears the session cookie.
-
-**Responses:**
-
-  * **200 OK:** `Admin logout successful`
-  * **500 Internal Server Error:** `Failed to log out.`
-
------
-
-### **Check Admin Status**
-
-`GET /api/admin/status`
-
-Checks if the current session belongs to a logged-in admin. This is useful for front-end routing.
-
-**Responses:**
-
-  * **200 OK:** Returns a JSON object confirming admin status.
-    ```json
-    {
-        "isAdmin": true
-    }
-    ```
-  * **401 Unauthorized:**
-    ```json
-    {
-        "isAdmin": false
-    }
-    ```
+**Error Response (401 Unauthorized):**
+`Invalid admin credentials`
 
 -----
 
@@ -93,20 +71,26 @@ Checks if the current session belongs to a logged-in admin. This is useful for f
 
 `POST /api/food`
 
-Creates a new food item. Requires admin session.
+Creates a new food item. Requires JWT authentication.
+
+**Headers:**
+| Key             | Value          |
+| :-------------- | :------------- |
+| `Authorization` | `Bearer <token>` |
 
 **Request Body:** (`multipart/form-data`)
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `name` | String | The name of the food item. |
-| `recipe` | String | The recipe or description. |
-| `image` | File | The image file for the item. |
+| Field    | Type   | Description                         |
+| :------- | :----- | :---------------------------------- |
+| `name`   | String | The name of the food item.          |
+| `recipe` | String | The recipe or description.          |
+| `image`  | File   | The image file for the item.        |
 
 **Responses:**
 
   * **201 Created:** Returns the newly created food item object.
   * **400 Bad Request:** `Name, recipe, and image are required.`
-  * **401 Unauthorized:** `Unauthorized. Please login as admin first.`
+  * **401 Unauthorized:** `Access denied. No token provided.`
+  * **403 Forbidden:** `Invalid token.`
 
 -----
 
@@ -114,24 +98,29 @@ Creates a new food item. Requires admin session.
 
 `PUT /api/food/:id`
 
-Updates an existing food item. Requires admin session.
+Updates an existing food item. Requires JWT authentication.
+
+**Headers:**
+| Key             | Value          |
+| :-------------- | :------------- |
+| `Authorization` | `Bearer <token>` |
 
 **URL Parameters:**
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `id` | Number | The unique ID of the food item to update. |
+| Parameter | Type   | Description                         |
+| :-------- | :----- | :---------------------------------- |
+| `id`      | Number | The unique ID of the food item.     |
 
 **Request Body:** (`multipart/form-data`) - All fields are optional.
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `name` | String | The new name for the item. |
-| `recipe` | String | The new recipe for the item. |
-| `image` | File | A new image to replace the existing one. |
+| Field    | Type   | Description                               |
+| :------- | :----- | :---------------------------------------- |
+| `name`   | String | The new name for the item.                |
+| `recipe` | String | The new recipe for the item.              |
+| `image`  | File   | A new image to replace the existing one.  |
 
 **Responses:**
 
-  * **200 OK:** Returns the fully updated food item object.
-  * **401 Unauthorized:** `Unauthorized. Please login as admin first.`
+  * **200 OK:** Returns the updated food item object.
+  * **401 Unauthorized / 403 Forbidden:** For token errors.
   * **404 Not Found:** `Food item not found.`
 
 -----
@@ -140,22 +129,22 @@ Updates an existing food item. Requires admin session.
 
 `DELETE /api/food/:id`
 
-Deletes a food item. Requires admin session.
+Deletes a food item. Requires JWT authentication.
+
+**Headers:**
+| Key             | Value          |
+| :-------------- | :------------- |
+| `Authorization` | `Bearer <token>` |
 
 **URL Parameters:**
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `id` | Number | The unique ID of the food item to delete. |
+| Parameter | Type   | Description                         |
+| :-------- | :----- | :---------------------------------- |
+| `id`      | Number | The unique ID of the food item.     |
 
 **Responses:**
 
-  * **200 OK:**
-    ```json
-    {
-        "message": "Food item deleted successfully."
-    }
-    ```
-  * **401 Unauthorized:** `Unauthorized. Please login as admin first.`
+  * **200 OK:** `{"message": "Food item deleted successfully."}`
+  * **401 Unauthorized / 403 Forbidden:** For token errors.
   * **404 Not Found:** `Food item not found.`
 
 -----
@@ -193,9 +182,9 @@ Returns an array of food item objects.
 Retrieves a specific food item by its ID.
 
 **URL Parameters:**
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `id` | Number | The unique ID of the food item. |
+| Parameter | Type   | Description                         |
+| :-------- | :----- | :---------------------------------- |
+| `id`      | Number | The unique ID of the food item.     |
 
 **Responses:**
 

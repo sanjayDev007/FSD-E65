@@ -2,12 +2,11 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const JWT_SECRET = 'your-super-secret-key-for-jwt-that-should-be-in-env-vars'; // Use a strong, random secret
 
 // --- DATABASE ---
 const DB_FILE = './db.json';
@@ -21,6 +20,7 @@ const readDB = () => {
         return JSON.parse(data);
     } catch (error) {
         console.error('Error parsing database file:', error);
+        // Return a default structure if the file is corrupt or empty
         return { admins: [{ username: 'admin', password: 'password' }], foodItems: [] };
     }
 };
@@ -30,23 +30,9 @@ const writeDB = (data) => {
 };
 
 // --- MIDDLEWARE ---
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Replaces bodyParser.json()
+app.use(express.urlencoded({ extended: true })); // Replaces bodyParser.urlencoded()
 app.use('/public', express.static(path.join(__dirname, 'public')));
-app.use(cookieParser());
-
-// --- SESSION MIDDLEWARE SETUP ---
-app.use(session({
-    // It's crucial to change this secret to a long, random string in production
-    secret: 'a-very-secret-key-that-should-be-in-env-vars',
-    resave: false,
-    saveUninitialized: false, // Don't create session until something stored
-    cookie: {
-        httpOnly: true, // Prevents client-side JS from accessing the cookie
-        secure: false, // Set to true if you are using HTTPS
-        maxAge: 24 * 60 * 60 * 1000 // Cookie expires in 24 hours
-    }
-}));
 
 
 // --- MULTER SETUP FOR IMAGE UPLOAD ---
@@ -62,12 +48,21 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-// --- ADMIN AUTHENTICATION MIDDLEWARE (CHECKS SESSION) ---
+// --- ADMIN AUTHENTICATION MIDDLEWARE (CHECKS JWT) ---
 const requireAdminLogin = (req, res, next) => {
-    if (req.session.isAdmin) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer <TOKEN>
+
+    if (!token) {
+        return res.status(401).send('Access denied. No token provided.');
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded; // You can attach the decoded payload to the request if needed
         next();
-    } else {
-        res.status(401).send('Unauthorized. Please login as admin first.');
+    } catch (error) {
+        res.status(403).send('Invalid token.');
     }
 };
 
@@ -75,43 +70,27 @@ const requireAdminLogin = (req, res, next) => {
 
 // ## Admin Routes ##
 
-// Admin Login - Creates the session
+// Admin Login - Creates and returns a JWT
 app.post('/api/admin/login', (req, res) => {
     const { username, password } = req.body;
     const db = readDB();
     const admin = db.admins.find(a => a.username === username && a.password === password);
 
     if (admin) {
-        // Set a property on the session object
-        req.session.isAdmin = true;
-        res.status(200).send('Admin login successful');
+        // Create a JWT
+        const token = jwt.sign(
+            { username: admin.username, role: 'admin' },
+            JWT_SECRET,
+            { expiresIn: '24h' } // Token expires in 24 hours
+        );
+        res.status(200).json({ message: 'Admin login successful', token: token });
     } else {
         res.status(401).send('Invalid admin credentials');
     }
 });
+// NOTE: A '/logout' endpoint is not needed with JWT. The client simply discards the token.
 
-// Admin Logout - Destroys the session
-app.post('/api/admin/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.status(500).send('Failed to log out.');
-        }
-        // The cookie is typically cleared automatically, but this is a good practice
-        res.clearCookie('connect.sid');
-        res.status(200).send('Admin logout successful');
-    });
-});
-
-// Protected route to check if admin is logged in
-app.get('/api/admin/status', (req, res) => {
-    if (req.session.isAdmin) {
-        res.status(200).send({ isAdmin: true });
-    }
-    else {
-        res.status(401).send({ isAdmin: false });
-    }
-});
-// Add a new food item (Protected by session)
+// Add a new food item (Protected by JWT)
 app.post('/api/food', requireAdminLogin, upload.single('image'), (req, res) => {
     const { name, recipe } = req.body;
     const image = req.file ? `/public/uploads/${req.file.filename}` : null;
@@ -133,7 +112,7 @@ app.post('/api/food', requireAdminLogin, upload.single('image'), (req, res) => {
     res.status(201).send(newFoodItem);
 });
 
-// Update a food item (Protected by session)
+// Update a food item (Protected by JWT)
 app.put('/api/food/:id', requireAdminLogin, upload.single('image'), (req, res) => {
     const { id } = req.params;
     const { name, recipe } = req.body;
@@ -160,7 +139,7 @@ app.put('/api/food/:id', requireAdminLogin, upload.single('image'), (req, res) =
     res.status(200).send(updatedFoodItem);
 });
 
-// Delete a food item (Protected by session)
+// Delete a food item (Protected by JWT)
 app.delete('/api/food/:id', requireAdminLogin, (req, res) => {
     const { id } = req.params;
     const db = readDB();
@@ -188,8 +167,6 @@ app.get('/api/food/:id', (req, res) => {
     const { id } = req.params;
     const db = readDB();
     const foodItem = db.foodItems.find(item => item.id == id);
-
-
 
     if (foodItem) {
         res.status(200).send(foodItem);
