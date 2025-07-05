@@ -1,20 +1,42 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import apiUrl from '../../api/apiUrl';
 
 function AdminProducts() {
-    const [products, setProducts] = useState([
-        { id: 1, name: 'Product 1', price: 100 },
-        { id: 2, name: 'Product 2', price: 200 },
-    ]);
-    const [newProduct, setNewProduct] = useState({ name: '', price: '' });
+    const [products, setProducts] = useState([]);
+    const [state,setState] = useState(false);
+    useEffect(() => {
+        const fetchProducts = async () => {
+            let response = await axios.get(`${apiUrl}/products`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('admin-token')}`
+                }
+            })
+            if (response.status === 200) {
+                setProducts(response.data.products);
+            } else {
+                alert('Failed to fetch products');
+            }
+        }
+        fetchProducts();
+    },[state]);
+    const [newProduct, setNewProduct] = useState({ name: '', price: '', stock: 0, description: '' });
     const [editingProduct, setEditingProduct] = useState(null);
 
-    const handleAddProduct = () => {
+    const handleAddProduct = async () => {
         if (newProduct.name && newProduct.price) {
-            setProducts([
-                ...products,
-                { id: Date.now(), name: newProduct.name, price: parseFloat(newProduct.price) },
-            ]);
-            setNewProduct({ name: '', price: '' });
+           let response = await axios.post(`${apiUrl}/products`, newProduct, {
+                headers: {
+                    'Authorization' : `Bearer ${localStorage.getItem('admin-token')}`
+                }
+            });
+            if (response.status === 201) {
+                setNewProduct({ name: '', price: '' , stock: 0, description: '' });
+                setState(!state);
+                alert('Product added successfully');
+            } else {
+                alert('Failed to add product');
+            }
         }
     };
 
@@ -55,6 +77,20 @@ function AdminProducts() {
                         onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
                         className="border border-gray-300 rounded-lg p-2"
                     />
+                    <input
+                        type="number"
+                        placeholder="Product Stock"
+                        value={newProduct.stock}
+                        onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+                        className="border border-gray-300 rounded-lg p-2"
+                    />
+                    <textarea
+                        placeholder="Product Description"
+                        value={newProduct.description}
+                        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                        className="border border-gray-300 rounded-lg p-2"
+                        rows="3"
+                    ></textarea>
                     <button
                         onClick={handleAddProduct}
                         className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"

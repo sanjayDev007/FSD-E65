@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import AdminLogin from './pages/Admin/AdminLogin'
+import AdminProducts from './pages/Admin/AdminProducts'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
         </Routes>
       </Router>
     </>

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UseProtected from '../api/UseProtected';
 import axios from 'axios';
-import apiUrl from '../api/apiUrl';
+import apiUrl from '../../api/apiUrl';
 
 function AdminLogin() {
     const [email, setEmail] = React.useState('');
@@ -19,7 +18,7 @@ function AdminLogin() {
             if (response.status === 200) {
                 localStorage.setItem('admin-token', response.data.token);
                 alert('Login successful');
-                navigate('/');
+                navigate('/admin/products');
             } else {
                 alert('Login failed: ' + response.data.message);
             }
