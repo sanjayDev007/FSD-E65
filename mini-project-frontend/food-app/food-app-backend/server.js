@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ const writeDB = (data) => {
 };
 
 // --- MIDDLEWARE ---
+app.use(cors("*")); // Allow all origins for CORS
 app.use(express.json()); // Replaces bodyParser.json()
 app.use(express.urlencoded({ extended: true })); // Replaces bodyParser.urlencoded()
 app.use('/public', express.static(path.join(__dirname, 'public')));
