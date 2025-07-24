@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intro to Node.js: REPL & Built-in Modules</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0;
+            line-height: 1.7;
+            color: #333;
+            background-color: #f4f7f9;
+        }
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        h4 {
+            color: #34495e;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        .analogy {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+            border-left: 5px solid #4CAF50;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        .code-example {
+            background: #2d2d2d;
+            border-left: 5px solid #8bc34a;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            padding: 1.2em 1.5em;
+        }
+        .code-example code {
+            font-family: 'Fira Code', Consolas, 'Courier New', monospace;
+            font-size: 0.95em;
+            color: #f8f8f2;
+        }
+        .line-numbers .line-numbers-rows {
+            padding-top: 1.2em;
+            border-right: 1px solid #44475a;
+        }
+        pre[class*="language-"].line-numbers {
+            padding-left: 4em;
+        }
+        .highlight {
+            background: #cddc3933;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', Consolas, 'Courier New', monospace;
+            font-weight: 600;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border-bottom: 4px solid #bdc3c7;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #4CAF50;
+        }
+        .structure-section { background: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .elements-section { background: #e1f5fe; border-left: 4px solid #03a9f4; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .mindblown {
+            background-image: linear-gradient(45deg, #43a047, #66bb6a);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(67, 160, 71, 0.3);
+        }
+        .step-by-step {
+            background: #fafafa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #7f8c8d;
+        }
+        dl dt {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        dl dd {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h1>⚡ Power Up Your JavaScript: An Intro to Node.js!</h1>
+
+    <div class="container">
+        <h2>From Browser to Everywhere 🌍</h2>
+        <p>
+            For a long time, JavaScript lived in one place: the web browser. It was fantastic for making websites interactive, but that's where its journey ended.
+            <strong>Node.js changed everything.</strong>
+        </p>
+        <p>
+            Node.js is a runtime environment that lets you run JavaScript code on your computer, completely outside of the browser. This means you can use the language you already know and love to build fast, powerful server-side applications, command-line tools, and much more!
+        </p>
+        <div class="analogy">
+            <div class="analogy-title">💡 Analogy: The Car Engine</div>
+            <p>
+                Think of the JavaScript engine inside a browser (like Google's V8 engine) as a high-performance car engine. For years, it was only used to power one thing: the car (the browser).
+                <br><br>
+                <strong>Node.js is like taking that powerful engine out of the car and using it to power anything you want</strong>—a generator, a water pump, or even a spaceship! You're no longer limited to just the road; you can go anywhere!
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="structure-section">
+            <h2>Your Personal JavaScript Playground: The REPL 🤾</h2>
+            <p>
+                Node.js comes with a fantastic built-in tool called the <strong>REPL</strong>. It stands for <strong>R</strong>ead, <strong>E</strong>val, <strong>P</strong>rint, <strong>L</strong>oop, and it's the quickest way to test out JavaScript code without having to create a file.
+            </p>
+            <div class="analogy">
+                <div class="analogy-title">💡 Analogy: A Coding Sketchpad</div>
+                <p>
+                    The REPL is like an artist's sketchpad. You can quickly jot down ideas, test how colors mix, and experiment with different shapes without committing to a full painting. It's an interactive environment for instant feedback.
+                </p>
+            </div>
+            <p>To start it, just open your terminal and type:</p>
+            <pre class="code-example"><code class="language-bash">node</code></pre>
+            <p>You'll see a <code class="highlight">></code> prompt, waiting for your commands. Let's try it!</p>
+            <pre class="code-example line-numbers"><code class="language-javascript">> 5 + 10
+15
+> const message = 'Hello from the REPL!'
+undefined
+> message
+'Hello from the REPL!'
+> for (let i = 0; i < 3; i++) { console.log('Looping!'); }
+Looping!
+Looping!
+Looping!
+undefined
+> // Press .exit or Ctrl+C twice to leave</code></pre>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="elements-section">
+            <h2>Node's Built-in Superpowers: Core Modules 🦸‍♂️</h2>
+            <p>
+                Node.js is powerful on its own, but its true strength comes from its <strong>modules</strong>. A module is a block of reusable code that performs a specific task. Node.js comes with a rich set of built-in modules that you can use immediately without installing anything.
+            </p>
+            <div class="analogy">
+                <div class="analogy-title">💡 Analogy: A Carpenter's Toolboxes</div>
+                <p>
+                    Think of Node.js as a workshop. The built-in modules are like specialized toolboxes that are already on your shelf.
+                    <br><br>
+                    Need to work with wood? Grab the <strong>File System (`fs`)</strong> toolbox. Need to check the workshop's power supply? Grab the <strong>Operating System (`os`)</strong> toolbox. You just need to know which toolbox to open for the job.
+                </p>
+            </div>
+            <p>You use a module by "requiring" it in your code:</p>
+            <pre class="code-example"><code class="language-javascript">const fs = require('fs'); // Now I can use all the file system tools!</code></pre>
+            
+            <h3>Meet a Few Core Modules:</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>File System (`fs`)</h4>
+                    <p>Allows you to interact with the file system: read files, write files, create directories, and more. It's your bridge to the computer's storage.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Operating System (`os`)</h4>
+                    <p>Gives you information about the computer's operating system, like CPU architecture, available memory, and user info.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Path (`path`)</h4>
+                    <p>Provides utilities for working with file and directory paths in a way that works across different operating systems (like Windows, Mac, and Linux).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Let's Get Practical: Writing Your First Node Script ✍️</h2>
+        <p>
+            Let's leave the REPL and write a real Node.js script. We'll use the <code class="highlight">fs</code> module to create and then read a file.
+        </p>
+        <div class="step-by-step">
+            <h4>File System in Action:</h4>
+            <dl>
+                <dt>1. Create a File</dt>
+                <dd>Create a new file named <code class="highlight">app.js</code>.</dd>
+
+                <dt>2. Write the Code</dt>
+                <dd>
+                    Paste the following code into <code class="highlight">app.js</code>. We'll require the `fs` module, use it to write some text to a new file, and then read that content back.
+                    <pre class="code-example line-numbers"><code class="language-javascript">// 1. Import the built-in File System module
+const fs = require('fs');
+
+// 2. Define the content and filename
+const filename = 'welcome.txt';
+const content = 'Hello, Node.js world! 🚀';
+
+// 3. Write content to a new file
+// This is a synchronous action, meaning it blocks until done.
+fs.writeFileSync(filename, content);
+console.log(`✅ File "${filename}" was created successfully!`);
+
+// 4. Read the content back from the file
+const fileContent = fs.readFileSync(filename, 'utf8');
+console.log(`🔍 Reading from file: "${fileContent}"`);</code></pre>
+                </dd>
+
+                <dt>3. Run the Script</dt>
+                <dd>
+                    Go to your terminal, navigate to the folder where you saved <code class="highlight">app.js</code>, and run it with Node.
+                    <pre class="code-example"><code class="language-bash">node app.js</code></pre>
+                </dd>
+                
+                <dt>4. Check the Output</dt>
+                <dd>
+                    You'll see your log messages in the terminal, and a new file named <code class="highlight">welcome.txt</code> will appear in your folder!
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mindblown">
+        <h2>🤯 The "Aha!" Moment: JavaScript Unleashed</h2>
+        <p>
+            You just used JavaScript to directly manipulate files on your computer!
+            <br><br>
+            This is the core magic of Node.js. It takes the web's language and gives it superpowers, turning you from a front-end developer into someone who can build complete, full-stack applications that interact with servers, databases, and the file system. <strong>The browser was just the beginning.</strong>
+        </p>
+    </div>
+
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+</body>
+</html>
