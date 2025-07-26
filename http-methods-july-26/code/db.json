@@ -1,0 +1,58 @@
+{
+  "users": [
+    {
+      "id": "1753537885792",
+      "name": "Sanjay",
+      "age": 24,
+      "job": "Developer"
+    },
+    {
+      "id": "1753537920781",
+      "name": "Abin",
+      "age": 24,
+      "job": "Developer"
+    },
+    {
+      "id": "1753537920782",
+      "name": "Priya",
+      "age": 27,
+      "job": "Designer"
+    },
+    {
+      "id": "1753537920783",
+      "name": "Ravi",
+      "age": 30,
+      "job": "Manager"
+    },
+    {
+      "id": "1753537920784",
+      "name": "Meera",
+      "age": 22,
+      "job": "Intern"
+    },
+    {
+      "id": "1753537920785",
+      "name": "Anil",
+      "age": 28,
+      "job": "Tester"
+    },
+    {
+      "id": "1753537920786",
+      "name": "Divya",
+      "age": 26,
+      "job": "Developer"
+    },
+    {
+      "id": "1753537920787",
+      "name": "Kiran",
+      "age": 32,
+      "job": "Architect"
+    },
+    {
+      "id": "1753537920789",
+      "name": "Vikram",
+      "age": 31,
+      "job": "Developer"
+    }
+  ]
+}
