@@ -1,0 +1,21 @@
+doctype html
+html
+    head
+        title Home Page
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", href="/styles.css")
+    body
+        header
+            h1 Welcome to Node MVC Tutorial
+        nav
+            ul
+                li: a(href="/") Home
+                li: a(href="/about") About
+                li: a(href="/contact") Contact
+        main
+            section
+                h2= title
+                p= message
+        footer
+            p &copy; 2024 Node MVC Tutorial
