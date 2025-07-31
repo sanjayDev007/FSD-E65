@@ -1,0 +1,191 @@
+doctype html
+html
+    head
+        title Inventory Management
+        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css")
+    body.bg-gray-100.min-h-screen.flex.flex-col.items-center.justify-center
+        .bg-white.shadow-lg.rounded-lg.p-8.w-full.max-w-2xl
+            h1.text-3xl.font-bold.text-gray-800.mb-6.text-center Inventory Management
+            p.text-gray-600.mb-8.text-center Manage your products efficiently and easily.
+
+            // Inventory table
+            table.w-full.text-left.border-collapse#inventory-table
+                thead
+                    tr.bg-gray-200
+                        th.px-4.py-2.text-gray-700 Name
+                        th.px-4.py-2.text-gray-700 Quantity
+                        th.px-4.py-2.text-gray-700 Price
+                        th.px-4.py-2.text-gray-700 Category
+                        th.px-4.py-2.text-gray-700 Stock
+                        th.px-4.py-2.text-gray-700 Actions
+                tbody
+                    //- Render items dynamically
+                    each item in items
+                        tr.border-b
+                            td.px-4.py-2.text-gray-800 #{item.name}
+                            td.px-4.py-2.text-gray-800 #{item.quantity}
+                            td.px-4.py-2.text-gray-800 $#{item.price}
+                            td.px-4.py-2.text-gray-800 #{item.category}
+                            td.px-4.py-2.text-gray-800 #{item.stock}
+                            td.px-4.py-2
+                                button(
+                                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 edit-btn"
+                                    data-id=item.id
+                                ) Edit
+                                button(
+                                    class="bg-red-500 text-white px-3 py-1 rounded ml-2 hover:bg-red-600 delete-btn"
+                                    data-id=item.id
+                                ) Delete
+
+            // Add product button
+            .flex.justify-end.mt-6
+                button(
+                    class="bg-green-500 text-white px-5 py-2 rounded-lg font-semibold shadow-md hover:bg-green-600"
+                    id="add-product-btn"
+                ) Add Product
+
+            // Modal for add/edit product
+            div#product-modal.hidden.fixed.inset-0.bg-black.bg-opacity-30.flex.items-center.justify-center
+                div.bg-white.p-6.rounded-lg.shadow-lg.w-full.max-w-md
+                    h2.text-xl.font-bold.mb-4#modal-title Add Product
+                    form#product-form
+                        input(type="hidden", name="id")
+                        .mb-2
+                            label.block.text-gray-700 Name
+                            input(type="text", name="name", required, class="w-full px-3 py-2 border rounded")
+                        .mb-2
+                            label.block.text-gray-700 Quantity
+                            input(type="number", name="quantity", required, class="w-full px-3 py-2 border rounded")
+                        .mb-2
+                            label.block.text-gray-700 Price
+                            input(type="number", name="price", step="0.01", required, class="w-full px-3 py-2 border rounded")
+                        .mb-2
+                            label.block.text-gray-700 Category
+                            input(type="text", name="category", class="w-full px-3 py-2 border rounded")
+                        .mb-2
+                            label.block.text-gray-700 Stock
+                            input(type="number", name="stock", class="w-full px-3 py-2 border rounded")
+                        .flex.justify-end.mt-4
+                            button(type="submit", class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600") Save
+                            button(type="button", class="ml-2 px-4 py-2 rounded bg-gray-300 hover:bg-gray-400", id="cancel-btn") Cancel
+
+        // Client-side JS for AJAX CRUD
+        script.
+            document.addEventListener('DOMContentLoaded', function() {
+                const modal = document.getElementById('product-modal');
+                const form = document.getElementById('product-form');
+                const addBtn = document.getElementById('add-product-btn');
+                const cancelBtn = document.getElementById('cancel-btn');
+                const tableBody = document.querySelector('#inventory-table tbody');
+                let editingId = null;
+
+                function showModal(edit = false, item = {}) {
+                    modal.classList.remove('hidden');
+                    document.getElementById('modal-title').textContent = edit ? 'Edit Product' : 'Add Product';
+                    form.id.value = item.id || '';
+                    form.name.value = item.name || '';
+                    form.quantity.value = item.quantity || '';
+                    form.price.value = item.price || '';
+                    form.category.value = item.category || '';
+                    form.stock.value = item.stock || '';
+                    editingId = edit ? item.id : null;
+                }
+
+                function hideModal() {
+                    modal.classList.add('hidden');
+                    form.reset();
+                    editingId = null;
+                }
+
+                addBtn.onclick = () => showModal(false);
+
+                cancelBtn.onclick = hideModal;
+
+                // Fetch and render inventory
+                function fetchInventory() {
+                    fetch('/api/inventory')
+                        .then(res => res.json())
+                        .then(items => {
+                            tableBody.innerHTML = '';
+                            items.forEach(item => {
+                                const tr = document.createElement('tr');
+                                tr.className = 'border-b';
+                                tr.innerHTML = `
+                                    <td class="px-4 py-2 text-gray-800">${item.name}</td>
+                                    <td class="px-4 py-2 text-gray-800">${item.quantity}</td>
+                                    <td class="px-4 py-2 text-gray-800">$${item.price}</td>
+                                    <td class="px-4 py-2 text-gray-800">${item.category || ''}</td>
+                                    <td class="px-4 py-2 text-gray-800">${item.stock || ''}</td>
+                                    <td class="px-4 py-2">
+                                        <button class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 edit-btn" data-id="${item.id}">Edit</button>
+                                        <button class="bg-red-500 text-white px-3 py-1 rounded ml-2 hover:bg-red-600 delete-btn" data-id="${item.id}">Delete</button>
+                                    </td>
+                                `;
+                                tableBody.appendChild(tr);
+                            });
+                        });
+                }
+
+                fetchInventory();
+
+                // Handle form submit (add/edit)
+                form.onsubmit = function(e) {
+                    e.preventDefault();
+                    const data = {
+                        name: form.name.value,
+                        quantity: Number(form.quantity.value),
+                        price: Number(form.price.value),
+                        category: form.category.value,
+                        stock: Number(form.stock.value)
+                    };
+                    if (editingId) {
+                        // Edit
+                        fetch('/api/inventory', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ query: { id: editingId }, updates: data })
+                        })
+                        .then(res => res.json())
+                        .then(() => {
+                            hideModal();
+                            fetchInventory();
+                        });
+                    } else {
+                        // Add
+                        fetch('/api/inventory', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        })
+                        .then(res => res.json())
+                        .then(() => {
+                            hideModal();
+                            fetchInventory();
+                        });
+                    }
+                };
+
+                // Delegate edit/delete buttons
+                tableBody.onclick = function(e) {
+                    if (e.target.classList.contains('edit-btn')) {
+                        const id = e.target.dataset.id;
+                        fetch('/api/inventory?id=' + id)
+                            .then(res => res.json())
+                            .then(items => {
+                                if (items.length) showModal(true, items[0]);
+                            });
+                    }
+                    if (e.target.classList.contains('delete-btn')) {
+                        const id = e.target.dataset.id;
+                        if (confirm('Delete this item?')) {
+                            fetch('/api/inventory', {
+                                method: 'DELETE',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id })
+                            })
+                            .then(res => res.json())
+                            .then(() => fetchInventory());
+                        }
+                    }
+                };
+            });
