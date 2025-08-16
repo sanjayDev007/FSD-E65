@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Page</title>
+</head>
+<body>
+    <div class="analytics"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if the .analytics div exists
+            const analyticsDiv = document.querySelector('.analytics');
+            if (!analyticsDiv) {
+                console.error('Analytics div not found.');
+                return;
+            }
+            fetch('http://localhost:3000/api/users/analytics')
+            .then(response => response.json())
+            .then(data => {
+                const analyticsDiv = document.querySelector('.analytics');
+                if (!Array.isArray(data) || data.length === 0) {
+                    analyticsDiv.textContent = 'No analytics data available.';
+                    return;
+                }
+                // Create a table to display analytics
+                const table = document.createElement('table');
+                table.border = '1';
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr>
+                        <th>City</th>
+                        <th>Average Age</th>
+                        <th>Total Users</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+                data.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item._id}</td>
+                        <td>${item.avgAge.toFixed(2)}</td>
+                        <td>${item.totalUsers}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+                analyticsDiv.appendChild(table);
+            })
+            .catch(error => {
+                console.error('Error fetching analytics data:', error);
+                document.querySelector('.analytics').textContent = 'Error loading analytics data.';
+            });
+        });
+        // Fetch analytics data from the server and display in the .analytics div
+        
+    </script>
+</body>
+</html>
