@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            background: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+        .login-container {
+            width: 350px;
+            margin: 80px auto;
+            padding: 30px 25px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+        }
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login-container button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Register</h2>
+        <form>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="button" id="submitBtn">Register</button>
+        </form>
+    </div>
+    <script>
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const submitBtn = document.getElementById('submitBtn');
+
+
+        submitBtn.addEventListener('click', () => {
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            if (username && password) {
+                fetch('http://localhost:3000/api/users/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                }).then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Registration failed');
+                        });
+                        throw new Error('Registration failed');
+                    }
+                }).then(data => {
+                    console.log(data);
+                    window.location.href = '/login'; // Redirect to login page on success
+                }).catch(error => {
+                    console.error('Error:', error);
+                   alert( error.message || 'An error occurred during registration.')
+                });
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+    </script>
+</body>
+</html>
