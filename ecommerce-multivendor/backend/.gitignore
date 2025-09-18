@@ -1,0 +1,100 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Logs
+logs
+*.log
+npm-debug.log*
+jest-output.json
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Build output
+dist/
+build/
+out/
+coverage/
+.nyc_output/
+lib/
+esm/
+cjs/
+.parcel-cache/
+.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.test
+.env.production
+.env.*.secret
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Tooling
+.eslintcache
+.stylelintcache
+.cache/
+.tmp/
+.svelte-kit/
+.next/
+.nuxt/
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Coverage and test reports
+coverage/
+test-results/
+reports/
+
+# IDE / JetBrains
+*.iml
+*.iws
+*.ipr
+out/
+
+# Yarn v2/v3
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/patches
+!.yarn/releases/*
+.pnp.*
+.yarn-integrity
+
+# Misc
+*.log.*
+*.local
+.vagrant/
+dist-*/ 
+uploads/
+secrets/
