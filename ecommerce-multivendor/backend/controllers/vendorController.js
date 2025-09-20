@@ -1,5 +1,24 @@
 const Vendor = require("../models/Vendor");
 const bcrypt = require('bcryptjs');
+const jsonwebtoken = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_vendor_secret_key';
+
+module.exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Email and password are required' });
+        }
+        const vendor = await Vendor.findOne({ email: email });
+        if (!vendor || !(await bcrypt.compare(password, vendor.password))) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+        const token = jsonwebtoken.sign({ id: vendor._id, role: 'vendor' }, JWT_SECRET, { expiresIn: '365d' });
+        return res.status(200).json({ token });
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
 
 module.exports.getAllVendors = async (req, res) => {
     try {

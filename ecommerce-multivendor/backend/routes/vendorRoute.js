@@ -1,10 +1,13 @@
 const router = require('express').Router();
-const vendorAuth = require('../middlewares/vendorAuth');
 
 const vendorController = require('../controllers/vendorController');
+const { checkAuth, requireRole } = require('../middlewares/checkAuth');
 
-router.get('/', vendorAuth, vendorController.getVendorById);
-router.put('/', vendorAuth, vendorController.updateVendor);
-router.delete('/', vendorAuth, vendorController.deleteVendor);
+router.post('/login', vendorController.login);
+router.get('/', checkAuth, requireRole('admin'), vendorController.getAllVendors);
+router.post('/', checkAuth, requireRole('admin'), vendorController.createVendor);
+router.get('/:id', checkAuth, requireRole('admin' , 'vendor'), vendorController.getVendorById);
+router.put('/:id', checkAuth, requireRole('admin' , 'vendor'), vendorController.updateVendor);
+router.delete('/:id', checkAuth, requireRole('admin', 'vendor'), vendorController.deleteVendor);
 
 module.exports = router;
