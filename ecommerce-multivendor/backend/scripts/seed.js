@@ -8,8 +8,10 @@ const Address = require('../models/Address');
 const Payment = require('../models/Payment');
 const OrderItem = require('../models/OrderItem');
 const Order = require('../models/Orders');
+const Product = require('../models/Product');
+const Vendor = require('../models/Vendor');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ecommerce-multivendor';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ecommerce';
 const CLEAR = process.env.CLEAR === '1'; // set CLEAR=1 to wipe collections before seeding
 
 function randInt(min, max) {
@@ -32,7 +34,7 @@ async function connect() {
 }
 
 async function clearCollections() {
-  const tasks = [Order.deleteMany({}), OrderItem.deleteMany({}), Payment.deleteMany({}), Address.deleteMany({}), Customer.deleteMany({})];
+  const tasks = [Order.deleteMany({}), OrderItem.deleteMany({}), Payment.deleteMany({}), Address.deleteMany({}), Customer.deleteMany({}), Product.deleteMany({}), Vendor.deleteMany({})];
   await Promise.all(tasks);
   console.log('Cleared collections');
 }
@@ -106,7 +108,7 @@ async function seedPayments(count = 6) {
   return payments;
 }
 
-async function seedOrderItems(count = 20) {
+async function seedOrderItems(products, count = 20) {
   const items = [];
   for (let i = 0; i < count; i++) {
     const qty = randInt(1, 3);
@@ -114,7 +116,7 @@ async function seedOrderItems(count = 20) {
     const discount = Math.random() < 0.4 ? randInt(0, 10) : 0; // flat discount per line
     const tax = Math.round(unit * qty * 0.1); // ~10% tax per line
     items.push({
-      product: new Types.ObjectId(),
+      product: products[randInt(0, products.length - 1)]._id,
       // variant optional
       // seller optional
       sku: `SKU-${i + 1}`,
@@ -158,15 +160,49 @@ async function seedOrders(customers, addrMap, payments, allItems) {
   return orders;
 }
 
+async function seedProducts(vendors, count = 1000) {
+  const categories = ['Electronics', 'Clothing', 'Home', 'Sports', 'Books'];
+  const productsData = Array.from({ length: count }).map((_, i) => ({
+    name: `Product ${i + 1}`,
+    description: `Description for product ${i + 1}`,
+    price: randInt(10, 500),
+    category: categories[i % categories.length],
+    sku: `PROD-${i + 1}`,
+    stock: randInt(0, 100),
+    vendor: vendors[randInt(0, vendors.length - 1)]._id,
+    ownerModel: 'Vendor',
+    owner: vendors[randInt(0, vendors.length - 1)]._id,
+    createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)),
+    image: 'https://picsum.photos/200/300'
+  }));
+  const products = await Product.insertMany(productsData);
+  console.log(`Inserted ${products.length} products`);
+  return products;
+}
+
+async function seedVendors(count = 10) {
+  const vendorsData = Array.from({ length: count }).map((_, i) => ({
+    name: `Vendor ${i + 1}`,
+    email: `vendor${i + 1}@example.com`,
+    phone: `+1-555-100${i + 1}`,
+    address: `Address for Vendor ${i + 1}`,
+  }));
+  const vendors = await Vendor.insertMany(vendorsData);
+  console.log(`Inserted ${vendors.length} vendors`);
+  return vendors;
+}
+
 async function run() {
   try {
     await connect();
     if (CLEAR) await clearCollections();
 
+    const vendors = await seedVendors();
+    const products = await seedProducts(vendors);
     const customers = await seedCustomers();
     const addrMap = await seedAddresses(customers);
     const payments = await seedPayments();
-    const orderItems = await seedOrderItems();
+    const orderItems = await seedOrderItems(products);
     await seedOrders(customers, addrMap, payments, orderItems);
 
     console.log('Seeding completed');

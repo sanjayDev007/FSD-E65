@@ -1,20 +1,35 @@
 import { useState } from 'react'
 import './App.css'
-import { Route, Router, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import Login from './pages/Login'
-import Dashboard from './pages/dashboard'
+import Dashboard from './pages/Dashboard'
 import Register from './pages/Register'
+import Layout from './components/Layout'
+import Cart from './pages/Cart'
+import Orders from './pages/Orders'
+import Products from './pages/Products'
+import AdminLayout from './components/AdminLayout'
 
 function App() {
 
   return (
     <>
-        <Routes>
-          <Route path="/" element={<h1>Hello World</h1>} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="products" element={<Products />} />
+          <Route path="cart" element={<Cart />} />
+          <Route path="orders" element={<Orders />} />
+        </Route>
+        <Route path='/admin/*' element={<AdminLayout />}>
+          <Route path='dashboard' element={<Dashboard />} />
+          <Route path='products' element={<Products />} />
+          <Route path='orders' element={<Orders />} />
+        </Route>
+      </Routes>
     </>
   )
 }

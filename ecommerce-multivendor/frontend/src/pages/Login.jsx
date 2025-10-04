@@ -36,12 +36,31 @@ function Login() {
            const response =  await login(token);
            console.log(response);
            if (response.success) {
-                navigate('/dashboard');
+            navigate('/dashboard');
            }
         } catch (err) {
             console.log(err);
-            const errMsg = err.message || 'Login failed.';
-            setError(errMsg);
+            let errorMessage = 'Login failed.';
+            switch (err.code) {
+            case 'auth/user-not-found':
+            errorMessage = 'No account found with this email.';
+            break;
+            case 'auth/wrong-password':
+            errorMessage = 'Incorrect password.';
+            break;
+            case 'auth/invalid-email':
+            errorMessage = 'Invalid email address.';
+            break;
+            case 'auth/user-disabled':
+            errorMessage = 'This account has been disabled.';
+            break;
+            case 'auth/too-many-requests':
+            errorMessage = 'Too many failed attempts. Try again later.';
+            break;
+            default:
+            errorMessage = err.message || 'Login failed.';
+            }
+            setError(errorMessage);
         } finally {
             setLoading(false)
         }
@@ -186,7 +205,7 @@ function Login() {
 
                 <p className="mt-6 text-center text-sm text-gray-500">
                     Don't have an account?{' '}
-                    <a href="#" className="text-indigo-600 font-medium hover:text-indigo-500">
+                    <a onClick={()=> navigate('/register')} className="text-indigo-600 font-medium hover:text-indigo-500">
                         Sign up
                     </a>
                 </p>

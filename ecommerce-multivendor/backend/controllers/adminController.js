@@ -1,7 +1,7 @@
 const jsonwebtoken = require('jsonwebtoken');
 
 const Admin = require('../models/Admin');
-const Product = require('../models/Products');
+const Product = require('../models/Product');
 const bcrypt = require('bcrypt');
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_admin_secret_key';
 

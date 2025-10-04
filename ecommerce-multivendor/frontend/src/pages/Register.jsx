@@ -36,15 +36,31 @@ function Register() {
             const response = await register(token); // reuse login to create a session; replace if you have a register API
             console.log(response);
             if (response.success) {
-                navigate('/dashboard');
+            navigate('/dashboard');
             } else {
-                // if backend didn't return success, still navigate or show message as needed
-                setError(response.message || 'Registration successful, but backend login failed.')
+            // if backend didn't return success, still navigate or show message as needed
+            setError(response.message || 'Registration successful, but backend login failed.')
             }
         } catch (err) {
             console.log(err);
-            const errMsg = err.message || 'Registration failed.'
-            setError(errMsg);
+            let errorMessage = 'Registration failed.';
+            switch (err.code) {
+            case 'auth/email-already-in-use':
+                errorMessage = 'This email is already in use.';
+                break;
+            case 'auth/invalid-email':
+                errorMessage = 'Invalid email address.';
+                break;
+            case 'auth/weak-password':
+                errorMessage = 'Password is too weak.';
+                break;
+            case 'auth/operation-not-allowed':
+                errorMessage = 'Email/password accounts are not enabled.';
+                break;
+            default:
+                errorMessage = err.message || 'Registration failed.';
+            }
+            setError(errorMessage);
         } finally {
             setLoading(false)
         }
@@ -190,7 +206,7 @@ function Register() {
 
                 <p className="mt-6 text-center text-sm text-gray-500">
                     Already have an account?{' '}
-                    <a href="#" className="text-indigo-600 font-medium hover:text-indigo-500" onClick={(e) => { e.preventDefault(); navigate('/login') }}>
+                    <a onClick={(e) => { e.preventDefault(); navigate('/login') }} className="text-indigo-600 font-medium hover:text-indigo-500">
                         Sign in
                     </a>
                 </p>
