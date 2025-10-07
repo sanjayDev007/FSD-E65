@@ -14,6 +14,7 @@ const AddressSchema = new Schema(
     state: { type: String, trim: true },
     country: { type: String, trim: true },
     postalCode: { type: String, trim: true },
+    customer: { type: Schema.Types.ObjectId, ref: 'Customer' },
   },
   { timestamps: true }
 );
