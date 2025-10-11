@@ -9,6 +9,8 @@ import Cart from './pages/Cart'
 import Orders from './pages/Orders'
 import Products from './pages/Products'
 import AdminLayout from './components/AdminLayout'
+import ShippingAddress from './pages/ShippingAddress'
+import Checkout from './pages/Checkout'
 
 function App() {
 
@@ -23,6 +25,8 @@ function App() {
           <Route path="products" element={<Products />} />
           <Route path="cart" element={<Cart />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="shipping-address" element={<ShippingAddress />} />
+          <Route path="checkout" element={<Checkout />} /> 
         </Route>
         <Route path='/admin/*' element={<AdminLayout />}>
           <Route path='dashboard' element={<Dashboard />} />

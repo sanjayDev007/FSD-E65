@@ -2,9 +2,11 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { REMOVE_FROM_CART, UPDATE_QUANTITY, CLEAR_CART } from '../store/actions/cartActions'
 import useProtected from '../hooks/useProtected'
+import { useNavigate } from 'react-router-dom';
 
 function Cart() {
-    const { data: user } = useProtected()
+    const { data: user } = useProtected();
+  const navigate = useNavigate();
   const cart = useSelector(state => state.cart)
   const dispatch = useDispatch()
 
@@ -113,7 +115,7 @@ function Cart() {
                     </div>
                   </div>
                 </div>
-                <button className="w-full mt-6 bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition-colors">
+                <button className="w-full mt-6 bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 transition-colors" onClick={() => navigate('/checkout')}>
                   Proceed to Checkout
                 </button>
               </div>
