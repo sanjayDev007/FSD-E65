@@ -3,7 +3,11 @@ const { Schema, Types } = mongoose;
 
 const OrderItemSchema = new Schema(
   {
-    product: { type: Types.ObjectId, ref: 'Product', required: true, index: true },
+    product: {
+      type: Types.ObjectId,
+      ref: 'Product',
+      required: true
+    },
     variant: { type: Types.ObjectId, ref: 'ProductVariant' },
     seller: { type: Types.ObjectId, ref: 'Vendor', index: true },
     sku: { type: String, trim: true },
@@ -11,10 +15,26 @@ const OrderItemSchema = new Schema(
     variantName: { type: String, trim: true },
     image: { type: String, trim: true },
 
-    quantity: { type: Number, required: true, min: 1, default: 1 },
-    price: { type: Number, required: true, min: 0 },
-    discount: { type: Number, min: 0, default: 0 },
-    tax: { type: Number, min: 0, default: 0 },
+    quantity: {
+      type: Number,
+      min: 1,
+      required: true
+    },
+    price: {
+      type: Number,
+      min: 0,
+      required: true
+    },
+    discount: {
+      type: Number,
+      min: 0,
+      default: 0
+    },
+    tax: {
+      type: Number,
+      min: 0,
+      default: 0
+    },
 
     lineTotal: { type: Number, min: 0, default: 0 },
   },

@@ -4,6 +4,14 @@ const { Schema, Types } = mongoose;
 
 const PaymentSchema = new Schema(
     {
+        customer: {
+            type: Schema.Types.ObjectId,
+            ref: 'Customer',
+            required: true
+        },
+        amount: {
+            type: Number
+        },
         method: {
             type: String,
             enum: ['cod', 'card', 'paypal', 'stripe', 'razorpay', 'wallet', 'bank'],

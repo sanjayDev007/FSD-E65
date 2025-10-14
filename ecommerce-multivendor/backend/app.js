@@ -7,6 +7,8 @@ const PORT = process.env.PORT || 3000;
 var admin = require("firebase-admin");
 var serviceAccount = require("./service-account.json");
 const Stripe = require('stripe');
+const Payment = require('./models/Payment');
+const Order = require('./models/Orders');
 // Database connection
 mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/ecommerce", { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connected'))
@@ -25,7 +27,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 app.post(
   '/api/payment/webhook',
   express.raw({ type: 'application/json' }),
-  (req, res) => {
+  async (req, res) => {
     const sig = req.headers['stripe-signature'];
     let event;
 
@@ -50,6 +52,27 @@ app.post(
       case 'checkout.session.completed':
         const session = event.data.object;
         console.log(`✅ Checkout session completed for ${session.amount_total}`);
+        // Update payment status to paid
+        try {
+          const payment = await Payment.findOne({ transactionId: session.id });
+          if (payment) {
+            payment.status = 'paid';
+            payment.paidAt = new Date();
+            payment.amount = session.amount_total / 100; // Convert cents to dollars
+            await payment.save();
+            console.log(`Payment ${payment._id} updated to paid`);
+
+            // Update order status to confirmed
+            const order = await Order.findOne({ payment: payment._id });
+            if (order) {
+              order.status = 'confirmed';
+              await order.save();
+              console.log(`Order ${order._id} updated to confirmed`);
+            }
+          }
+        } catch (error) {
+          console.error('Error updating payment and order:', error);
+        }
         break;
       default:
         console.log(`Unhandled event type ${event.type}`);

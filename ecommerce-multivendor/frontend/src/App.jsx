@@ -11,6 +11,8 @@ import Products from './pages/Products'
 import AdminLayout from './components/AdminLayout'
 import ShippingAddress from './pages/ShippingAddress'
 import Checkout from './pages/Checkout'
+import Success from './pages/Success'
+import Failure from './pages/Failure'
 
 function App() {
 
@@ -19,6 +21,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/failure" element={<Failure />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />

@@ -132,6 +132,20 @@ const checkout = async (items) => {
     }
 }
 
+const getOrders = async (query = {}) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/customers/orders`, {
+            headers: {
+                'x-access-token': localStorage.getItem('token')
+            },
+            params: query
+        });
+        return { success: true, ...response.data };
+    } catch (err) {
+        return { success: false, message: err.response?.data?.message || err.message };
+    }
+}
+
 export {
     login,
     googleLogin,
@@ -142,5 +156,6 @@ export {
     createAddress,
     updateAddress,
     deleteAddress,
-    checkout
+    checkout,
+    getOrders
 }

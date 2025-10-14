@@ -6,6 +6,9 @@ const { checkAuth } = require('../middlewares/checkAuth');
 const Address = require('../models/Address');
 const { createPaymentIntent, createCheckoutSession } = require('../helpers/stripe');
 const Product = require('../models/Product');
+const Payment = require('../models/Payment');
+const Order = require('../models/Orders');
+const OrderItem = require('../models/OrderItem');
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
 const calculateOrderAmount = async (items) => {
@@ -158,6 +161,44 @@ router.delete('/address/:id', checkAuth, async (req, res) => {
   }
 });
 
+// Get orders for the authenticated user with pagination and date filters
+router.get('/orders', checkAuth, async (req, res) => {
+  try {
+    const { page = 1, limit = 10, startDate, endDate } = req.query;
+    const customer = await Customer.findOne({ email: req.user.email });
+    if (!customer) return res.status(404).json({ error: 'Customer not found' });
+
+    let query = { user: customer._id };
+
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+
+    const orders = await Order.find(query)
+      .populate('items')
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * parseInt(limit))
+      .limit(parseInt(limit));
+
+    const total = await Order.countDocuments(query);
+
+    res.json({
+      orders,
+      pagination: {
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / parseInt(limit)),
+        totalOrders: total,
+        hasNext: parseInt(page) * parseInt(limit) < total,
+        hasPrev: parseInt(page) > 1
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.post('/checkout', checkAuth, async (req, res) => {
     try {
         const { items } = req.body;
@@ -166,11 +207,21 @@ router.post('/checkout', checkAuth, async (req, res) => {
         const customer = await Customer.findOne({ email: req.user.email });
         if (!customer) return res.status(404).json({ error: 'Customer not found' });
 
-        // Build line items for Stripe Checkout
+        // Calculate total amount and create order items
+        let totalAmount = 0;
+        const orderItems = [];
         const lineItems = [];
         for (const item of items) {
             const product = await Product.findById(item.productId);
             if (!product) throw new Error(`Product ${item.productId} not found`);
+            const orderItem = new OrderItem({
+                product: product._id,
+                quantity: item.quantity,
+                price: product.price
+            });
+            await orderItem.save();
+            orderItems.push(orderItem._id);
+            totalAmount += product.price * item.quantity;
             lineItems.push({
                 price_data: {
                     currency: 'usd',
@@ -185,9 +236,35 @@ router.post('/checkout', checkAuth, async (req, res) => {
             });
         }
 
+        // Create a payment record with status pending
+        const payment = new Payment({
+            customer: customer._id,
+            amount: totalAmount,
+            method: 'stripe',
+            status: 'pending',
+            provider: 'stripe'
+        });
+        await payment.save();
+
+        // Create order
+        const order = new Order({
+            user: customer._id,
+            items: orderItems,
+            payment: payment._id,
+            itemsTotal: totalAmount,
+            grandTotal: totalAmount
+        });
+        await order.save();
+
         // Create a checkout session
-        const session = await createCheckoutSession(lineItems, successUrl, cancelUrl, { customer: customer._id.toString() });
+        const session = await createCheckoutSession(lineItems, successUrl, cancelUrl, { customer: customer._id.toString(), paymentId: payment._id.toString(), orderId: order._id.toString() });
         console.log(session);
+
+        // Update payment with transactionId and gatewayResponse
+        payment.transactionId = session.id;
+        payment.gatewayResponse = session;
+        await payment.save();
+
         res.status(200).json({ url: session.url });
     } catch (error) {
         res.status(500).json({ error: error.message });
